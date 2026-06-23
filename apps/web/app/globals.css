@@ -354,10 +354,27 @@ body {
   left: 50%;
   top: 50%;
   transform: translate(-50%, -50%);
-  width: 24px;
-  height: 0;
-  border-top: 4px double #6a7a8c;
+  width: 23px;
+  height: 8px;
   pointer-events: none;
+}
+
+.sd-shell-grip::before,
+.sd-shell-grip::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  width: 100%;
+  height: 2px;
+  background: #6a7a8c;
+}
+
+.sd-shell-grip::before {
+  top: 0;
+}
+
+.sd-shell-grip::after {
+  bottom: 0;
 }
 
 .sd-shell-tray .sd-shell-x {
