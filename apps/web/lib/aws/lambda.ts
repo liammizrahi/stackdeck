@@ -24,6 +24,7 @@ export interface LambdaFunction {
 
 export interface LambdaFunctionDetail {
   name: string;
+  arn: string;
   runtime: string;
   memory: number;
   timeout: number;
@@ -32,6 +33,7 @@ export interface LambdaFunctionDetail {
   lastModified: string;
   codeSize: number;
   env: Record<string, string>;
+  tags: LambdaFunctionTag[];
 }
 
 function lambdaClient() {
@@ -83,12 +85,22 @@ export async function getFunction(
   name: string,
 ): Promise<{ data?: LambdaFunctionDetail; error?: string }> {
   try {
-    const out = await lambdaClient().send(
+    const client = lambdaClient();
+    const out = await client.send(
       new GetFunctionConfigurationCommand({ FunctionName: name }),
     );
+    const arn = out.FunctionArn ?? "";
+    let tags: LambdaFunctionTag[] = [];
+    try {
+      const tagsOut = await client.send(new ListTagsCommand({ Resource: arn }));
+      tags = Object.entries(tagsOut.Tags ?? {}).map(([key, value]) => ({ key, value }));
+    } catch {
+      tags = [];
+    }
     return {
       data: {
         name: out.FunctionName ?? "",
+        arn,
         runtime: out.Runtime ?? "",
         memory: out.MemorySize ?? 0,
         timeout: out.Timeout ?? 0,
@@ -97,6 +109,7 @@ export async function getFunction(
         lastModified: out.LastModified ?? "",
         codeSize: out.CodeSize ?? 0,
         env: out.Environment?.Variables ?? {},
+        tags,
       },
     };
   } catch (err) {

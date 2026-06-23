@@ -8,14 +8,16 @@ import Box from "@cloudscape-design/components/box";
 import Button from "@cloudscape-design/components/button";
 import Container from "@cloudscape-design/components/container";
 import ContentLayout from "@cloudscape-design/components/content-layout";
+import CopyToClipboard from "@cloudscape-design/components/copy-to-clipboard";
 import Header from "@cloudscape-design/components/header";
 import KeyValuePairs from "@cloudscape-design/components/key-value-pairs";
 import Modal from "@cloudscape-design/components/modal";
 import Pagination from "@cloudscape-design/components/pagination";
 import SpaceBetween from "@cloudscape-design/components/space-between";
 import Table from "@cloudscape-design/components/table";
+import Tabs from "@cloudscape-design/components/tabs";
 import TextFilter from "@cloudscape-design/components/text-filter";
-import type { SqsMessage, SqsQueue } from "@/lib/aws/sqs";
+import type { SqsMessage, SqsQueue, SqsQueueTag } from "@/lib/aws/sqs";
 import { purgeQueueAction } from "../actions";
 
 export default function QueueDetail({
@@ -53,8 +55,6 @@ export default function QueueDetail({
       sorting: {},
     });
 
-  const refresh = () => startTransition(() => router.refresh());
-
   const submitPurge = () => {
     setPurgeError(null);
     startTransition(async () => {
@@ -68,6 +68,91 @@ export default function QueueDetail({
     });
   };
 
+  const tags: SqsQueueTag[] = queue.tags ?? [];
+
+  const messagesTab = (
+    <SpaceBetween size="m">
+      {messagesError && (
+        <Alert type="error" header="Could not load messages">
+          {messagesError}
+        </Alert>
+      )}
+      <Table<SqsMessage>
+        {...collectionProps}
+        variant="container"
+        stickyHeader
+        loading={isPending}
+        loadingText="Loading messages"
+        trackBy="messageId"
+        items={items}
+        columnDefinitions={[
+          {
+            id: "messageId",
+            header: "Message ID",
+            sortingField: "messageId",
+            isRowHeader: true,
+            cell: (msg) => msg.messageId,
+          },
+          {
+            id: "body",
+            header: "Body",
+            cell: (msg) => msg.body,
+          },
+        ]}
+        header={
+          <Header
+            counter={`(${messages.length})`}
+            actions={
+              <Button onClick={() => setPurgeOpen(true)}>Purge queue</Button>
+            }
+          >
+            Messages (peek)
+          </Header>
+        }
+        filter={
+          <TextFilter
+            {...filterProps}
+            filteringPlaceholder="Find messages"
+            countText={`${filteredItemsCount} matches`}
+          />
+        }
+        pagination={<Pagination {...paginationProps} />}
+        empty={
+          <Box textAlign="center" color="inherit" padding="l">
+            <b>No messages</b>
+          </Box>
+        }
+      />
+    </SpaceBetween>
+  );
+
+  const tagsTab = (
+    <Table<SqsQueueTag>
+      variant="container"
+      trackBy="key"
+      items={tags}
+      columnDefinitions={[
+        {
+          id: "key",
+          header: "Key",
+          isRowHeader: true,
+          cell: (tag) => tag.key,
+        },
+        {
+          id: "value",
+          header: "Value",
+          cell: (tag) => tag.value,
+        },
+      ]}
+      header={<Header counter={`(${tags.length})`}>Tags</Header>}
+      empty={
+        <Box textAlign="center" color="inherit" padding="l">
+          <b>No tags</b>
+        </Box>
+      }
+    />
+  );
+
   return (
     <ContentLayout
       header={
@@ -75,8 +160,12 @@ export default function QueueDetail({
           variant="h1"
           actions={
             <SpaceBetween direction="horizontal" size="xs">
-              <Button iconName="refresh" ariaLabel="Refresh" onClick={refresh} />
-              <Button onClick={() => setPurgeOpen(true)}>Purge queue</Button>
+              <Button
+                iconName="refresh"
+                ariaLabel="Refresh"
+                loading={isPending}
+                onClick={() => startTransition(() => router.refresh())}
+              />
             </SpaceBetween>
           }
         >
@@ -85,12 +174,22 @@ export default function QueueDetail({
       }
     >
       <SpaceBetween size="l">
-        <Container header={<Header variant="h2">Queue attributes</Header>}>
+        <Container header={<Header variant="h2">Details</Header>}>
           <KeyValuePairs
             columns={3}
             items={[
-              { label: "ARN", value: queue.arn || "—" },
-              { label: "URL", value: queue.url || "—" },
+              { label: "Name", value: queue.name },
+              {
+                label: "ARN",
+                value: (
+                  <CopyToClipboard
+                    variant="inline"
+                    textToCopy={queue.arn}
+                    copySuccessText="ARN copied"
+                    copyErrorText="Failed to copy ARN"
+                  />
+                ),
+              },
               { label: "Visible messages", value: queue.visible },
               { label: "In flight", value: queue.inflight },
               { label: "Delayed", value: queue.delayed },
@@ -99,45 +198,11 @@ export default function QueueDetail({
           />
         </Container>
 
-        {messagesError && (
-          <Alert type="error" header="Could not load messages">
-            {messagesError}
-          </Alert>
-        )}
-
-        <Table<SqsMessage>
-          {...collectionProps}
-          variant="container"
-          stickyHeader
-          loading={isPending}
-          loadingText="Loading messages"
-          trackBy="messageId"
-          items={items}
-          columnDefinitions={[
-            {
-              id: "messageId",
-              header: "Message ID",
-              sortingField: "messageId",
-              isRowHeader: true,
-              cell: (msg) => msg.messageId,
-            },
-            {
-              id: "body",
-              header: "Body",
-              cell: (msg) => msg.body,
-            },
+        <Tabs
+          tabs={[
+            { id: "messages", label: "Messages", content: messagesTab },
+            { id: "tags", label: "Tags", content: tagsTab },
           ]}
-          header={
-            <Header counter={`(${messages.length})`}>Messages (peek)</Header>
-          }
-          filter={
-            <TextFilter
-              {...filterProps}
-              filteringPlaceholder="Find messages"
-              countText={`${filteredItemsCount} matches`}
-            />
-          }
-          pagination={<Pagination {...paginationProps} />}
         />
       </SpaceBetween>
 

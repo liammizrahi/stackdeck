@@ -8,13 +8,15 @@ import Box from "@cloudscape-design/components/box";
 import Button from "@cloudscape-design/components/button";
 import Container from "@cloudscape-design/components/container";
 import ContentLayout from "@cloudscape-design/components/content-layout";
+import CopyToClipboard from "@cloudscape-design/components/copy-to-clipboard";
 import Header from "@cloudscape-design/components/header";
 import KeyValuePairs from "@cloudscape-design/components/key-value-pairs";
 import Pagination from "@cloudscape-design/components/pagination";
 import SpaceBetween from "@cloudscape-design/components/space-between";
 import Table from "@cloudscape-design/components/table";
+import Tabs from "@cloudscape-design/components/tabs";
 import TextFilter from "@cloudscape-design/components/text-filter";
-import type { TableDetail as TableDetailType, ScanResult } from "@/lib/aws/dynamodb";
+import type { TableDetail as TableDetailType, ScanResult, DynamoTableTag } from "@/lib/aws/dynamodb";
 import { formatBytes } from "@/lib/utils";
 
 function renderCell(value: unknown): string {
@@ -27,15 +29,15 @@ export default function TableDetail({
   detail,
   scan,
   tableName,
+  tags,
 }: {
   detail: TableDetailType | { error: string };
   scan: ScanResult;
   tableName: string;
+  tags: DynamoTableTag[];
 }) {
   const router = useRouter();
   const [isPending, startTransition] = useTransition();
-
-  const refresh = () => startTransition(() => router.refresh());
 
   const { items, collectionProps, filterProps, paginationProps, filteredItemsCount } =
     useCollection(scan.items, {
@@ -57,7 +59,7 @@ export default function TableDetail({
 
   if ("error" in detail) {
     return (
-      <ContentLayout header={<Header>{tableName}</Header>}>
+      <ContentLayout header={<Header variant="h1">{tableName}</Header>}>
         <Alert type="error" header="Failed to load table">
           {detail.error}
         </Alert>
@@ -73,12 +75,79 @@ export default function TableDetail({
     cell: (row: Record<string, unknown>) => renderCell(row[col]),
   }));
 
+  const itemsTab = (
+    <Table<Record<string, unknown>>
+      {...collectionProps}
+      variant="container"
+      stickyHeader
+      loading={isPending}
+      loadingText="Loading items"
+      items={items}
+      trackBy={(row) => {
+        const first = scan.columns[0];
+        return first !== undefined ? String(row[first] ?? "") : JSON.stringify(row);
+      }}
+      columnDefinitions={columnDefinitions}
+      header={
+        <Header counter={`(${scan.items.length})`}>Items (first 50)</Header>
+      }
+      filter={
+        <TextFilter
+          {...filterProps}
+          filteringPlaceholder="Find items"
+          countText={`${filteredItemsCount} matches`}
+        />
+      }
+      pagination={<Pagination {...paginationProps} />}
+      empty={
+        <Box textAlign="center" color="inherit" padding="l">
+          <b>No items in this table</b>
+        </Box>
+      }
+    />
+  );
+
+  const tagsTab = (
+    <Table<DynamoTableTag>
+      variant="container"
+      items={tags}
+      trackBy="key"
+      columnDefinitions={[
+        {
+          id: "key",
+          header: "Key",
+          isRowHeader: true,
+          cell: (tag) => tag.key,
+        },
+        {
+          id: "value",
+          header: "Value",
+          cell: (tag) => tag.value || "—",
+        },
+      ]}
+      header={<Header counter={`(${tags.length})`}>Tags</Header>}
+      empty={
+        <Box textAlign="center" color="inherit" padding="l">
+          <b>No tags</b>
+        </Box>
+      }
+    />
+  );
+
   return (
     <ContentLayout
       header={
         <Header
+          variant="h1"
           actions={
-            <Button iconName="refresh" ariaLabel="Refresh" onClick={refresh} />
+            <SpaceBetween direction="horizontal" size="xs">
+              <Button
+                iconName="refresh"
+                ariaLabel="Refresh"
+                loading={isPending}
+                onClick={() => startTransition(() => router.refresh())}
+              />
+            </SpaceBetween>
           }
         >
           {detail.name}
@@ -86,9 +155,9 @@ export default function TableDetail({
       }
     >
       <SpaceBetween size="l">
-        <Container header={<Header variant="h2">Overview</Header>}>
+        <Container header={<Header variant="h2">Details</Header>}>
           <KeyValuePairs
-            columns={2}
+            columns={3}
             items={[
               { label: "Status", value: detail.status },
               { label: "Item count", value: detail.itemCount.toLocaleString() },
@@ -100,38 +169,26 @@ export default function TableDetail({
                     ? detail.keys.map((k) => `${k.name} (${k.type})`).join(", ")
                     : "—",
               },
+              {
+                label: "ARN",
+                value: (
+                  <CopyToClipboard
+                    variant="inline"
+                    textToCopy={detail.arn}
+                    copySuccessText="ARN copied"
+                    copyErrorText="Failed to copy ARN"
+                  />
+                ),
+              },
             ]}
           />
         </Container>
 
-        <Table<Record<string, unknown>>
-          {...collectionProps}
-          variant="container"
-          stickyHeader
-          loading={isPending}
-          loadingText="Loading items"
-          items={items}
-          trackBy={(row) => {
-            const first = scan.columns[0];
-            return first !== undefined ? String(row[first] ?? "") : JSON.stringify(row);
-          }}
-          columnDefinitions={columnDefinitions}
-          header={
-            <Header counter={`(${scan.items.length})`}>Items (first 50)</Header>
-          }
-          filter={
-            <TextFilter
-              {...filterProps}
-              filteringPlaceholder="Find items"
-              countText={`${filteredItemsCount} matches`}
-            />
-          }
-          pagination={<Pagination {...paginationProps} />}
-          empty={
-            <Box textAlign="center" color="inherit" padding="l">
-              <b>No items in this table</b>
-            </Box>
-          }
+        <Tabs
+          tabs={[
+            { id: "items", label: "Items", content: itemsTab },
+            { id: "tags", label: "Tags", content: tagsTab },
+          ]}
         />
       </SpaceBetween>
     </ContentLayout>

@@ -1,7 +1,9 @@
 import {
   GetParameterCommand,
   GetParametersByPathCommand,
+  ListTagsForResourceCommand,
   PutParameterCommand,
+  ResourceTypeForTagging,
   SSMClient,
   type ParameterType,
 } from "@aws-sdk/client-ssm";
@@ -62,6 +64,28 @@ export async function getParameter(
     return { name, value: out.Parameter?.Value ?? "" };
   } catch (err) {
     return { name, error: err instanceof Error ? err.message : String(err) };
+  }
+}
+
+export interface ParameterTag {
+  key: string;
+  value: string;
+}
+
+export async function getParameterTags(name: string): Promise<ParameterTag[]> {
+  try {
+    const out = await ssmClient().send(
+      new ListTagsForResourceCommand({
+        ResourceType: ResourceTypeForTagging.PARAMETER,
+        ResourceId: name,
+      }),
+    );
+    return (out.TagList ?? []).map((t) => ({
+      key: t.Key ?? "",
+      value: t.Value ?? "",
+    }));
+  } catch {
+    return [];
   }
 }
 

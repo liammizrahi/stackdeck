@@ -26,6 +26,7 @@ export interface TableKey {
 
 export interface TableDetail {
   name: string;
+  arn: string;
   status: string;
   itemCount: number;
   sizeBytes: number;
@@ -100,6 +101,7 @@ export async function describeTable(
     }));
     return {
       name: table.TableName ?? name,
+      arn: table.TableArn ?? "",
       status: table.TableStatus ?? "UNKNOWN",
       itemCount: table.ItemCount ?? 0,
       sizeBytes: table.TableSizeBytes ?? 0,
@@ -107,6 +109,17 @@ export async function describeTable(
     };
   } catch (err) {
     return { error: err instanceof Error ? err.message : String(err) };
+  }
+}
+
+export async function listTableTags(arn: string): Promise<DynamoTableTag[]> {
+  try {
+    const out = await dynamoClient().send(
+      new ListTagsOfResourceCommand({ ResourceArn: arn }),
+    );
+    return (out.Tags ?? []).map((t) => ({ key: t.Key ?? "", value: t.Value ?? "" }));
+  } catch {
+    return [];
   }
 }
 

@@ -1,6 +1,6 @@
 "use client";
 
-import { useTransition } from "react";
+import { useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
 import Alert from "@cloudscape-design/components/alert";
 import Box from "@cloudscape-design/components/box";
@@ -13,37 +13,36 @@ import KeyValuePairs from "@cloudscape-design/components/key-value-pairs";
 import SpaceBetween from "@cloudscape-design/components/space-between";
 import Table from "@cloudscape-design/components/table";
 import Tabs from "@cloudscape-design/components/tabs";
-import type { LambdaFunctionDetail, LambdaFunctionTag } from "@/lib/aws/lambda";
-import { formatBytes } from "@/lib/utils";
+import type { ParameterTag } from "@/lib/aws/ssm";
 
-function formatDate(value: string) {
+function formatDate(value: string | null) {
   return value ? new Date(value).toLocaleString() : "—";
 }
 
-export default function FunctionDetail({
-  result,
+export default function ParameterDetail({
+  name,
+  arn,
+  type,
+  version,
+  lastModifiedDate,
+  value,
+  valueError,
+  tags,
 }: {
-  result: { data?: LambdaFunctionDetail; error?: string };
+  name: string;
+  arn: string;
+  type: string;
+  version: number;
+  lastModifiedDate: string | null;
+  value: string | null;
+  valueError?: string;
+  tags: ParameterTag[];
 }) {
   const router = useRouter();
   const [isPending, startTransition] = useTransition();
+  const [revealed, setRevealed] = useState(type !== "SecureString");
 
-  if (result.error) {
-    return (
-      <ContentLayout header={<Header>Function</Header>}>
-        <Alert type="error" header="Failed to load function">
-          {result.error}
-        </Alert>
-      </ContentLayout>
-    );
-  }
-
-  const fn = result.data;
-  if (!fn) {
-    return null;
-  }
-
-  const envEntries = Object.entries(fn.env).map(([key, value]) => ({ key, value }));
+  const isSecure = type === "SecureString";
 
   return (
     <ContentLayout
@@ -61,7 +60,7 @@ export default function FunctionDetail({
             </SpaceBetween>
           }
         >
-          {fn.name}
+          {name}
         </Header>
       }
     >
@@ -70,80 +69,85 @@ export default function FunctionDetail({
           <KeyValuePairs
             columns={3}
             items={[
-              { label: "Runtime", value: fn.runtime || "—" },
-              { label: "Handler", value: fn.handler || "—" },
-              { label: "Memory (MB)", value: `${fn.memory} MB` },
-              { label: "Timeout (s)", value: `${fn.timeout} s` },
-              { label: "Code size", value: formatBytes(fn.codeSize) },
-              { label: "Last modified", value: formatDate(fn.lastModified) },
-              { label: "Description", value: fn.description || "—" },
+              { label: "Name", value: name },
+              { label: "Type", value: type || "—" },
+              { label: "Version", value: String(version) },
               {
                 label: "ARN",
-                value: (
+                value: arn ? (
                   <CopyToClipboard
                     variant="inline"
-                    textToCopy={fn.arn}
+                    textToCopy={arn}
                     copySuccessText="ARN copied"
                     copyErrorText="Failed to copy ARN"
                   />
+                ) : (
+                  "—"
                 ),
               },
+              { label: "Last modified", value: formatDate(lastModifiedDate) },
             ]}
           />
+        </Container>
+
+        <Container
+          header={
+            <Header
+              variant="h2"
+              actions={
+                <Button
+                  variant="normal"
+                  onClick={() => setRevealed((prev) => !prev)}
+                >
+                  {revealed ? "Hide" : "Reveal"}
+                </Button>
+              }
+            >
+              Value
+            </Header>
+          }
+        >
+          {valueError ? (
+            <Alert type="error" header="Could not retrieve value">
+              {valueError}
+            </Alert>
+          ) : revealed && value !== null ? (
+            <pre className="sd-preview">{value}</pre>
+          ) : isSecure && !revealed ? (
+            <Box color="text-status-inactive">
+              Value hidden. Click &quot;Reveal&quot; to show the decrypted value.
+            </Box>
+          ) : (
+            <Box color="text-status-inactive">No value</Box>
+          )}
         </Container>
 
         <Tabs
           tabs={[
             {
-              id: "env",
-              label: "Environment variables",
-              content: (
-                <Table<{ key: string; value: string }>
-                  variant="container"
-                  items={envEntries}
-                  trackBy="key"
-                  columnDefinitions={[
-                    {
-                      id: "key",
-                      header: "Key",
-                      isRowHeader: true,
-                      cell: (row) => row.key,
-                    },
-                    {
-                      id: "value",
-                      header: "Value",
-                      cell: (row) => row.value,
-                    },
-                  ]}
-                  empty={
-                    <Box textAlign="center" color="inherit" padding="l">
-                      <b>No environment variables</b>
-                    </Box>
-                  }
-                />
-              ),
-            },
-            {
               id: "tags",
               label: "Tags",
               content: (
-                <Table<LambdaFunctionTag>
+                <Table<ParameterTag>
                   variant="container"
-                  items={fn.tags}
+                  items={tags}
                   trackBy="key"
                   columnDefinitions={[
                     {
                       id: "key",
                       header: "Key",
                       isRowHeader: true,
-                      cell: (row) => row.key,
+                      cell: (tag) => tag.key,
                     },
                     {
                       id: "value",
                       header: "Value",
-                      cell: (row) => row.value,
+                      cell: (tag) => tag.value,
                     },
                   ]}
+                  header={
+                    <Header counter={`(${tags.length})`}>Tags</Header>
+                  }
                   empty={
                     <Box textAlign="center" color="inherit" padding="l">
                       <b>No tags</b>

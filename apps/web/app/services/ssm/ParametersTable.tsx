@@ -18,7 +18,7 @@ import SpaceBetween from "@cloudscape-design/components/space-between";
 import Table from "@cloudscape-design/components/table";
 import TextFilter from "@cloudscape-design/components/text-filter";
 import type { Parameter } from "@/lib/aws/ssm";
-import { putParameterAction, viewParameterAction } from "./actions";
+import { putParameterAction } from "./actions";
 
 function formatDate(value: string | null) {
   return value ? new Date(value).toLocaleString() : "—";
@@ -39,12 +39,6 @@ export default function ParametersTable({
   const [isPending, startTransition] = useTransition();
   const [mounted, setMounted] = useState(false);
   useEffect(() => setMounted(true), []);
-
-  const [viewOpen, setViewOpen] = useState(false);
-  const [viewName, setViewName] = useState<string | null>(null);
-  const [viewValue, setViewValue] = useState<string | null>(null);
-  const [viewError, setViewError] = useState<string | null>(null);
-  const [viewLoading, setViewLoading] = useState(false);
 
   const [createOpen, setCreateOpen] = useState(false);
   const [createName, setCreateName] = useState("");
@@ -81,21 +75,6 @@ export default function ParametersTable({
     });
 
   const refresh = () => startTransition(() => router.refresh());
-
-  const openViewModal = async (name: string) => {
-    setViewName(name);
-    setViewValue(null);
-    setViewError(null);
-    setViewOpen(true);
-    setViewLoading(true);
-    const result = await viewParameterAction(name);
-    setViewLoading(false);
-    if (result.error) {
-      setViewError(result.error);
-    } else {
-      setViewValue(result.value ?? "");
-    }
-  };
 
   const resetCreateForm = () => {
     setCreateName("");
@@ -140,10 +119,10 @@ export default function ParametersTable({
             isRowHeader: true,
             cell: (param) => (
               <Link
-                href="#"
+                href={`/services/ssm/${encodeURIComponent(param.name)}`}
                 onFollow={(event) => {
                   event.preventDefault();
-                  openViewModal(param.name);
+                  router.push(`/services/ssm/${encodeURIComponent(param.name)}`);
                 }}
               >
                 {param.name}
@@ -212,89 +191,62 @@ export default function ParametersTable({
       />
 
       {mounted && (
-        <>
-          <Modal
-            visible={viewOpen}
-            onDismiss={() => setViewOpen(false)}
-            header={viewName ?? "Parameter value"}
-            footer={
-              <Box float="right">
-                <Button variant="link" onClick={() => setViewOpen(false)}>
-                  Close
+        <Modal
+          visible={createOpen}
+          onDismiss={() => setCreateOpen(false)}
+          header="Create parameter"
+          footer={
+            <Box float="right">
+              <SpaceBetween direction="horizontal" size="xs">
+                <Button variant="link" onClick={() => setCreateOpen(false)}>
+                  Cancel
                 </Button>
-              </Box>
-            }
-          >
-            {viewLoading && (
-              <Box color="inherit">Loading value...</Box>
-            )}
-            {!viewLoading && viewError && (
-              <Alert type="error" header="Could not retrieve value">
-                {viewError}
+                <Button
+                  variant="primary"
+                  loading={isPending}
+                  onClick={submitCreate}
+                  disabled={!createName || !createValue}
+                >
+                  Create
+                </Button>
+              </SpaceBetween>
+            </Box>
+          }
+        >
+          <SpaceBetween size="m">
+            {createError && (
+              <Alert type="error" header="Could not create parameter">
+                {createError}
               </Alert>
             )}
-            {!viewLoading && viewValue !== null && (
-              <Box variant="code">{viewValue}</Box>
-            )}
-          </Modal>
-
-          <Modal
-            visible={createOpen}
-            onDismiss={() => setCreateOpen(false)}
-            header="Create parameter"
-            footer={
-              <Box float="right">
-                <SpaceBetween direction="horizontal" size="xs">
-                  <Button variant="link" onClick={() => setCreateOpen(false)}>
-                    Cancel
-                  </Button>
-                  <Button
-                    variant="primary"
-                    loading={isPending}
-                    onClick={submitCreate}
-                    disabled={!createName || !createValue}
-                  >
-                    Create
-                  </Button>
-                </SpaceBetween>
-              </Box>
-            }
-          >
-            <SpaceBetween size="m">
-              {createError && (
-                <Alert type="error" header="Could not create parameter">
-                  {createError}
-                </Alert>
-              )}
-              <FormField label="Name">
-                <Input
-                  value={createName}
-                  onChange={({ detail }) => setCreateName(detail.value)}
-                  placeholder="/my/parameter"
-                />
-              </FormField>
-              <FormField label="Type">
-                <Select
-                  selectedOption={createType}
-                  onChange={({ detail }) =>
-                    setCreateType(
-                      detail.selectedOption as { label: string; value: string },
-                    )
-                  }
-                  options={TYPE_OPTIONS}
-                />
-              </FormField>
-              <FormField label="Value">
-                <Input
-                  value={createValue}
-                  onChange={({ detail }) => setCreateValue(detail.value)}
-                  type={createType.value === "SecureString" ? "password" : "text"}
-                  placeholder="Parameter value"
-                />
-              </FormField>
-            </SpaceBetween>
-          </Modal>
-        </>
+            <FormField label="Name">
+              <Input
+                value={createName}
+                onChange={({ detail }) => setCreateName(detail.value)}
+                placeholder="/my/parameter"
+              />
+            </FormField>
+            <FormField label="Type">
+              <Select
+                selectedOption={createType}
+                onChange={({ detail }) =>
+                  setCreateType(
+                    detail.selectedOption as { label: string; value: string },
+                  )
+                }
+                options={TYPE_OPTIONS}
+              />
+            </FormField>
+            <FormField label="Value">
+              <Input
+                value={createValue}
+                onChange={({ detail }) => setCreateValue(detail.value)}
+                type={createType.value === "SecureString" ? "password" : "text"}
+                placeholder="Parameter value"
+              />
+            </FormField>
+          </SpaceBetween>
+        </Modal>
       )}
     </>
   );

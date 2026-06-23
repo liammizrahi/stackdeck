@@ -1,5 +1,7 @@
 import TopicDetail from "./TopicDetail";
 import { listSubscriptions } from "@/lib/aws/sns";
+import { SNSClient, ListTagsForResourceCommand } from "@aws-sdk/client-sns";
+import { clientConfig } from "@/lib/aws/config";
 
 export const dynamic = "force-dynamic";
 
@@ -24,12 +26,22 @@ export default async function TopicPage({
     subscriptionsError = err instanceof Error ? err.message : String(err);
   }
 
+  let tags: { key: string; value: string }[] = [];
+  try {
+    const client = new SNSClient(clientConfig());
+    const out = await client.send(new ListTagsForResourceCommand({ ResourceArn: topicArn }));
+    tags = (out.Tags ?? []).map((t) => ({ key: t.Key ?? "", value: t.Value ?? "" }));
+  } catch {
+    tags = [];
+  }
+
   return (
     <TopicDetail
       name={name}
       arn={topicArn}
       subscriptions={subscriptions}
       subscriptionsError={subscriptionsError}
+      tags={tags}
     />
   );
 }
