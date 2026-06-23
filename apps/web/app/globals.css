@@ -1,10 +1,6 @@
 @import "tailwindcss";
 @import "@heroui/styles";
 
-@theme {
+:root {
   --font-sans: var(--font-amazon-ember), ui-sans-serif, system-ui, sans-serif;
-}
-
-body {
-  font-family: var(--font-sans);
 }
