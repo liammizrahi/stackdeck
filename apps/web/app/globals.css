@@ -1,5 +1,10 @@
 @import "@cloudscape-design/global-styles/index.css";
 
+:root {
+  --font-family-base-gmnpzl: var(--font-amazon-ember), "Amazon Ember",
+    "Helvetica Neue", Roboto, Arial, sans-serif;
+}
+
 html,
 body {
   margin: 0;

@@ -1,10 +1,11 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import AppLayout from "@cloudscape-design/components/app-layout";
-import { applyTheme } from "@cloudscape-design/components/theming";
+import { usePathname } from "next/navigation";
 import Sidebar from "./Sidebar";
 import Topbar from "./Topbar";
+import Breadcrumbs from "./Breadcrumbs";
 
 export default function AppShell({
   endpoint,
@@ -15,19 +16,9 @@ export default function AppShell({
   region: string;
   children: React.ReactNode;
 }) {
+  const pathname = usePathname();
+  const isHome = pathname === "/";
   const [navOpen, setNavOpen] = useState(true);
-
-  useEffect(() => {
-    const reset = applyTheme({
-      theme: {
-        tokens: {
-          fontFamilyBase:
-            "var(--font-amazon-ember), 'Amazon Ember', system-ui, sans-serif",
-        },
-      },
-    });
-    return () => reset.reset();
-  }, []);
 
   return (
     <>
@@ -36,9 +27,12 @@ export default function AppShell({
       </div>
       <AppLayout
         headerSelector="#top-nav"
+        contentType={isHome ? "dashboard" : "table"}
+        navigationHide={isHome}
         navigation={<Sidebar />}
-        navigationOpen={navOpen}
+        navigationOpen={!isHome && navOpen}
         onNavigationChange={(e) => setNavOpen(e.detail.open)}
+        breadcrumbs={isHome ? undefined : <Breadcrumbs />}
         toolsHide
         content={children}
       />
