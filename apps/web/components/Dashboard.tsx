@@ -136,6 +136,7 @@ export default function Dashboard({ health }: { health: Health }) {
               {health.connected ? "Connected" : "Disconnected"}
             </StatusIndicator>
             <KeyValuePairs
+              columns={3}
               items={[
                 { label: "Endpoint", value: health.endpoint },
                 { label: "Region", value: health.region },
