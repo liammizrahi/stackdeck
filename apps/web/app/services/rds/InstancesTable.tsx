@@ -3,8 +3,10 @@
 import { useTransition } from "react";
 import { useRouter } from "next/navigation";
 import { useCollection } from "@cloudscape-design/collection-hooks";
+import Badge from "@cloudscape-design/components/badge";
 import Box from "@cloudscape-design/components/box";
 import Button from "@cloudscape-design/components/button";
+import CopyToClipboard from "@cloudscape-design/components/copy-to-clipboard";
 import Header from "@cloudscape-design/components/header";
 import Link from "@cloudscape-design/components/link";
 import Pagination from "@cloudscape-design/components/pagination";
@@ -92,6 +94,18 @@ export default function InstancesTable({ instances }: { instances: DbInstance[] 
           ),
         },
         {
+          id: "arn",
+          header: "ARN",
+          cell: (instance) => (
+            <CopyToClipboard
+              variant="inline"
+              textToCopy={instance.arn}
+              copySuccessText="ARN copied"
+              copyErrorText="Failed to copy ARN"
+            />
+          ),
+        },
+        {
           id: "engine",
           header: "Engine",
           sortingField: "engine",
@@ -112,6 +126,22 @@ export default function InstancesTable({ instances }: { instances: DbInstance[] 
           header: "Class",
           sortingField: "instanceClass",
           cell: (instance) => instance.instanceClass,
+        },
+        {
+          id: "tags",
+          header: "Tags",
+          cell: (instance) =>
+            instance.tags.length === 0 ? (
+              "—"
+            ) : (
+              <SpaceBetween direction="horizontal" size="xxs">
+                {instance.tags.map((t) => (
+                  <Badge key={t.key}>
+                    {t.key}: {t.value}
+                  </Badge>
+                ))}
+              </SpaceBetween>
+            ),
         },
         {
           id: "endpoint",

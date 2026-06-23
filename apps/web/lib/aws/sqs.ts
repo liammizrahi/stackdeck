@@ -1,5 +1,6 @@
 import {
   GetQueueAttributesCommand,
+  ListQueueTagsCommand,
   ListQueuesCommand,
   PurgeQueueCommand,
   ReceiveMessageCommand,
@@ -7,10 +8,16 @@ import {
 } from "@aws-sdk/client-sqs";
 import { clientConfig } from "@/lib/aws/config";
 
+export interface SqsQueueTag {
+  key: string;
+  value: string;
+}
+
 export interface SqsQueue {
   url: string;
   name: string;
   arn: string;
+  tags: SqsQueueTag[];
   visible: number;
   inflight: number;
   delayed: number;
@@ -41,10 +48,19 @@ export async function listQueues(): Promise<SqsQueue[]> {
         }),
       );
       const attrs = attrOut.Attributes ?? {};
+      const tags = await (async (): Promise<SqsQueueTag[]> => {
+        try {
+          const tagOut = await client.send(new ListQueueTagsCommand({ QueueUrl: url }));
+          return Object.entries(tagOut.Tags ?? {}).map(([key, value]) => ({ key, value }));
+        } catch {
+          return [];
+        }
+      })();
       return {
         url,
         name: url.split("/").pop() ?? url,
         arn: attrs["QueueArn"] ?? "",
+        tags,
         visible: parseInt(attrs["ApproximateNumberOfMessages"] ?? "0", 10),
         inflight: parseInt(attrs["ApproximateNumberOfMessagesNotVisible"] ?? "0", 10),
         delayed: parseInt(attrs["ApproximateNumberOfMessagesDelayed"] ?? "0", 10),

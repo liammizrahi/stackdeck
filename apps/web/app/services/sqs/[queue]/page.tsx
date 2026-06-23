@@ -23,7 +23,7 @@ export default async function QueuePage({
 
   return (
     <QueueDetail
-      queue={queueData ?? { url: queueUrl, name, arn: "", visible: 0, inflight: 0, delayed: 0, visibilityTimeout: 30 }}
+      queue={queueData ?? { url: queueUrl, name, arn: "", visible: 0, inflight: 0, delayed: 0, visibilityTimeout: 30, tags: [] }}
       messages={messages ?? []}
       messagesError={messagesError}
     />

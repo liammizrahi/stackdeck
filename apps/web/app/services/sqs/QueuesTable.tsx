@@ -3,8 +3,10 @@
 import { useTransition } from "react";
 import { useRouter } from "next/navigation";
 import { useCollection } from "@cloudscape-design/collection-hooks";
+import Badge from "@cloudscape-design/components/badge";
 import Box from "@cloudscape-design/components/box";
 import Button from "@cloudscape-design/components/button";
+import CopyToClipboard from "@cloudscape-design/components/copy-to-clipboard";
 import Header from "@cloudscape-design/components/header";
 import Link from "@cloudscape-design/components/link";
 import Pagination from "@cloudscape-design/components/pagination";
@@ -67,6 +69,18 @@ export default function QueuesTable({ queues }: { queues: SqsQueue[] }) {
           ),
         },
         {
+          id: "arn",
+          header: "ARN",
+          cell: (queue) => (
+            <CopyToClipboard
+              variant="inline"
+              textToCopy={queue.arn}
+              copySuccessText="ARN copied"
+              copyErrorText="Failed to copy ARN"
+            />
+          ),
+        },
+        {
           id: "visible",
           header: "Visible",
           sortingField: "visible",
@@ -79,9 +93,20 @@ export default function QueuesTable({ queues }: { queues: SqsQueue[] }) {
           cell: (queue) => queue.inflight,
         },
         {
-          id: "arn",
-          header: "ARN",
-          cell: (queue) => queue.arn,
+          id: "tags",
+          header: "Tags",
+          cell: (queue) =>
+            queue.tags.length === 0 ? (
+              "—"
+            ) : (
+              <SpaceBetween direction="horizontal" size="xxs">
+                {queue.tags.map((t) => (
+                  <Badge key={t.key}>
+                    {t.key}: {t.value}
+                  </Badge>
+                ))}
+              </SpaceBetween>
+            ),
         },
       ]}
       header={

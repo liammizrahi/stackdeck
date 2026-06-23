@@ -3,11 +3,14 @@
 import { useTransition } from "react";
 import { useRouter } from "next/navigation";
 import { useCollection } from "@cloudscape-design/collection-hooks";
+import Badge from "@cloudscape-design/components/badge";
 import Box from "@cloudscape-design/components/box";
 import Button from "@cloudscape-design/components/button";
+import CopyToClipboard from "@cloudscape-design/components/copy-to-clipboard";
 import Header from "@cloudscape-design/components/header";
 import Link from "@cloudscape-design/components/link";
 import Pagination from "@cloudscape-design/components/pagination";
+import SpaceBetween from "@cloudscape-design/components/space-between";
 import Table from "@cloudscape-design/components/table";
 import TextFilter from "@cloudscape-design/components/text-filter";
 import type { Api } from "@/lib/aws/apigateway";
@@ -66,6 +69,18 @@ export default function ApisTable({ apis }: { apis: Api[] }) {
           ),
         },
         {
+          id: "arn",
+          header: "ARN",
+          cell: (api) => (
+            <CopyToClipboard
+              variant="inline"
+              textToCopy={api.arn}
+              copySuccessText="ARN copied"
+              copyErrorText="Failed to copy ARN"
+            />
+          ),
+        },
+        {
           id: "protocolType",
           header: "Protocol",
           sortingField: "protocolType",
@@ -75,6 +90,22 @@ export default function ApisTable({ apis }: { apis: Api[] }) {
           id: "endpoint",
           header: "Endpoint",
           cell: (api) => api.endpoint || "—",
+        },
+        {
+          id: "tags",
+          header: "Tags",
+          cell: (api) =>
+            api.tags.length === 0 ? (
+              "—"
+            ) : (
+              <SpaceBetween direction="horizontal" size="xxs">
+                {api.tags.map((tag) => (
+                  <Badge key={tag.key}>
+                    {tag.key}: {tag.value}
+                  </Badge>
+                ))}
+              </SpaceBetween>
+            ),
         },
         {
           id: "id",

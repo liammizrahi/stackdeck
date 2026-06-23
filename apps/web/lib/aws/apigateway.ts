@@ -3,13 +3,20 @@ import {
   GetApisCommand,
   GetRoutesCommand,
 } from "@aws-sdk/client-apigatewayv2";
-import { clientConfig } from "@/lib/aws/config";
+import { clientConfig, getAwsSettings } from "@/lib/aws/config";
+
+export interface ApiTag {
+  key: string;
+  value: string;
+}
 
 export interface Api {
   id: string;
   name: string;
+  arn: string;
   protocolType: string;
   endpoint: string;
+  tags: ApiTag[];
 }
 
 export interface Route {
@@ -24,13 +31,20 @@ function apigatewayClient() {
 
 export async function listApis(): Promise<Api[]> {
   const client = apigatewayClient();
+  const { region } = getAwsSettings();
   const out = await client.send(new GetApisCommand({}));
-  const apis = (out.Items ?? []).map((item) => ({
-    id: item.ApiId ?? "",
-    name: item.Name ?? "",
-    protocolType: item.ProtocolType ?? "",
-    endpoint: item.ApiEndpoint ?? "",
-  }));
+  const apis = (out.Items ?? []).map((item) => {
+    const id = item.ApiId ?? "";
+    const rawTags: Record<string, string> = item.Tags ?? {};
+    return {
+      id,
+      name: item.Name ?? "",
+      arn: `arn:aws:apigateway:${region}::/apis/${id}`,
+      protocolType: item.ProtocolType ?? "",
+      endpoint: item.ApiEndpoint ?? "",
+      tags: Object.entries(rawTags).map(([key, value]) => ({ key, value })),
+    };
+  });
   return apis.sort((a, b) => a.name.localeCompare(b.name));
 }
 

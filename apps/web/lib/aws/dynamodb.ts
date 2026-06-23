@@ -2,13 +2,21 @@ import {
   DescribeTableCommand,
   DynamoDBClient,
   ListTablesCommand,
+  ListTagsOfResourceCommand,
   ScanCommand,
 } from "@aws-sdk/client-dynamodb";
 import { unmarshall } from "@aws-sdk/util-dynamodb";
 import { clientConfig } from "@/lib/aws/config";
 
+export interface DynamoTableTag {
+  key: string;
+  value: string;
+}
+
 export interface DynamoTable {
   name: string;
+  arn: string;
+  tags: DynamoTableTag[];
 }
 
 export interface TableKey {
@@ -46,9 +54,35 @@ export async function listTables(): Promise<DynamoTable[]> {
     }
     lastKey = out.LastEvaluatedTableName;
   } while (lastKey);
-  return names
-    .sort((a, b) => a.localeCompare(b))
-    .map((n) => ({ name: n }));
+  const sorted = names.sort((a, b) => a.localeCompare(b));
+  return Promise.all(
+    sorted.map(async (n) => {
+      let arn = "";
+      let tags: DynamoTableTag[] = [];
+      try {
+        const descOut = await client.send(
+          new DescribeTableCommand({ TableName: n }),
+        );
+        arn = descOut.Table?.TableArn ?? "";
+      } catch {
+        arn = "";
+      }
+      if (arn) {
+        try {
+          const tagsOut = await client.send(
+            new ListTagsOfResourceCommand({ ResourceArn: arn }),
+          );
+          tags = (tagsOut.Tags ?? []).map((t) => ({
+            key: t.Key ?? "",
+            value: t.Value ?? "",
+          }));
+        } catch {
+          tags = [];
+        }
+      }
+      return { name: n, arn, tags };
+    }),
+  );
 }
 
 export async function describeTable(

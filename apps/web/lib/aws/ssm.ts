@@ -9,6 +9,7 @@ import { clientConfig } from "@/lib/aws/config";
 
 export interface Parameter {
   name: string;
+  arn: string;
   type: string;
   value: string;
   version: number;
@@ -36,6 +37,7 @@ export async function listParameters(): Promise<Parameter[]> {
     for (const p of out.Parameters ?? []) {
       results.push({
         name: p.Name ?? "",
+        arn: p.ARN ?? "",
         type: p.Type ?? "",
         value: p.Value ?? "",
         version: p.Version ?? 0,

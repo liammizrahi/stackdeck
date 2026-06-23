@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import { useCollection } from "@cloudscape-design/collection-hooks";
 import Box from "@cloudscape-design/components/box";
 import Button from "@cloudscape-design/components/button";
+import CopyToClipboard from "@cloudscape-design/components/copy-to-clipboard";
 import Header from "@cloudscape-design/components/header";
 import Link from "@cloudscape-design/components/link";
 import Pagination from "@cloudscape-design/components/pagination";
@@ -71,6 +72,18 @@ export default function LogGroupsTable({ logGroups }: { logGroups: LogGroup[] })
             >
               {group.name}
             </Link>
+          ),
+        },
+        {
+          id: "arn",
+          header: "ARN",
+          cell: (group) => (
+            <CopyToClipboard
+              variant="inline"
+              textToCopy={group.arn}
+              copySuccessText="ARN copied"
+              copyErrorText="Failed to copy ARN"
+            />
           ),
         },
         {

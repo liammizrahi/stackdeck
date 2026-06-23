@@ -2,16 +2,24 @@ import {
   GetFunctionConfigurationCommand,
   LambdaClient,
   ListFunctionsCommand,
+  ListTagsCommand,
 } from "@aws-sdk/client-lambda";
 import { clientConfig } from "@/lib/aws/config";
 
+export interface LambdaFunctionTag {
+  key: string;
+  value: string;
+}
+
 export interface LambdaFunction {
   name: string;
+  arn: string;
   runtime: string;
   memory: number;
   timeout: number;
   lastModified: string;
   description: string;
+  tags: LambdaFunctionTag[];
 }
 
 export interface LambdaFunctionDetail {
@@ -32,7 +40,7 @@ function lambdaClient() {
 
 export async function listFunctions(): Promise<LambdaFunction[]> {
   const client = lambdaClient();
-  const functions: LambdaFunction[] = [];
+  const rawFunctions: { name: string; arn: string; runtime: string; memory: number; timeout: number; lastModified: string; description: string }[] = [];
   let marker: string | undefined;
 
   do {
@@ -40,8 +48,9 @@ export async function listFunctions(): Promise<LambdaFunction[]> {
       new ListFunctionsCommand({ Marker: marker }),
     );
     for (const fn of out.Functions ?? []) {
-      functions.push({
+      rawFunctions.push({
         name: fn.FunctionName ?? "",
+        arn: fn.FunctionArn ?? "",
         runtime: fn.Runtime ?? "",
         memory: fn.MemorySize ?? 0,
         timeout: fn.Timeout ?? 0,
@@ -52,7 +61,22 @@ export async function listFunctions(): Promise<LambdaFunction[]> {
     marker = out.NextMarker;
   } while (marker);
 
-  return functions.sort((a, b) => a.name.localeCompare(b.name));
+  rawFunctions.sort((a, b) => a.name.localeCompare(b.name));
+
+  const functions = await Promise.all(
+    rawFunctions.map(async (fn) => {
+      let tags: LambdaFunctionTag[] = [];
+      try {
+        const tagsOut = await client.send(new ListTagsCommand({ Resource: fn.arn }));
+        tags = Object.entries(tagsOut.Tags ?? {}).map(([key, value]) => ({ key, value }));
+      } catch {
+        tags = [];
+      }
+      return { ...fn, tags };
+    }),
+  );
+
+  return functions;
 }
 
 export async function getFunction(

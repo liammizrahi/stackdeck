@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import { useCollection } from "@cloudscape-design/collection-hooks";
 import Box from "@cloudscape-design/components/box";
 import Button from "@cloudscape-design/components/button";
+import CopyToClipboard from "@cloudscape-design/components/copy-to-clipboard";
 import Header from "@cloudscape-design/components/header";
 import Pagination from "@cloudscape-design/components/pagination";
 import SpaceBetween from "@cloudscape-design/components/space-between";
@@ -72,7 +73,14 @@ function UsersTab({ users }: { users: IamUser[] }) {
         {
           id: "arn",
           header: "ARN",
-          cell: (u) => u.arn,
+          cell: (u) => (
+            <CopyToClipboard
+              variant="inline"
+              textToCopy={u.arn}
+              copySuccessText="ARN copied"
+              copyErrorText="Failed to copy ARN"
+            />
+          ),
         },
         {
           id: "created",
@@ -140,7 +148,14 @@ function RolesTab({ roles }: { roles: IamRole[] }) {
         {
           id: "arn",
           header: "ARN",
-          cell: (r) => r.arn,
+          cell: (r) => (
+            <CopyToClipboard
+              variant="inline"
+              textToCopy={r.arn}
+              copySuccessText="ARN copied"
+              copyErrorText="Failed to copy ARN"
+            />
+          ),
         },
         {
           id: "description",
@@ -213,7 +228,14 @@ function PoliciesTab({ policies }: { policies: IamPolicy[] }) {
         {
           id: "arn",
           header: "ARN",
-          cell: (p) => p.arn,
+          cell: (p) => (
+            <CopyToClipboard
+              variant="inline"
+              textToCopy={p.arn}
+              copySuccessText="ARN copied"
+              copyErrorText="Failed to copy ARN"
+            />
+          ),
         },
         {
           id: "attachmentCount",

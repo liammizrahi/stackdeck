@@ -3,8 +3,10 @@
 import { useTransition } from "react";
 import { useRouter } from "next/navigation";
 import { useCollection } from "@cloudscape-design/collection-hooks";
+import Badge from "@cloudscape-design/components/badge";
 import Box from "@cloudscape-design/components/box";
 import Button from "@cloudscape-design/components/button";
+import CopyToClipboard from "@cloudscape-design/components/copy-to-clipboard";
 import Header from "@cloudscape-design/components/header";
 import Link from "@cloudscape-design/components/link";
 import Pagination from "@cloudscape-design/components/pagination";
@@ -73,6 +75,18 @@ export default function FunctionsTable({
           ),
         },
         {
+          id: "arn",
+          header: "ARN",
+          cell: (fn) => (
+            <CopyToClipboard
+              variant="inline"
+              textToCopy={fn.arn}
+              copySuccessText="ARN copied"
+              copyErrorText="Failed to copy ARN"
+            />
+          ),
+        },
+        {
           id: "runtime",
           header: "Runtime",
           sortingField: "runtime",
@@ -89,6 +103,22 @@ export default function FunctionsTable({
           header: "Timeout (s)",
           sortingField: "timeout",
           cell: (fn) => fn.timeout,
+        },
+        {
+          id: "tags",
+          header: "Tags",
+          cell: (fn) =>
+            fn.tags.length === 0 ? (
+              "—"
+            ) : (
+              <SpaceBetween direction="horizontal" size="xxs">
+                {fn.tags.map((t) => (
+                  <Badge key={t.key}>
+                    {t.key}: {t.value}
+                  </Badge>
+                ))}
+              </SpaceBetween>
+            ),
         },
         {
           id: "lastModified",

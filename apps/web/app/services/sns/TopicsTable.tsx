@@ -3,11 +3,14 @@
 import { useTransition } from "react";
 import { useRouter } from "next/navigation";
 import { useCollection } from "@cloudscape-design/collection-hooks";
+import Badge from "@cloudscape-design/components/badge";
 import Box from "@cloudscape-design/components/box";
 import Button from "@cloudscape-design/components/button";
+import CopyToClipboard from "@cloudscape-design/components/copy-to-clipboard";
 import Header from "@cloudscape-design/components/header";
 import Link from "@cloudscape-design/components/link";
 import Pagination from "@cloudscape-design/components/pagination";
+import SpaceBetween from "@cloudscape-design/components/space-between";
 import Table from "@cloudscape-design/components/table";
 import TextFilter from "@cloudscape-design/components/text-filter";
 import type { SnsTopic } from "@/lib/aws/sns";
@@ -70,7 +73,30 @@ export default function TopicsTable({ topics }: { topics: SnsTopic[] }) {
           id: "arn",
           header: "ARN",
           sortingField: "arn",
-          cell: (topic) => topic.arn,
+          cell: (topic) => (
+            <CopyToClipboard
+              variant="inline"
+              textToCopy={topic.arn}
+              copySuccessText="ARN copied"
+              copyErrorText="Failed to copy ARN"
+            />
+          ),
+        },
+        {
+          id: "tags",
+          header: "Tags",
+          cell: (topic) =>
+            topic.tags.length === 0 ? (
+              "—"
+            ) : (
+              <SpaceBetween direction="horizontal" size="xxs">
+                {topic.tags.map((t) => (
+                  <Badge key={t.key}>
+                    {t.key}: {t.value}
+                  </Badge>
+                ))}
+              </SpaceBetween>
+            ),
         },
       ]}
       header={

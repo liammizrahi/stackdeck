@@ -18,7 +18,8 @@ export interface DbInstance {
   multiAz: boolean;
   availabilityZone: string | null;
   createTime: string | null;
-  arn: string | null;
+  arn: string;
+  tags: { key: string; value: string }[];
 }
 
 function rdsClient() {
@@ -39,6 +40,7 @@ function mapInstance(raw: {
   AvailabilityZone?: string;
   InstanceCreateTime?: Date;
   DBInstanceArn?: string;
+  TagList?: { Key?: string; Value?: string }[];
 }): DbInstance {
   return {
     identifier: raw.DBInstanceIdentifier ?? "",
@@ -54,7 +56,8 @@ function mapInstance(raw: {
     multiAz: raw.MultiAZ ?? false,
     availabilityZone: raw.AvailabilityZone ?? null,
     createTime: raw.InstanceCreateTime ? raw.InstanceCreateTime.toISOString() : null,
-    arn: raw.DBInstanceArn ?? null,
+    arn: raw.DBInstanceArn ?? "",
+    tags: (raw.TagList ?? []).map((t) => ({ key: t.Key ?? "", value: t.Value ?? "" })),
   };
 }
 
