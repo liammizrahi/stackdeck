@@ -5,7 +5,7 @@ import {
   DescribeLogGroupsCommand,
   FilterLogEventsCommand,
 } from "@aws-sdk/client-cloudwatch-logs";
-import { listLogGroups, getLogEvents } from "@/lib/aws/cloudwatch";
+import { listLogGroups, searchGroup } from "@/lib/aws/cloudwatch";
 
 const cwl = mockClient(CloudWatchLogsClient);
 
@@ -49,21 +49,19 @@ describe("listLogGroups", () => {
   });
 });
 
-describe("getLogEvents", () => {
-  it("maps events to serializable objects", async () => {
+describe("searchGroup", () => {
+  it("maps events to serializable objects with epoch", async () => {
+    const ms = new Date("2023-06-01T12:00:00Z").getTime();
     cwl.on(FilterLogEventsCommand).resolves({
       events: [
-        {
-          timestamp: new Date("2023-06-01T12:00:00Z").getTime(),
-          message: "Hello world",
-          logStreamName: "stream-1",
-        },
+        { timestamp: ms, message: "Hello world", logStreamName: "stream-1" },
       ],
     });
-    const result = await getLogEvents("/aws/lambda/my-fn");
+    const result = await searchGroup("/aws/lambda/my-fn", "");
     expect(result).toEqual([
       {
         timestamp: new Date("2023-06-01T12:00:00Z").toISOString(),
+        epoch: ms,
         message: "Hello world",
         logStreamName: "stream-1",
       },
@@ -72,7 +70,7 @@ describe("getLogEvents", () => {
 
   it("returns empty array on error", async () => {
     cwl.on(FilterLogEventsCommand).rejects(new Error("ResourceNotFoundException"));
-    const result = await getLogEvents("/nonexistent");
+    const result = await searchGroup("/nonexistent", "");
     expect(result).toEqual([]);
   });
 });

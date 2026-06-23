@@ -1,5 +1,5 @@
-import LogEventsTable from "./LogEventsTable";
-import { getLogEvents } from "@/lib/aws/cloudwatch";
+import GroupDetail from "./GroupDetail";
+import { listLogStreams, searchGroup } from "@/lib/aws/cloudwatch";
 
 export const dynamic = "force-dynamic";
 
@@ -9,7 +9,10 @@ export default async function LogGroupPage({
   params: Promise<{ group: string }>;
 }) {
   const { group } = await params;
-  const groupName = decodeURIComponent(group);
-  const events = await getLogEvents(groupName);
-  return <LogEventsTable groupName={groupName} events={events} />;
+  const name = decodeURIComponent(group);
+  const [streams, events] = await Promise.all([
+    listLogStreams(name),
+    searchGroup(name, ""),
+  ]);
+  return <GroupDetail group={name} streams={streams} initialEvents={events} />;
 }

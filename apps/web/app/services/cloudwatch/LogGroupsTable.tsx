@@ -9,11 +9,29 @@ import CopyToClipboard from "@cloudscape-design/components/copy-to-clipboard";
 import Header from "@cloudscape-design/components/header";
 import Link from "@cloudscape-design/components/link";
 import Pagination from "@cloudscape-design/components/pagination";
+import PropertyFilter, {
+  type PropertyFilterProps,
+} from "@cloudscape-design/components/property-filter";
 import SpaceBetween from "@cloudscape-design/components/space-between";
 import Table from "@cloudscape-design/components/table";
-import TextFilter from "@cloudscape-design/components/text-filter";
 import type { LogGroup } from "@/lib/aws/cloudwatch";
 import { formatBytes } from "@/lib/utils";
+import { propertyFilterI18nStrings } from "@/lib/property-filter-i18n";
+
+const filteringProperties: PropertyFilterProps.FilteringProperty[] = [
+  {
+    key: "name",
+    propertyLabel: "Name",
+    groupValuesLabel: "Name values",
+    operators: [":", "!:", "=", "!="],
+  },
+  {
+    key: "arn",
+    propertyLabel: "ARN",
+    groupValuesLabel: "ARN values",
+    operators: [":", "!:"],
+  },
+];
 
 function formatRetention(days: number | null): string {
   return days !== null ? `${days} days` : "Never expire";
@@ -27,9 +45,10 @@ export default function LogGroupsTable({ logGroups }: { logGroups: LogGroup[] })
   const router = useRouter();
   const [isPending, startTransition] = useTransition();
 
-  const { items, collectionProps, filterProps, paginationProps, filteredItemsCount } =
+  const { items, collectionProps, propertyFilterProps, paginationProps } =
     useCollection(logGroups, {
-      filtering: {
+      propertyFiltering: {
+        filteringProperties,
         empty: (
           <Box textAlign="center" color="inherit" padding="l">
             <b>No log groups</b>
@@ -50,7 +69,7 @@ export default function LogGroupsTable({ logGroups }: { logGroups: LogGroup[] })
   return (
     <Table<LogGroup>
       {...collectionProps}
-      variant="full-page"
+      variant="container"
       stickyHeader
       loading={isPending}
       loadingText="Loading log groups"
@@ -117,10 +136,9 @@ export default function LogGroupsTable({ logGroups }: { logGroups: LogGroup[] })
         </Header>
       }
       filter={
-        <TextFilter
-          {...filterProps}
-          filteringPlaceholder="Find log groups"
-          countText={`${filteredItemsCount} matches`}
+        <PropertyFilter
+          {...propertyFilterProps}
+          i18nStrings={propertyFilterI18nStrings}
         />
       }
       pagination={<Pagination {...paginationProps} />}
