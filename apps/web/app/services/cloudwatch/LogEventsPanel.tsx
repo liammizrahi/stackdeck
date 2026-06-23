@@ -15,19 +15,23 @@ import DateRangePicker, {
 } from "@cloudscape-design/components/date-range-picker";
 import Header from "@cloudscape-design/components/header";
 import Input from "@cloudscape-design/components/input";
+import SegmentedControl from "@cloudscape-design/components/segmented-control";
 import SpaceBetween from "@cloudscape-design/components/space-between";
 import Table from "@cloudscape-design/components/table";
 import Toggle from "@cloudscape-design/components/toggle";
 import type { LogEvent } from "@/lib/aws/cloudwatch";
-import {
-  dateRangeI18nStrings,
-  rangeToStartTime,
-  relativeOptions,
-} from "@/lib/date-range-i18n";
+import { dateRangeI18nStrings, rangeToStartTime } from "@/lib/date-range-i18n";
 
 interface EventRow extends LogEvent {
   id: string;
 }
+
+const presetMs: Record<string, number> = {
+  "1m": 60_000,
+  "30m": 1_800_000,
+  "1h": 3_600_000,
+  "12h": 43_200_000,
+};
 
 function withIds(events: LogEvent[]): EventRow[] {
   return events.map((e, i) => ({ ...e, id: `${e.epoch}-${i}-${e.logStreamName}` }));
@@ -68,7 +72,9 @@ export default function LogEventsPanel({
   const [isPending, startTransition] = useTransition();
   const [events, setEvents] = useState<EventRow[]>(withIds(initialEvents));
   const [filter, setFilter] = useState("");
-  const [range, setRange] = useState<DateRangePickerProps.Value | null>(null);
+  const [preset, setPreset] = useState("");
+  const [customRange, setCustomRange] =
+    useState<DateRangePickerProps.Value | null>(null);
   const [expanded, setExpanded] = useState<Set<string>>(new Set());
   const [tailing, setTailing] = useState(defaultTailing);
   const lastEpoch = useRef(
@@ -76,9 +82,9 @@ export default function LogEventsPanel({
   );
 
   const reload = useCallback(
-    (value: DateRangePickerProps.Value | null) => {
+    (startTime?: number) => {
       startTransition(async () => {
-        const next = await fetcher(rangeToStartTime(value));
+        const next = await fetcher(startTime);
         setEvents(withIds(next));
         lastEpoch.current = next.length ? next[next.length - 1]!.epoch : 0;
       });
@@ -110,6 +116,12 @@ export default function LogEventsPanel({
       else next.add(id);
       return next;
     });
+
+  const selectPreset = (id: string) => {
+    setPreset(id);
+    setCustomRange(null);
+    reload(Date.now() - (presetMs[id] ?? 0));
+  };
 
   return (
     <Table<EventRow>
@@ -169,18 +181,6 @@ export default function LogEventsPanel({
           description="Use the filter bar to match terms in your log events. Choose a time range to load events."
           actions={
             <SpaceBetween direction="horizontal" size="xs">
-              <DateRangePicker
-                value={range}
-                onChange={({ detail }) => {
-                  setRange(detail.value);
-                  reload(detail.value);
-                }}
-                relativeOptions={relativeOptions}
-                i18nStrings={dateRangeI18nStrings}
-                placeholder="Filter by time range"
-                rangeSelectorMode="default"
-                isValidRange={() => ({ valid: true })}
-              />
               {enableTail ? (
                 <Toggle
                   checked={tailing}
@@ -192,7 +192,15 @@ export default function LogEventsPanel({
               <Button
                 iconName="refresh"
                 ariaLabel="Refresh"
-                onClick={() => reload(range)}
+                onClick={() =>
+                  reload(
+                    customRange
+                      ? rangeToStartTime(customRange)
+                      : preset
+                        ? Date.now() - (presetMs[preset] ?? 0)
+                        : undefined,
+                  )
+                }
               />
             </SpaceBetween>
           }
@@ -201,12 +209,38 @@ export default function LogEventsPanel({
         </Header>
       }
       filter={
-        <Input
-          type="search"
-          value={filter}
-          onChange={({ detail }) => setFilter(detail.value)}
-          placeholder="Filter events"
-        />
+        <div className="sd-log-toolbar">
+          <Input
+            type="search"
+            value={filter}
+            onChange={({ detail }) => setFilter(detail.value)}
+            placeholder="Filter events"
+          />
+          <SegmentedControl
+            selectedId={preset}
+            onChange={({ detail }) => selectPreset(detail.selectedId)}
+            label="Time range"
+            options={[
+              { id: "1m", text: "1m" },
+              { id: "30m", text: "30m" },
+              { id: "1h", text: "1h" },
+              { id: "12h", text: "12h" },
+            ]}
+          />
+          <DateRangePicker
+            value={customRange}
+            onChange={({ detail }) => {
+              setCustomRange(detail.value);
+              setPreset("");
+              reload(rangeToStartTime(detail.value));
+            }}
+            relativeOptions={[]}
+            rangeSelectorMode="absolute-only"
+            i18nStrings={dateRangeI18nStrings}
+            placeholder="Custom"
+            isValidRange={() => ({ valid: true })}
+          />
+        </div>
       }
       empty={
         <Box textAlign="center" color="inherit" padding="l">

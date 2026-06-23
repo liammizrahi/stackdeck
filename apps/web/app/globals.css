@@ -58,6 +58,18 @@ body {
   border-bottom: 1px solid #eaeded;
 }
 
+.sd-log-toolbar {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+.sd-log-toolbar > :first-child {
+  flex: 1;
+  min-width: 240px;
+}
+
 .sd-preview {
   margin: 0;
   max-height: 60vh;
