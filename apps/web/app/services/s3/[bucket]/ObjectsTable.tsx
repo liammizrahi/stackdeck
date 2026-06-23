@@ -12,7 +12,7 @@ import Link from "@cloudscape-design/components/link";
 import Modal from "@cloudscape-design/components/modal";
 import Pagination from "@cloudscape-design/components/pagination";
 import SpaceBetween from "@cloudscape-design/components/space-between";
-import Spinner from "@cloudscape-design/components/spinner";
+import Skeleton from "@cloudscape-design/components/skeleton";
 import Table from "@cloudscape-design/components/table";
 import TextFilter from "@cloudscape-design/components/text-filter";
 import type { S3Object } from "@/lib/aws/s3";
@@ -211,9 +211,11 @@ export default function ObjectsTable({
         }
       >
         {previewLoading ? (
-          <Box textAlign="center" padding="l">
-            <Spinner /> Loading preview…
-          </Box>
+          <SpaceBetween size="xs">
+            {Array.from({ length: 6 }).map((_, index) => (
+              <Skeleton key={index} width={index % 3 === 2 ? "60%" : "100%"} />
+            ))}
+          </SpaceBetween>
         ) : previewError ? (
           <Alert type="error">{previewError}</Alert>
         ) : (
