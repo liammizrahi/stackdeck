@@ -1,9 +1,12 @@
 "use client";
 
+import { useEffect, useState } from "react";
+import Board from "@cloudscape-design/board-components/board";
+import BoardItem from "@cloudscape-design/board-components/board-item";
+import type { BoardProps } from "@cloudscape-design/board-components";
 import Box from "@cloudscape-design/components/box";
-import Container from "@cloudscape-design/components/container";
+import ColumnLayout from "@cloudscape-design/components/column-layout";
 import ContentLayout from "@cloudscape-design/components/content-layout";
-import Grid from "@cloudscape-design/components/grid";
 import Header from "@cloudscape-design/components/header";
 import KeyValuePairs from "@cloudscape-design/components/key-value-pairs";
 import Link from "@cloudscape-design/components/link";
@@ -12,59 +15,75 @@ import StatusIndicator from "@cloudscape-design/components/status-indicator";
 import { useRouter } from "next/navigation";
 import ServiceIcon from "@/components/ServiceIcon";
 import { services } from "@/lib/services";
+import {
+  boardI18nStrings,
+  boardItemI18nStrings,
+  type WidgetData,
+} from "@/lib/board-i18n";
 
-export default function Dashboard({
-  health,
-}: {
-  health: {
-    connected: boolean;
-    account: string | null;
-    endpoint: string;
-    region: string;
-  };
-}) {
+interface Health {
+  connected: boolean;
+  account: string | null;
+  endpoint: string;
+  region: string;
+}
+
+const defaultItems: BoardProps.Item<WidgetData>[] = [
+  { id: "services", rowSpan: 3, columnSpan: 2, data: { title: "Services" } },
+  { id: "connection", rowSpan: 3, columnSpan: 2, data: { title: "Connection" } },
+  { id: "welcome", rowSpan: 2, columnSpan: 2, data: { title: "Welcome to StackDeck" } },
+  { id: "getting-started", rowSpan: 2, columnSpan: 2, data: { title: "Getting started" } },
+];
+
+const storageKey = "stackdeck_board";
+
+export default function Dashboard({ health }: { health: Health }) {
   const router = useRouter();
+  const [items, setItems] = useState<BoardProps.Item<WidgetData>[]>(defaultItems);
 
-  return (
-    <ContentLayout header={<Header variant="h1">Console Home</Header>}>
-      <Grid
-        gridDefinition={[
-          { colspan: { default: 12, m: 8 } },
-          { colspan: { default: 12, m: 4 } },
-          { colspan: { default: 12, m: 8 } },
-          { colspan: { default: 12, m: 4 } },
-        ]}
-      >
-        <Container header={<Header variant="h2">Services</Header>}>
-          <Grid
-            gridDefinition={services.map(() => ({
-              colspan: { default: 12, xs: 6 },
-            }))}
-          >
+  useEffect(() => {
+    const saved = localStorage.getItem(storageKey);
+    if (saved) {
+      try {
+        setItems(JSON.parse(saved) as BoardProps.Item<WidgetData>[]);
+      } catch {
+        setItems(defaultItems);
+      }
+    }
+  }, []);
+
+  const handleChange = (next: readonly BoardProps.Item<WidgetData>[]) => {
+    const copy = [...next];
+    setItems(copy);
+    localStorage.setItem(storageKey, JSON.stringify(copy));
+  };
+
+  const go = (href: string) => router.push(href);
+
+  const renderContent = (id: string) => {
+    switch (id) {
+      case "services":
+        return (
+          <ColumnLayout columns={2}>
             {services.map((service) => (
               <Link
                 key={service.key}
                 href={service.href}
                 onFollow={(event) => {
                   event.preventDefault();
-                  router.push(service.href);
+                  go(service.href);
                 }}
               >
-                <SpaceBetween direction="horizontal" size="s">
-                  <ServiceIcon service={service.key} size={32} />
-                  <SpaceBetween size="xxxs">
-                    <Box variant="strong">{service.name}</Box>
-                    <Box variant="small" color="text-body-secondary">
-                      {service.description}
-                    </Box>
-                  </SpaceBetween>
+                <SpaceBetween direction="horizontal" size="xs" alignItems="center">
+                  <ServiceIcon service={service.key} size={24} />
+                  <span>{service.name}</span>
                 </SpaceBetween>
               </Link>
             ))}
-          </Grid>
-        </Container>
-
-        <Container header={<Header variant="h2">Connection</Header>}>
+          </ColumnLayout>
+        );
+      case "connection":
+        return (
           <SpaceBetween size="m">
             <StatusIndicator type={health.connected ? "success" : "error"}>
               {health.connected ? "Connected" : "Disconnected"}
@@ -77,9 +96,9 @@ export default function Dashboard({
               ]}
             />
           </SpaceBetween>
-        </Container>
-
-        <Container header={<Header variant="h2">Welcome to StackDeck</Header>}>
+        );
+      case "welcome":
+        return (
           <SpaceBetween size="s">
             <Box variant="p">
               StackDeck is a local AWS console for LocalStack and MiniStack. Browse
@@ -89,15 +108,15 @@ export default function Dashboard({
               LocalStack documentation
             </Link>
           </SpaceBetween>
-        </Container>
-
-        <Container header={<Header variant="h2">Getting started</Header>}>
+        );
+      case "getting-started":
+        return (
           <SpaceBetween size="xs">
             <Link
               href="/services/s3"
               onFollow={(event) => {
                 event.preventDefault();
-                router.push("/services/s3");
+                go("/services/s3");
               }}
             >
               Browse S3 buckets
@@ -106,7 +125,7 @@ export default function Dashboard({
               href="/services/lambda"
               onFollow={(event) => {
                 event.preventDefault();
-                router.push("/services/lambda");
+                go("/services/lambda");
               }}
             >
               Inspect Lambda functions
@@ -115,14 +134,48 @@ export default function Dashboard({
               href="/services/dynamodb"
               onFollow={(event) => {
                 event.preventDefault();
-                router.push("/services/dynamodb");
+                go("/services/dynamodb");
               }}
             >
               Query DynamoDB tables
             </Link>
           </SpaceBetween>
-        </Container>
-      </Grid>
+        );
+      default:
+        return null;
+    }
+  };
+
+  return (
+    <ContentLayout header={<Header variant="h1">Console Home</Header>}>
+      <Board<WidgetData>
+        items={items}
+        onItemsChange={(event) => handleChange(event.detail.items)}
+        i18nStrings={boardI18nStrings}
+        empty={
+          <Box textAlign="center" color="inherit" padding="l">
+            No widgets
+          </Box>
+        }
+        renderItem={(item) => (
+          <BoardItem
+            i18nStrings={boardItemI18nStrings}
+            header={
+              <Header
+                info={
+                  <Link variant="info" onFollow={(event) => event.preventDefault()}>
+                    Info
+                  </Link>
+                }
+              >
+                {item.data.title}
+              </Header>
+            }
+          >
+            {renderContent(item.id)}
+          </BoardItem>
+        )}
+      />
     </ContentLayout>
   );
 }

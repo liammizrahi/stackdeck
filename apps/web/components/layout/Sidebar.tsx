@@ -24,7 +24,6 @@ export default function Sidebar() {
     items[0]?.items.find((i) => pathname.startsWith(i.href))?.href ?? "/";
   return (
     <SideNavigation
-      header={{ href: "/", text: "StackDeck" }}
       activeHref={activeHref}
       items={items}
       onFollow={(event) => {

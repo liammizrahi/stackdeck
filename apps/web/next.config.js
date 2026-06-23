@@ -9,6 +9,7 @@ const nextConfig = {
   outputFileTracingRoot: path.join(__dirname, "../../"),
   transpilePackages: [
     "@cloudscape-design/components",
+    "@cloudscape-design/board-components",
     "@cloudscape-design/global-styles",
     "@cloudscape-design/component-toolkit",
   ],
