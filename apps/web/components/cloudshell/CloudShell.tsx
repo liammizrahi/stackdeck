@@ -177,9 +177,18 @@ export default function CloudShell({ region }: { region: string }) {
     <div className={`sd-shell${open ? " sd-shell-open" : ""}`}>
       {open && (
         <div className="sd-shell-panel">
-          <div className="sd-shell-head">
-            <div className="sd-shell-tabs">
-              {sessions.map((s) => (
+          <div className="sd-shell-titlebar">
+            <span className="sd-shell-title">CloudShell</span>
+            <button
+              className="sd-shell-x"
+              aria-label="Close CloudShell"
+              onClick={() => setConfirmClose(true)}
+            >
+              ✕
+            </button>
+          </div>
+          <div className="sd-shell-tabs">
+            {sessions.map((s) => (
                 <div
                   key={s.id}
                   className={`sd-shell-tab${s.id === activeId ? " sd-shell-tab-active" : ""}`}
@@ -208,14 +217,6 @@ export default function CloudShell({ region }: { region: string }) {
                 +
               </button>
             </div>
-            <button
-              className="sd-shell-x"
-              aria-label="Close CloudShell"
-              onClick={() => setConfirmClose(true)}
-            >
-              ✕
-            </button>
-          </div>
           <div
             className="sd-shell-term"
             ref={termRef}

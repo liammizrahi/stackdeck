@@ -340,29 +340,38 @@ body {
   border-top: 1px solid #24364a;
 }
 
-.sd-shell-head {
+.sd-shell-titlebar {
   display: flex;
-  align-items: stretch;
+  align-items: center;
   justify-content: space-between;
-  padding: 0 8px 0 0;
+  padding: 8px 8px 8px 16px;
   background: #0f1b2a;
-  border-bottom: 1px solid #24364a;
+}
+
+.sd-shell-title {
+  color: #ffffff;
+  font-weight: 700;
+  font-size: 20px;
+  font-family: var(--font-family-base-gmnpzl);
 }
 
 .sd-shell-tabs {
   display: flex;
   align-items: stretch;
   gap: 2px;
+  padding: 0 8px;
+  background: #0f1b2a;
+  border-bottom: 1px solid #24364a;
 }
 
 .sd-shell-tab {
   display: flex;
   align-items: center;
   gap: 8px;
-  padding: 8px 14px;
+  padding: 12px 18px;
   color: #b6bec9;
   font-family: var(--font-family-base-gmnpzl);
-  font-size: 13px;
+  font-size: 15px;
   cursor: pointer;
   border-bottom: 2px solid transparent;
   user-select: none;
