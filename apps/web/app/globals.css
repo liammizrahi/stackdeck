@@ -318,12 +318,16 @@ body {
   color: #8d99a8;
 }
 
-.sd-shell-strip-credits a {
-  color: #539fe5;
+.sd-shell-strip-credits a,
+.sd-shell-strip-credits a span,
+.sd-shell-strip-credits a svg {
+  color: #ffffff;
+  fill: currentColor;
   text-decoration: none;
 }
 
-.sd-shell-strip-credits a:hover {
+.sd-shell-strip-credits a:hover,
+.sd-shell-strip-credits a:hover span {
   text-decoration: underline;
 }
 

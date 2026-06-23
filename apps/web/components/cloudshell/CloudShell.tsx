@@ -3,6 +3,7 @@
 import { useEffect, useRef, useState } from "react";
 import Box from "@cloudscape-design/components/box";
 import Button from "@cloudscape-design/components/button";
+import Link from "@cloudscape-design/components/link";
 import Modal from "@cloudscape-design/components/modal";
 import SpaceBetween from "@cloudscape-design/components/space-between";
 
@@ -257,9 +258,9 @@ export default function CloudShell({ region }: { region: string }) {
           CloudShell
         </button>
         <div className="sd-shell-strip-credits">
-          <a href="https://github.com/liammizrahi/stackdeck" target="_blank" rel="noreferrer">
+          <Link external href="https://github.com/liammizrahi/stackdeck" variant="secondary">
             GitHub
-          </a>
+          </Link>
           <span>© 2026 StackDeck</span>
         </div>
       </div>
