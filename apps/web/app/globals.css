@@ -344,14 +344,14 @@ body {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 8px 8px 8px 16px;
+  padding: 14px 8px 14px 16px;
   background: #0f1b2a;
 }
 
 .sd-shell-title {
   color: #ffffff;
   font-weight: 700;
-  font-size: 20px;
+  font-size: 18px;
   font-family: var(--font-family-base-gmnpzl);
 }
 
