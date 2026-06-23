@@ -11,11 +11,15 @@ export default function AppShell({
   endpoint,
   region,
   accessKeyId,
+  accountName,
+  accountId,
   children,
 }: {
   endpoint: string;
   region: string;
   accessKeyId: string;
+  accountName: string;
+  accountId: string;
   children: React.ReactNode;
 }) {
   const pathname = usePathname();
@@ -35,7 +39,13 @@ export default function AppShell({
   return (
     <>
       <div id="top-nav">
-        <Topbar endpoint={endpoint} region={region} accessKeyId={accessKeyId} />
+        <Topbar
+          endpoint={endpoint}
+          region={region}
+          accessKeyId={accessKeyId}
+          accountName={accountName}
+          accountId={accountId}
+        />
       </div>
       <AppLayoutToolbar
         headerSelector="#top-nav"

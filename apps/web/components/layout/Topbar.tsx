@@ -10,10 +10,14 @@ export default function Topbar({
   endpoint,
   region,
   accessKeyId,
+  accountName,
+  accountId,
 }: {
   endpoint: string;
   region: string;
   accessKeyId: string;
+  accountName: string;
+  accountId: string;
 }) {
   const router = useRouter();
 
@@ -72,17 +76,54 @@ export default function Topbar({
         },
         {
           type: "menu-dropdown",
-          text: accessKeyId,
+          text: accountName,
           description: endpoint,
           iconName: "user-profile",
           ariaLabel: "Account",
           onItemClick: ({ detail }) => {
+            if (detail.id === "account") router.push("/account");
             if (detail.id === "settings") router.push("/settings");
           },
           items: [
-            { id: "access-key", text: `Access key: ${accessKeyId}` },
-            { id: "endpoint", text: endpoint },
+            { id: "account", text: "Account" },
             { id: "settings", text: "Connection settings" },
+            {
+              id: "connection",
+              text: "Connection",
+              items: [
+                { id: "account-id", text: `Account ID: ${accountId || "—"}` },
+                { id: "endpoint", text: `Endpoint: ${endpoint}` },
+                { id: "region", text: `Region: ${region}` },
+                { id: "access-key", text: `Access key: ${accessKeyId}` },
+              ],
+            },
+            {
+              id: "support",
+              text: "Support",
+              items: [
+                {
+                  id: "docs",
+                  text: "MiniStack documentation",
+                  href: "https://ministack.org/docs/",
+                  external: true,
+                  externalIconAriaLabel: "(opens in new tab)",
+                },
+                {
+                  id: "github",
+                  text: "GitHub",
+                  href: "https://github.com/liammizrahi/stackdeck",
+                  external: true,
+                  externalIconAriaLabel: "(opens in new tab)",
+                },
+                {
+                  id: "issue",
+                  text: "Report an issue",
+                  href: "https://github.com/liammizrahi/stackdeck/issues",
+                  external: true,
+                  externalIconAriaLabel: "(opens in new tab)",
+                },
+              ],
+            },
           ],
         },
       ]}

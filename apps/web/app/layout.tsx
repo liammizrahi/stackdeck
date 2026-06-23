@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import localFont from "next/font/local";
 import AppShell from "@/components/layout/AppShell";
 import { getAwsSettings } from "@/lib/aws/config";
+import { getAccountInformation } from "@/lib/aws/account";
 import "./globals.css";
 
 const amazonEmber = localFont({
@@ -24,10 +25,13 @@ export const metadata: Metadata = {
   description: "Local AWS console for LocalStack/MiniStack",
 };
 
+export const dynamic = "force-dynamic";
+
 export default async function RootLayout({
   children,
 }: Readonly<{ children: React.ReactNode }>) {
   const settings = getAwsSettings();
+  const { info } = await getAccountInformation();
   return (
     <html lang="en" className={amazonEmber.variable} suppressHydrationWarning>
       <body>
@@ -35,6 +39,8 @@ export default async function RootLayout({
           endpoint={settings.endpoint}
           region={settings.region}
           accessKeyId={settings.accessKeyId}
+          accountName={info?.accountName || settings.accessKeyId}
+          accountId={info?.accountId ?? ""}
         >
           {children}
         </AppShell>
