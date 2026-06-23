@@ -34,7 +34,8 @@ export default function SearchBar() {
       const el = wrapperRef.current;
       if (!el) return;
       const r = el.getBoundingClientRect();
-      const width = Math.min(960, window.innerWidth - r.left - 24);
+      const margin = 12;
+      const width = Math.min(820, window.innerWidth - r.left - margin);
       setRect({ top: r.bottom + 8, left: r.left, width });
     };
     update();

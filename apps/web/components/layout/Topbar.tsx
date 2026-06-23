@@ -29,6 +29,16 @@ export default function Topbar({
       utilities={[
         {
           type: "button",
+          text: "GitHub",
+          iconName: "star",
+          href: "https://github.com/liammizrahi/stackdeck",
+          external: true,
+          externalIconAriaLabel: "(opens in new tab)",
+          ariaLabel: "GitHub repository",
+          title: "GitHub repository",
+        },
+        {
+          type: "button",
           iconName: "notification",
           ariaLabel: "Notifications",
           title: "Notifications",
