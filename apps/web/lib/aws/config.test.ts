@@ -1,5 +1,6 @@
 import { afterEach, beforeEach, describe, expect, it } from "vitest";
-import { getAwsSettings } from "@/lib/aws/config";
+import { NodeHttpHandler } from "@smithy/node-http-handler";
+import { clientConfig, getAwsSettings } from "@/lib/aws/config";
 
 describe("getAwsSettings", () => {
   const saved = { ...process.env };
@@ -35,5 +36,31 @@ describe("getAwsSettings", () => {
       accessKeyId: "abc",
       secretAccessKey: "xyz",
     });
+  });
+});
+
+describe("clientConfig", () => {
+  const saved = { ...process.env };
+
+  beforeEach(() => {
+    delete process.env.AWS_ENDPOINT_URL;
+    delete process.env.AWS_REGION;
+    delete process.env.AWS_ACCESS_KEY_ID;
+    delete process.env.AWS_SECRET_ACCESS_KEY;
+  });
+
+  afterEach(() => {
+    process.env = { ...saved };
+  });
+
+  it("maps default settings into client config shape", () => {
+    const config = clientConfig();
+    expect(config.endpoint).toBe("http://localstack:4566");
+    expect(config.region).toBe("us-east-1");
+    expect(config.credentials).toEqual({
+      accessKeyId: "test",
+      secretAccessKey: "test",
+    });
+    expect(config.requestHandler).toBeInstanceOf(NodeHttpHandler);
   });
 });

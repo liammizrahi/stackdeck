@@ -7,6 +7,16 @@ export interface AwsSettings {
   secretAccessKey: string;
 }
 
+export interface ClientConfig {
+  endpoint: string;
+  region: string;
+  credentials: {
+    accessKeyId: string;
+    secretAccessKey: string;
+  };
+  requestHandler: NodeHttpHandler;
+}
+
 const requestTimeoutMs = 5000;
 
 export function getAwsSettings(): AwsSettings {
@@ -18,7 +28,7 @@ export function getAwsSettings(): AwsSettings {
   };
 }
 
-export function clientConfig() {
+export function clientConfig(): ClientConfig {
   const settings = getAwsSettings();
   return {
     endpoint: settings.endpoint,
