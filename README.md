@@ -54,31 +54,30 @@ Local AWS emulators are fantastic for development, but you usually poke at them 
 
 ## 🚀 Quick start
 
-StackDeck ships as a Docker image. Run the bundled stack, drop it into your own
-`docker-compose.yml`, or run it straight from source. AWS settings are optional —
-everything defaults to a local emulator on `http://localhost:4566`.
+StackDeck is published as a Docker image — pull it and point it at any LocalStack
+or MiniStack endpoint. No checkout, no build step. AWS settings are optional and
+default to a local emulator on `http://localhost:4566`.
 
-### Option A — Docker Compose (recommended)
-
-Brings up StackDeck **and** a MiniStack emulator together:
+### Run with `docker run`
 
 ```bash
-git clone https://github.com/liammizrahi/stackdeck.git
-cd stackdeck
-docker compose up
+docker run --rm -p 4577:4577 \
+  --add-host=host.docker.internal:host-gateway \
+  -e AWS_ENDPOINT_URL=http://host.docker.internal:4566 \
+  ghcr.io/liammizrahi/stackdeck
 ```
 
 Open **[http://localhost:4577](http://localhost:4577)**. 🎉
+(`host.docker.internal` lets the container reach an emulator running on your host.)
 
-### Option B — Add StackDeck to your existing Compose
+### Add to your `docker-compose.yml`
 
-Already running MiniStack or LocalStack? Drop in the StackDeck service and point
-it at your emulator:
+Drop the service in next to your emulator and point it at the right endpoint:
 
 ```yaml
 services:
   stackdeck:
-    image: stackdeck            # or: build: .
+    image: ghcr.io/liammizrahi/stackdeck:latest
     ports:
       - "4577:4577"
     environment:
@@ -87,24 +86,7 @@ services:
       - ministack
 ```
 
-### Option C — Docker run (emulator on your host)
-
-```bash
-docker build -t stackdeck .
-docker run --rm -p 4577:4577 \
-  --add-host=host.docker.internal:host-gateway \
-  -e AWS_ENDPOINT_URL=http://host.docker.internal:4566 \
-  stackdeck
-```
-
-### Option D — From source (Node ≥ 18)
-
-```bash
-git clone https://github.com/liammizrahi/stackdeck.git
-cd stackdeck
-npm install
-npm run dev   # http://localhost:4577
-```
+Then `docker compose up` and open **http://localhost:4577**.
 
 ## ⚙️ Configuration
 
@@ -153,6 +135,15 @@ Each service follows the same shape: a `lib/aws/<service>.ts` data layer and an 
 
 ## 🛠️ Development
 
+Want to hack on StackDeck or build your own image? Requires **Node.js ≥ 18**.
+
+```bash
+git clone https://github.com/liammizrahi/stackdeck.git
+cd stackdeck
+npm install
+npm run dev        # http://localhost:4577
+```
+
 | Command | Description |
 | --- | --- |
 | `npm run dev` | Start the dev server on port **4577** |
@@ -162,11 +153,17 @@ Each service follows the same shape: a `lib/aws/<service>.ts` data layer and an 
 | `npm run test -w web` | Run Vitest unit tests |
 | `npm run format` | Prettier across the repo |
 
+Build a production image locally:
+
+```bash
+docker build -t stackdeck .
+```
+
 ## 🗺️ Roadmap
 
 - More services (Step Functions, Secrets Manager, Kinesis, …)
 - Deeper write operations and resource editing
-- Packaged Docker image for one-command self-hosting
+- Multi-arch published images and versioned releases
 
 ## 🤝 Contributing
 

@@ -7,8 +7,7 @@ services:
       - /var/run/docker.sock:/var/run/docker.sock
 
   stackdeck:
-    build: .
-    image: stackdeck
+    image: ghcr.io/liammizrahi/stackdeck:latest
     ports:
       - "4577:4577"
     environment:
