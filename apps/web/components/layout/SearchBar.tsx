@@ -28,9 +28,11 @@ export default function SearchBar() {
         value={value}
         onChange={({ detail }) => setValue(detail.value)}
       />
-      <span className="sd-search-shortcut" aria-hidden="true">
-        [Option+S]
-      </span>
+      {value === "" && (
+        <span className="sd-search-shortcut" aria-hidden="true">
+          [Option+S]
+        </span>
+      )}
     </div>
   );
 }
