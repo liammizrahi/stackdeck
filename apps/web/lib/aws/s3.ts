@@ -1,19 +1,29 @@
 import {
+  type BucketLocationConstraint,
   CreateBucketCommand,
   DeleteBucketCommand,
   GetBucketLocationCommand,
+  GetBucketTaggingCommand,
   GetObjectCommand,
   HeadObjectCommand,
   ListBucketsCommand,
   ListObjectsV2Command,
+  PutBucketTaggingCommand,
   S3Client,
 } from "@aws-sdk/client-s3";
 import { clientConfig } from "@/lib/aws/config";
 
+export interface BucketTag {
+  key: string;
+  value: string;
+}
+
 export interface Bucket {
   name: string;
+  arn: string;
   creationDate: string | null;
   region: string;
+  tags: BucketTag[];
 }
 
 export interface S3Object {
@@ -40,15 +50,36 @@ async function bucketRegion(client: S3Client, name: string): Promise<string> {
   }
 }
 
+async function bucketTags(client: S3Client, name: string): Promise<BucketTag[]> {
+  try {
+    const out = await client.send(new GetBucketTaggingCommand({ Bucket: name }));
+    return (out?.TagSet ?? []).map((t) => ({
+      key: t.Key ?? "",
+      value: t.Value ?? "",
+    }));
+  } catch {
+    return [];
+  }
+}
+
 export async function listBuckets(): Promise<Bucket[]> {
   const client = s3Client();
   const out = await client.send(new ListBucketsCommand({}));
   const buckets = await Promise.all(
-    (out.Buckets ?? []).map(async (b) => ({
-      name: b.Name ?? "",
-      creationDate: b.CreationDate ? b.CreationDate.toISOString() : null,
-      region: await bucketRegion(client, b.Name ?? ""),
-    })),
+    (out.Buckets ?? []).map(async (b) => {
+      const name = b.Name ?? "";
+      const [region, tags] = await Promise.all([
+        bucketRegion(client, name),
+        bucketTags(client, name),
+      ]);
+      return {
+        name,
+        arn: `arn:aws:s3:::${name}`,
+        creationDate: b.CreationDate ? b.CreationDate.toISOString() : null,
+        region,
+        tags,
+      };
+    }),
   );
   return buckets.sort((a, b) => a.name.localeCompare(b.name));
 }
@@ -99,8 +130,34 @@ export async function getObjectPreview(
   }
 }
 
-export async function createBucket(name: string): Promise<void> {
-  await s3Client().send(new CreateBucketCommand({ Bucket: name }));
+export async function createBucket(
+  name: string,
+  region?: string,
+  tags?: BucketTag[],
+): Promise<void> {
+  const client = s3Client();
+  await client.send(
+    new CreateBucketCommand({
+      Bucket: name,
+      ...(region && region !== "us-east-1"
+        ? {
+            CreateBucketConfiguration: {
+              LocationConstraint: region as BucketLocationConstraint,
+            },
+          }
+        : {}),
+    }),
+  );
+  if (tags && tags.length > 0) {
+    await client.send(
+      new PutBucketTaggingCommand({
+        Bucket: name,
+        Tagging: {
+          TagSet: tags.map((t) => ({ Key: t.key, Value: t.value })),
+        },
+      }),
+    );
+  }
 }
 
 export async function deleteBucket(name: string): Promise<void> {

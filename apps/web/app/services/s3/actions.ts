@@ -1,16 +1,29 @@
 "use server";
 
 import { revalidatePath } from "next/cache";
-import { createBucket, deleteBucket, getObjectPreview } from "@/lib/aws/s3";
+import {
+  type BucketTag,
+  createBucket,
+  deleteBucket,
+  getObjectPreview,
+} from "@/lib/aws/s3";
 
 export interface ActionResult {
   ok: boolean;
   error?: string;
 }
 
-export async function createBucketAction(name: string): Promise<ActionResult> {
+export interface CreateBucketInput {
+  name: string;
+  region: string;
+  tags: BucketTag[];
+}
+
+export async function createBucketAction(
+  input: CreateBucketInput,
+): Promise<ActionResult> {
   try {
-    await createBucket(name.trim());
+    await createBucket(input.name.trim(), input.region, input.tags);
     revalidatePath("/services/s3");
     return { ok: true };
   } catch (err) {

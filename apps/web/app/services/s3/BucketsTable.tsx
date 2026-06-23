@@ -4,32 +4,82 @@ import { useEffect, useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
 import { useCollection } from "@cloudscape-design/collection-hooks";
 import Alert from "@cloudscape-design/components/alert";
+import Badge from "@cloudscape-design/components/badge";
 import Box from "@cloudscape-design/components/box";
 import Button from "@cloudscape-design/components/button";
-import FormField from "@cloudscape-design/components/form-field";
+import CopyToClipboard from "@cloudscape-design/components/copy-to-clipboard";
 import Header from "@cloudscape-design/components/header";
-import Input from "@cloudscape-design/components/input";
 import Link from "@cloudscape-design/components/link";
 import Modal from "@cloudscape-design/components/modal";
 import Pagination from "@cloudscape-design/components/pagination";
+import PropertyFilter, {
+  type PropertyFilterProps,
+} from "@cloudscape-design/components/property-filter";
 import SpaceBetween from "@cloudscape-design/components/space-between";
 import Table from "@cloudscape-design/components/table";
-import TextFilter from "@cloudscape-design/components/text-filter";
 import type { Bucket } from "@/lib/aws/s3";
-import { createBucketAction, deleteBucketsAction } from "./actions";
+import { deleteBucketsAction } from "./actions";
 
 function formatDate(value: string | null) {
   return value ? new Date(value).toLocaleString() : "—";
 }
 
+const filteringProperties: PropertyFilterProps.FilteringProperty[] = [
+  {
+    key: "name",
+    propertyLabel: "Name",
+    groupValuesLabel: "Name values",
+    operators: [":", "!:", "=", "!="],
+  },
+  {
+    key: "region",
+    propertyLabel: "AWS Region",
+    groupValuesLabel: "Region values",
+    operators: ["=", "!=", ":", "!:"],
+  },
+  {
+    key: "arn",
+    propertyLabel: "ARN",
+    groupValuesLabel: "ARN values",
+    operators: [":", "!:"],
+  },
+];
+
+const propertyFilterI18n: PropertyFilterProps.I18nStrings = {
+  filteringAriaLabel: "Find buckets",
+  filteringPlaceholder: "Find buckets",
+  dismissAriaLabel: "Dismiss",
+  groupValuesText: "Values",
+  groupPropertiesText: "Properties",
+  operatorsText: "Operators",
+  operationAndText: "and",
+  operationOrText: "or",
+  operatorLessText: "Less than",
+  operatorLessOrEqualText: "Less than or equal",
+  operatorGreaterText: "Greater than",
+  operatorGreaterOrEqualText: "Greater than or equal",
+  operatorContainsText: "Contains",
+  operatorDoesNotContainText: "Does not contain",
+  operatorEqualsText: "Equals",
+  operatorDoesNotEqualText: "Does not equal",
+  editTokenHeader: "Edit filter",
+  propertyText: "Property",
+  operatorText: "Operator",
+  valueText: "Value",
+  cancelActionText: "Cancel",
+  applyActionText: "Apply",
+  allPropertiesLabel: "All properties",
+  tokenLimitShowMore: "Show more",
+  tokenLimitShowFewer: "Show fewer",
+  clearFiltersText: "Clear filters",
+  removeTokenButtonAriaLabel: () => "Remove token",
+  enteredTextLabel: (text) => `Use: "${text}"`,
+};
+
 export default function BucketsTable({ buckets }: { buckets: Bucket[] }) {
   const router = useRouter();
   const [selected, setSelected] = useState<Bucket[]>([]);
   const [isPending, startTransition] = useTransition();
-
-  const [createOpen, setCreateOpen] = useState(false);
-  const [newName, setNewName] = useState("");
-  const [createError, setCreateError] = useState<string | null>(null);
 
   const [deleteOpen, setDeleteOpen] = useState(false);
   const [deleteError, setDeleteError] = useState<string | null>(null);
@@ -37,16 +87,19 @@ export default function BucketsTable({ buckets }: { buckets: Bucket[] }) {
   const [mounted, setMounted] = useState(false);
   useEffect(() => setMounted(true), []);
 
-  const { items, collectionProps, filterProps, paginationProps, filteredItemsCount } =
+  const openCreate = () => router.push("/services/s3/create");
+
+  const { items, collectionProps, propertyFilterProps, paginationProps } =
     useCollection(buckets, {
-      filtering: {
+      propertyFiltering: {
+        filteringProperties,
         empty: (
           <Box textAlign="center" color="inherit" padding="l">
             <SpaceBetween size="m">
               <Box variant="strong" color="inherit">
                 No buckets
               </Box>
-              <Button onClick={() => setCreateOpen(true)}>Create bucket</Button>
+              <Button onClick={openCreate}>Create bucket</Button>
             </SpaceBetween>
           </Box>
         ),
@@ -61,20 +114,6 @@ export default function BucketsTable({ buckets }: { buckets: Bucket[] }) {
     });
 
   const refresh = () => startTransition(() => router.refresh());
-
-  const submitCreate = () => {
-    setCreateError(null);
-    startTransition(async () => {
-      const result = await createBucketAction(newName);
-      if (result.ok) {
-        setCreateOpen(false);
-        setNewName("");
-        router.refresh();
-      } else {
-        setCreateError(result.error ?? "Failed to create bucket");
-      }
-    });
-  };
 
   const submitDelete = () => {
     setDeleteError(null);
@@ -122,10 +161,38 @@ export default function BucketsTable({ buckets }: { buckets: Bucket[] }) {
             ),
           },
           {
+            id: "arn",
+            header: "ARN",
+            cell: (bucket) => (
+              <CopyToClipboard
+                variant="inline"
+                textToCopy={bucket.arn}
+                copySuccessText="ARN copied"
+                copyErrorText="Failed to copy ARN"
+              />
+            ),
+          },
+          {
             id: "region",
             header: "AWS Region",
             sortingField: "region",
             cell: (bucket) => bucket.region,
+          },
+          {
+            id: "tags",
+            header: "Tags",
+            cell: (bucket) =>
+              bucket.tags.length === 0 ? (
+                "—"
+              ) : (
+                <SpaceBetween direction="horizontal" size="xxs">
+                  {bucket.tags.map((tag) => (
+                    <Badge key={tag.key}>
+                      {tag.key}: {tag.value}
+                    </Badge>
+                  ))}
+                </SpaceBetween>
+              ),
           },
           {
             id: "creationDate",
@@ -150,7 +217,7 @@ export default function BucketsTable({ buckets }: { buckets: Bucket[] }) {
                 >
                   Delete
                 </Button>
-                <Button variant="primary" onClick={() => setCreateOpen(true)}>
+                <Button variant="primary" onClick={openCreate}>
                   Create bucket
                 </Button>
               </SpaceBetween>
@@ -160,10 +227,9 @@ export default function BucketsTable({ buckets }: { buckets: Bucket[] }) {
           </Header>
         }
         filter={
-          <TextFilter
-            {...filterProps}
-            filteringPlaceholder="Find buckets"
-            countText={`${filteredItemsCount} matches`}
+          <PropertyFilter
+            {...propertyFilterProps}
+            i18nStrings={propertyFilterI18n}
           />
         }
         pagination={<Pagination {...paginationProps} />}
@@ -171,77 +237,40 @@ export default function BucketsTable({ buckets }: { buckets: Bucket[] }) {
 
       {mounted && (
         <>
-      <Modal
-        visible={createOpen}
-        onDismiss={() => setCreateOpen(false)}
-        header="Create bucket"
-        footer={
-          <Box float="right">
-            <SpaceBetween direction="horizontal" size="xs">
-              <Button variant="link" onClick={() => setCreateOpen(false)}>
-                Cancel
-              </Button>
-              <Button
-                variant="primary"
-                loading={isPending}
-                disabled={!newName.trim()}
-                onClick={submitCreate}
-              >
-                Create bucket
-              </Button>
-            </SpaceBetween>
-          </Box>
-        }
-      >
-        <SpaceBetween size="m">
-          {createError && (
-            <Alert type="error" header="Could not create bucket">
-              {createError}
-            </Alert>
-          )}
-          <FormField
-            label="Bucket name"
-            description="Bucket names must be globally unique and DNS-compliant."
+          <Modal
+            visible={deleteOpen}
+            onDismiss={() => setDeleteOpen(false)}
+            header="Delete buckets"
+            footer={
+              <Box float="right">
+                <SpaceBetween direction="horizontal" size="xs">
+                  <Button variant="link" onClick={() => setDeleteOpen(false)}>
+                    Cancel
+                  </Button>
+                  <Button
+                    variant="primary"
+                    loading={isPending}
+                    onClick={submitDelete}
+                  >
+                    Delete
+                  </Button>
+                </SpaceBetween>
+              </Box>
+            }
           >
-            <Input
-              value={newName}
-              onChange={({ detail }) => setNewName(detail.value)}
-              placeholder="my-bucket"
-            />
-          </FormField>
-        </SpaceBetween>
-      </Modal>
-
-      <Modal
-        visible={deleteOpen}
-        onDismiss={() => setDeleteOpen(false)}
-        header="Delete buckets"
-        footer={
-          <Box float="right">
-            <SpaceBetween direction="horizontal" size="xs">
-              <Button variant="link" onClick={() => setDeleteOpen(false)}>
-                Cancel
-              </Button>
-              <Button variant="primary" loading={isPending} onClick={submitDelete}>
-                Delete
-              </Button>
+            <SpaceBetween size="m">
+              {deleteError && (
+                <Alert type="error" header="Could not delete bucket">
+                  {deleteError}
+                </Alert>
+              )}
+              <Box variant="span">
+                Permanently delete {selected.length} bucket
+                {selected.length === 1 ? "" : "s"}? A bucket must be empty before
+                it can be deleted.
+              </Box>
             </SpaceBetween>
-          </Box>
-        }
-      >
-        <SpaceBetween size="m">
-          {deleteError && (
-            <Alert type="error" header="Could not delete bucket">
-              {deleteError}
-            </Alert>
-          )}
-          <Box variant="span">
-            Permanently delete {selected.length} bucket
-            {selected.length === 1 ? "" : "s"}? A bucket must be empty before it
-            can be deleted.
-          </Box>
-        </SpaceBetween>
-      </Modal>
+          </Modal>
         </>
       )}
     </>

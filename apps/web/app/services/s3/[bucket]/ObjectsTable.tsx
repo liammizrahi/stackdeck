@@ -120,7 +120,7 @@ export default function ObjectsTable({
       />
       <Table<Row>
         {...collectionProps}
-        variant="full-page"
+        variant="container"
         stickyHeader
         loading={isPending && previewKey === null}
         loadingText="Loading objects"

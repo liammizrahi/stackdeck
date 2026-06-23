@@ -24,6 +24,7 @@ describe("listBuckets", () => {
     const result = await listBuckets();
     expect(result.map((b) => b.name)).toEqual(["alpha", "zeta"]);
     expect(result[0]?.region).toBe("eu-west-1");
+    expect(result[0]?.arn).toBe("arn:aws:s3:::alpha");
     expect(result[0]?.creationDate).toBe(new Date("2021-01-01").toISOString());
   });
 
