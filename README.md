@@ -117,48 +117,6 @@ Running from source? You can also put these in `apps/web/.env.local`.
 - **[AWS SDK for JavaScript v3](https://docs.aws.amazon.com/sdk-for-javascript/v3/developer-guide/welcome.html)**
 - **TypeScript** (strict) · **[Turborepo](https://turborepo.com)** monorepo · **Vitest** · **ESLint** · **Prettier**
 
-## 📂 Project structure
-
-```
-stackdeck/
-├─ apps/
-│  └─ web/                    # Next.js console (workspace: "web")
-│     ├─ app/services/        # one route group per AWS service
-│     ├─ components/          # layout (top bar, sidebar) + shared UI
-│     ├─ lib/aws/             # AWS SDK v3 data layer — one file per service
-│     └─ public/aws-icons/    # gradient service icons
-├─ turbo.json
-└─ package.json               # npm workspaces + Turborepo
-```
-
-Each service follows the same shape: a `lib/aws/<service>.ts` data layer and an `app/services/<service>/` route with a list page and detail pages. Adding a service is mostly a copy-paste-and-wire affair.
-
-## 🛠️ Development
-
-Want to hack on StackDeck or build your own image? Requires **Node.js ≥ 18**.
-
-```bash
-git clone https://github.com/liammizrahi/stackdeck.git
-cd stackdeck
-npm install
-npm run dev        # http://localhost:4577
-```
-
-| Command | Description |
-| --- | --- |
-| `npm run dev` | Start the dev server on port **4577** |
-| `npm run build` | Production build |
-| `npm run lint` | ESLint (zero-warning policy) |
-| `npm run check-types` | TypeScript type-check |
-| `npm run test -w web` | Run Vitest unit tests |
-| `npm run format` | Prettier across the repo |
-
-Build a production image locally:
-
-```bash
-docker build -t stackdeck .
-```
-
 ## 🗺️ Roadmap
 
 - More services (Step Functions, Secrets Manager, Kinesis, …)
@@ -167,7 +125,38 @@ docker build -t stackdeck .
 
 ## 🤝 Contributing
 
-Contributions are welcome! New services follow a clear, repeatable pattern (see [Project structure](#-project-structure)). Open an issue to discuss larger changes, then send a PR — please run `npm run check-types && npm run lint && npm run build` before submitting.
+Contributions are very welcome — new services, bug fixes, and polish alike.
+
+**Local setup** (requires **Node.js ≥ 18**):
+
+```bash
+git clone https://github.com/liammizrahi/stackdeck.git
+cd stackdeck
+npm install
+npm run dev        # http://localhost:4577
+```
+
+**Opening a pull request**
+
+1. **Fork** the repository and create a branch: `git checkout -b feat/my-change`
+2. Make your change. New services follow a repeatable pattern — a `lib/aws/<service>.ts` data layer plus an `app/services/<service>/` route with list and detail pages.
+3. Run the checks locally before committing:
+   ```bash
+   npm run check-types && npm run lint && npm run build
+   ```
+4. Commit with a clear message and **push** to your fork.
+5. **Open a PR** against `main` describing what changed and why. For larger changes, open an issue first to discuss the approach.
+
+**Useful commands**
+
+| Command | Description |
+| --- | --- |
+| `npm run dev` | Dev server on port **4577** |
+| `npm run build` | Production build |
+| `npm run lint` | ESLint (zero-warning policy) |
+| `npm run check-types` | TypeScript type-check |
+| `npm run test -w web` | Vitest unit tests |
+| `npm run format` | Prettier across the repo |
 
 ## 📄 License
 
