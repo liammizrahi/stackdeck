@@ -26,32 +26,6 @@ Local AWS emulators are fantastic for development, but you usually poke at them 
 - 🧪 **Actually interactive** — run SQL against RDS, tail CloudWatch logs, browse S3 objects, publish to SNS, and create resources through proper wizards — not just read-only views.
 - 🐳 **Self-hosted & open source** — runs anywhere Node runs; no account, no telemetry, no cost.
 
-## 🧩 Services
-
-| Category | Services |
-| --- | --- |
-| **Compute** | EC2 · Lambda |
-| **Storage** | S3 |
-| **Database** | DynamoDB · RDS · ElastiCache |
-| **Networking & Content Delivery** | CloudFront |
-| **Analytics** | Athena |
-| **Application Integration** | SQS · SNS · API Gateway · EventBridge |
-| **Security, Identity & Compliance** | IAM · Cognito |
-| **Management & Governance** | Parameter Store · AppConfig · CloudWatch |
-
-### Highlights
-
-- **RDS explorer** — browse tables, run ad-hoc SQL in a syntax-highlighted editor, add / edit / delete rows, and spin up new instances through a multi-step wizard.
-- **CloudWatch Logs** — stream-by-stream viewer with live tailing, time-range filters, and JSON expansion.
-- **S3 browser** — navigate prefixes, preview objects, copy ARNs.
-- **Create wizards & forms** — resource creation uses Cloudscape wizards/forms instead of bare modals.
-
-> [!NOTE]
-> The RDS **SQL editor** and **row editing** run queries by exec'ing into the local
-> database container, so they need access to the host Docker socket. They work out of
-> the box when running from source; in Docker, mount `/var/run/docker.sock` into the
-> StackDeck container and use an image that includes the Docker CLI.
-
 ## 🚀 Quick start
 
 StackDeck is published as a Docker image — pull it and point it at any LocalStack
@@ -109,6 +83,32 @@ environment variables:
 > (add `--add-host=host.docker.internal:host-gateway` on Linux).
 
 Running from source? You can also put these in `apps/web/.env.local`.
+
+## 🧩 Services
+
+| Category | Services |
+| --- | --- |
+| **Compute** | EC2 · Lambda |
+| **Storage** | S3 |
+| **Database** | DynamoDB · RDS · ElastiCache |
+| **Networking & Content Delivery** | CloudFront |
+| **Analytics** | Athena |
+| **Application Integration** | SQS · SNS · API Gateway · EventBridge |
+| **Security, Identity & Compliance** | IAM · Cognito |
+| **Management & Governance** | Parameter Store · AppConfig · CloudWatch |
+
+### Highlights
+
+- **RDS explorer** — browse tables, run ad-hoc SQL in a syntax-highlighted editor, add / edit / delete rows, and spin up new instances through a multi-step wizard.
+- **CloudWatch Logs** — stream-by-stream viewer with live tailing, time-range filters, and JSON expansion.
+- **S3 browser** — navigate prefixes, preview objects, copy ARNs.
+- **Create wizards & forms** — resource creation uses Cloudscape wizards/forms instead of bare modals.
+
+> [!NOTE]
+> The RDS **SQL editor** and **row editing** run queries by exec'ing into the local
+> database container, so they need access to the host Docker socket. They work out of
+> the box when running from source; in Docker, mount `/var/run/docker.sock` into the
+> StackDeck container and use an image that includes the Docker CLI.
 
 ## 🧱 Tech stack
 
