@@ -4,7 +4,7 @@
 
 **Goal:** Build a Dockerized Next.js AWS-Console-like UI (StackDeck) on Cloudscape + AWS SDK v3 that browses LocalStack/MiniStack resources: dashboard + S3, Lambda, DynamoDB, SQS, SNS.
 
-**Architecture:** Next.js App Router app in `apps/web`. React Server Components fetch data by calling `src/lib/aws/*` functions (AWS SDK v3, server-side only). Cloudscape client components render tables/detail. Server Actions perform mutations. `router.refresh()` reloads.
+**Architecture:** Next.js App Router app in `apps/web`. React Server Components fetch data by calling `lib/aws/*` functions (AWS SDK v3, server-side only). Cloudscape client components render tables/detail. Server Actions perform mutations. `router.refresh()` reloads.
 
 **Tech Stack:** Next.js 16 (App Router), React 19, TypeScript, Cloudscape (`@cloudscape-design/components`, `@cloudscape-design/global-styles`), AWS SDK v3 (`@aws-sdk/client-*`), Vitest + `aws-sdk-client-mock` for unit tests, Docker (standalone output).
 
@@ -33,13 +33,13 @@ Remove HeroUI/Tailwind, add Cloudscape + AWS SDK + test tooling, move to `src/` 
 - Modify: `apps/web/tsconfig.json`
 - Create: `apps/web/vitest.config.ts`
 - Delete: `apps/web/postcss.config.mjs`
-- Move: `apps/web/app/` → `apps/web/src/app/` (via `git mv`)
-- Replace: `apps/web/src/app/globals.css`
-- Replace: `apps/web/src/app/layout.tsx`
-- Replace: `apps/web/src/app/page.tsx` (temporary smoke page; real dashboard in Task 5)
+- Move: `apps/web/app/` → `apps/web/app/` (via `git mv`)
+- Replace: `apps/web/app/globals.css`
+- Replace: `apps/web/app/layout.tsx`
+- Replace: `apps/web/app/page.tsx` (temporary smoke page; real dashboard in Task 5)
 
 **Interfaces:**
-- Produces: `@/*` path alias → `apps/web/src/*`. Vitest test command `npm run test -w web`.
+- Produces: `@/*` path alias → `apps/web/*`. Vitest test command `npm run test -w web`.
 
 - [ ] **Step 1: Remove old deps and add new ones**
 
@@ -60,7 +60,7 @@ rm -f apps/web/postcss.config.mjs
 
 ```bash
 mkdir -p apps/web/src
-git -C /Users/liammizrahi/WebstormProjects/stackdeck mv apps/web/app apps/web/src/app
+git -C /Users/liammizrahi/WebstormProjects/stackdeck mv apps/web/app apps/web/app
 ```
 
 - [ ] **Step 4: Replace `apps/web/next.config.js`**
@@ -137,7 +137,7 @@ In the `"scripts"` block add (keep existing dev/build/start/lint/check-types):
     "test": "vitest run"
 ```
 
-- [ ] **Step 8: Replace `apps/web/src/app/globals.css`**
+- [ ] **Step 8: Replace `apps/web/app/globals.css`**
 
 ```css
 @import "@cloudscape-design/global-styles/index.css";
@@ -149,7 +149,7 @@ body {
 }
 ```
 
-- [ ] **Step 9: Replace `apps/web/src/app/layout.tsx`**
+- [ ] **Step 9: Replace `apps/web/app/layout.tsx`**
 
 ```tsx
 import type { Metadata } from "next";
@@ -187,7 +187,7 @@ export default function RootLayout({
 }
 ```
 
-- [ ] **Step 10: Replace `apps/web/src/app/page.tsx` with a Cloudscape smoke page**
+- [ ] **Step 10: Replace `apps/web/app/page.tsx` with a Cloudscape smoke page**
 
 ```tsx
 import Box from "@cloudscape-design/components/box";
@@ -216,8 +216,8 @@ git commit -m "Switch web app to Cloudscape + AWS SDK v3 and src/ layout"
 Central server-side config: env-driven settings with defaults and a shared client config (credentials, endpoint, region, fast-fail timeout).
 
 **Files:**
-- Create: `apps/web/src/lib/aws/config.ts`
-- Test: `apps/web/src/lib/aws/config.test.ts`
+- Create: `apps/web/lib/aws/config.ts`
+- Test: `apps/web/lib/aws/config.test.ts`
 
 **Interfaces:**
 - Produces:
@@ -226,7 +226,7 @@ Central server-side config: env-driven settings with defaults and a shared clien
 
 - [ ] **Step 1: Write the failing test**
 
-Create `apps/web/src/lib/aws/config.test.ts`:
+Create `apps/web/lib/aws/config.test.ts`:
 
 ```ts
 import { afterEach, beforeEach, describe, expect, it } from "vitest";
@@ -275,7 +275,7 @@ describe("getAwsSettings", () => {
 Run: `npm run test -w web`
 Expected: FAIL — cannot resolve `@/lib/aws/config`.
 
-- [ ] **Step 3: Write `apps/web/src/lib/aws/config.ts`**
+- [ ] **Step 3: Write `apps/web/lib/aws/config.ts`**
 
 ```ts
 import { NodeHttpHandler } from "@smithy/node-http-handler";
@@ -323,7 +323,7 @@ Expected: PASS (2 tests).
 - [ ] **Step 5: Commit**
 
 ```bash
-git add apps/web/src/lib/aws/config.ts apps/web/src/lib/aws/config.test.ts
+git add apps/web/lib/aws/config.ts apps/web/lib/aws/config.test.ts
 git commit -m "Add AWS settings and client config factory"
 ```
 
@@ -334,8 +334,8 @@ git commit -m "Add AWS settings and client config factory"
 Small shared helpers: human byte formatting and a predicate that recognizes "runtime unreachable" errors (used by error states and the health probe).
 
 **Files:**
-- Create: `apps/web/src/lib/utils.ts`
-- Test: `apps/web/src/lib/utils.test.ts`
+- Create: `apps/web/lib/utils.ts`
+- Test: `apps/web/lib/utils.test.ts`
 
 **Interfaces:**
 - Produces:
@@ -344,7 +344,7 @@ Small shared helpers: human byte formatting and a predicate that recognizes "run
 
 - [ ] **Step 1: Write the failing test**
 
-Create `apps/web/src/lib/utils.test.ts`:
+Create `apps/web/lib/utils.test.ts`:
 
 ```ts
 import { describe, expect, it } from "vitest";
@@ -379,7 +379,7 @@ describe("isConnectionError", () => {
 Run: `npm run test -w web`
 Expected: FAIL — cannot resolve `@/lib/utils`.
 
-- [ ] **Step 3: Write `apps/web/src/lib/utils.ts`**
+- [ ] **Step 3: Write `apps/web/lib/utils.ts`**
 
 ```ts
 export function formatBytes(n: number): string {
@@ -409,7 +409,7 @@ Expected: PASS.
 - [ ] **Step 5: Commit**
 
 ```bash
-git add apps/web/src/lib/utils.ts apps/web/src/lib/utils.test.ts
+git add apps/web/lib/utils.ts apps/web/lib/utils.test.ts
 git commit -m "Add formatBytes and connection-error helpers"
 ```
 
@@ -420,16 +420,16 @@ git commit -m "Add formatBytes and connection-error helpers"
 The console chrome: TopNavigation, SideNavigation with the 5 services, and Amazon Ember applied via Cloudscape theming. Server `layout.tsx` wraps children with the client `AppShell`.
 
 **Files:**
-- Create: `apps/web/src/components/layout/Sidebar.tsx`
-- Create: `apps/web/src/components/layout/Topbar.tsx`
-- Create: `apps/web/src/components/layout/AppShell.tsx`
-- Modify: `apps/web/src/app/layout.tsx`
+- Create: `apps/web/components/layout/Sidebar.tsx`
+- Create: `apps/web/components/layout/Topbar.tsx`
+- Create: `apps/web/components/layout/AppShell.tsx`
+- Modify: `apps/web/app/layout.tsx`
 
 **Interfaces:**
 - Consumes: `--font-amazon-ember` CSS var (Task 1).
 - Produces: `AppShell` (client) default export wrapping page content.
 
-- [ ] **Step 1: Create `apps/web/src/components/layout/Sidebar.tsx`**
+- [ ] **Step 1: Create `apps/web/components/layout/Sidebar.tsx`**
 
 ```tsx
 "use client";
@@ -472,7 +472,7 @@ export default function Sidebar() {
 }
 ```
 
-- [ ] **Step 2: Create `apps/web/src/components/layout/Topbar.tsx`**
+- [ ] **Step 2: Create `apps/web/components/layout/Topbar.tsx`**
 
 ```tsx
 "use client";
@@ -501,7 +501,7 @@ export default function Topbar({
 export { getAwsSettings };
 ```
 
-- [ ] **Step 3: Create `apps/web/src/components/layout/AppShell.tsx`**
+- [ ] **Step 3: Create `apps/web/components/layout/AppShell.tsx`**
 
 ```tsx
 "use client";
@@ -553,7 +553,7 @@ export default function AppShell({
 }
 ```
 
-- [ ] **Step 4: Wire `AppShell` into `apps/web/src/app/layout.tsx`**
+- [ ] **Step 4: Wire `AppShell` into `apps/web/app/layout.tsx`**
 
 Replace the `<body>` line so children are wrapped. The full file:
 
@@ -612,7 +612,7 @@ Run: `npm run dev -w web`, open http://localhost:4577. Expected: AWS-style top n
 - [ ] **Step 7: Commit**
 
 ```bash
-git add apps/web/src/components/layout apps/web/src/app/layout.tsx
+git add apps/web/components/layout apps/web/app/layout.tsx
 git commit -m "Add Cloudscape app shell with sidebar, topbar, and Amazon Ember theme"
 ```
 
@@ -623,12 +623,12 @@ git commit -m "Add Cloudscape app shell with sidebar, topbar, and Amazon Ember t
 Reusable building blocks for every service page: a status badge, an empty state, an error state (connection-aware), and a generic resource table. Plus a root `loading.tsx`/`error.tsx` pattern.
 
 **Files:**
-- Create: `apps/web/src/components/resources/StatusBadge.tsx`
-- Create: `apps/web/src/components/resources/EmptyState.tsx`
-- Create: `apps/web/src/components/resources/ErrorState.tsx`
-- Create: `apps/web/src/components/resources/ResourceTable.tsx`
-- Create: `apps/web/src/app/services/loading.tsx`
-- Create: `apps/web/src/app/services/error.tsx`
+- Create: `apps/web/components/resources/StatusBadge.tsx`
+- Create: `apps/web/components/resources/EmptyState.tsx`
+- Create: `apps/web/components/resources/ErrorState.tsx`
+- Create: `apps/web/components/resources/ResourceTable.tsx`
+- Create: `apps/web/app/services/loading.tsx`
+- Create: `apps/web/app/services/error.tsx`
 
 **Interfaces:**
 - Produces:
@@ -637,7 +637,7 @@ Reusable building blocks for every service page: a status badge, an empty state,
   - `ErrorState({ error, endpoint }: { error: { message: string }; endpoint?: string })`
   - `ResourceTable<T>({ items, columnDefinitions, loading, empty, header })` — thin wrapper over Cloudscape `Table`.
 
-- [ ] **Step 1: Create `apps/web/src/components/resources/StatusBadge.tsx`**
+- [ ] **Step 1: Create `apps/web/components/resources/StatusBadge.tsx`**
 
 ```tsx
 "use client";
@@ -658,7 +658,7 @@ export default function StatusBadge({ status }: { status: string }) {
 }
 ```
 
-- [ ] **Step 2: Create `apps/web/src/components/resources/EmptyState.tsx`**
+- [ ] **Step 2: Create `apps/web/components/resources/EmptyState.tsx`**
 
 ```tsx
 "use client";
@@ -693,7 +693,7 @@ export default function EmptyState({
 }
 ```
 
-- [ ] **Step 3: Create `apps/web/src/components/resources/ErrorState.tsx`**
+- [ ] **Step 3: Create `apps/web/components/resources/ErrorState.tsx`**
 
 ```tsx
 "use client";
@@ -732,7 +732,7 @@ export default function ErrorState({
 }
 ```
 
-- [ ] **Step 4: Create `apps/web/src/components/resources/ResourceTable.tsx`**
+- [ ] **Step 4: Create `apps/web/components/resources/ResourceTable.tsx`**
 
 ```tsx
 "use client";
@@ -746,7 +746,7 @@ export default function ResourceTable<T>(props: TableProps<T>) {
 }
 ```
 
-- [ ] **Step 5: Create `apps/web/src/app/services/loading.tsx`**
+- [ ] **Step 5: Create `apps/web/app/services/loading.tsx`**
 
 ```tsx
 import Box from "@cloudscape-design/components/box";
@@ -761,7 +761,7 @@ export default function Loading() {
 }
 ```
 
-- [ ] **Step 6: Create `apps/web/src/app/services/error.tsx`**
+- [ ] **Step 6: Create `apps/web/app/services/error.tsx`**
 
 ```tsx
 "use client";
@@ -787,7 +787,7 @@ Expected: build succeeds.
 - [ ] **Step 8: Commit**
 
 ```bash
-git add apps/web/src/components/resources apps/web/src/app/services
+git add apps/web/components/resources apps/web/app/services
 git commit -m "Add shared resource components and services loading/error states"
 ```
 
@@ -798,10 +798,10 @@ git commit -m "Add shared resource components and services loading/error states"
 Landing page: connection status (STS GetCallerIdentity with fast-fail), endpoint, region, and a grid of service cards linking into each service.
 
 **Files:**
-- Create: `apps/web/src/lib/aws/health.ts`
-- Test: `apps/web/src/lib/aws/health.test.ts`
-- Create: `apps/web/src/components/Dashboard.tsx`
-- Replace: `apps/web/src/app/page.tsx`
+- Create: `apps/web/lib/aws/health.ts`
+- Test: `apps/web/lib/aws/health.test.ts`
+- Create: `apps/web/components/Dashboard.tsx`
+- Replace: `apps/web/app/page.tsx`
 
 **Interfaces:**
 - Consumes: `clientConfig` (Task 2), `getAwsSettings` (Task 2), `isConnectionError` (Task 3).
@@ -809,7 +809,7 @@ Landing page: connection status (STS GetCallerIdentity with fast-fail), endpoint
 
 - [ ] **Step 1: Write the failing test**
 
-Create `apps/web/src/lib/aws/health.test.ts`:
+Create `apps/web/lib/aws/health.test.ts`:
 
 ```ts
 import { afterEach, describe, expect, it } from "vitest";
@@ -848,7 +848,7 @@ describe("checkHealth", () => {
 Run: `npm run test -w web`
 Expected: FAIL — cannot resolve `@/lib/aws/health`.
 
-- [ ] **Step 3: Write `apps/web/src/lib/aws/health.ts`**
+- [ ] **Step 3: Write `apps/web/lib/aws/health.ts`**
 
 ```ts
 import { GetCallerIdentityCommand, STSClient } from "@aws-sdk/client-sts";
@@ -883,7 +883,7 @@ export async function checkHealth(): Promise<{
 Run: `npm run test -w web`
 Expected: PASS (2 tests).
 
-- [ ] **Step 5: Create `apps/web/src/components/Dashboard.tsx`**
+- [ ] **Step 5: Create `apps/web/components/Dashboard.tsx`**
 
 ```tsx
 "use client";
@@ -957,7 +957,7 @@ export default function Dashboard({
 }
 ```
 
-- [ ] **Step 6: Replace `apps/web/src/app/page.tsx`**
+- [ ] **Step 6: Replace `apps/web/app/page.tsx`**
 
 ```tsx
 import Dashboard from "@/components/Dashboard";
@@ -979,7 +979,7 @@ Expected: build succeeds.
 - [ ] **Step 8: Commit**
 
 ```bash
-git add apps/web/src/lib/aws/health.ts apps/web/src/lib/aws/health.test.ts apps/web/src/components/Dashboard.tsx apps/web/src/app/page.tsx
+git add apps/web/lib/aws/health.ts apps/web/lib/aws/health.test.ts apps/web/components/Dashboard.tsx apps/web/app/page.tsx
 git commit -m "Add dashboard with connection health probe"
 ```
 
@@ -988,13 +988,13 @@ git commit -m "Add dashboard with connection health probe"
 ### Task 7: S3 service (buckets → objects → preview, create bucket)
 
 **Files:**
-- Create: `apps/web/src/lib/aws/s3.ts`
-- Test: `apps/web/src/lib/aws/s3.test.ts`
-- Create: `apps/web/src/app/services/s3/actions.ts`
-- Create: `apps/web/src/app/services/s3/page.tsx`
-- Create: `apps/web/src/app/services/s3/BucketsView.tsx`
-- Create: `apps/web/src/app/services/s3/[bucket]/page.tsx`
-- Create: `apps/web/src/app/services/s3/[bucket]/ObjectsView.tsx`
+- Create: `apps/web/lib/aws/s3.ts`
+- Test: `apps/web/lib/aws/s3.test.ts`
+- Create: `apps/web/app/services/s3/actions.ts`
+- Create: `apps/web/app/services/s3/page.tsx`
+- Create: `apps/web/app/services/s3/BucketsView.tsx`
+- Create: `apps/web/app/services/s3/[bucket]/page.tsx`
+- Create: `apps/web/app/services/s3/[bucket]/ObjectsView.tsx`
 
 **Interfaces:**
 - Consumes: `clientConfig` (Task 2), `formatBytes` (Task 3), `ResourceTable`/`EmptyState`/`StatusBadge` (Task 5).
@@ -1006,7 +1006,7 @@ git commit -m "Add dashboard with connection health probe"
 
 - [ ] **Step 1: Write the failing test**
 
-Create `apps/web/src/lib/aws/s3.test.ts`:
+Create `apps/web/lib/aws/s3.test.ts`:
 
 ```ts
 import { afterEach, describe, expect, it } from "vitest";
@@ -1056,7 +1056,7 @@ describe("listObjects", () => {
 Run: `npm run test -w web`
 Expected: FAIL — cannot resolve `@/lib/aws/s3`.
 
-- [ ] **Step 3: Write `apps/web/src/lib/aws/s3.ts`**
+- [ ] **Step 3: Write `apps/web/lib/aws/s3.ts`**
 
 ```ts
 import {
@@ -1145,7 +1145,7 @@ export async function createBucket(name: string): Promise<void> {
 Run: `npm run test -w web`
 Expected: PASS.
 
-- [ ] **Step 5: Create `apps/web/src/app/services/s3/actions.ts`**
+- [ ] **Step 5: Create `apps/web/app/services/s3/actions.ts`**
 
 ```ts
 "use server";
@@ -1161,7 +1161,7 @@ export async function createBucketAction(formData: FormData): Promise<void> {
 }
 ```
 
-- [ ] **Step 6: Create `apps/web/src/app/services/s3/BucketsView.tsx`**
+- [ ] **Step 6: Create `apps/web/app/services/s3/BucketsView.tsx`**
 
 ```tsx
 "use client";
@@ -1212,7 +1212,7 @@ export default function BucketsView({ buckets }: { buckets: Bucket[] }) {
 }
 ```
 
-- [ ] **Step 7: Create `apps/web/src/app/services/s3/page.tsx`**
+- [ ] **Step 7: Create `apps/web/app/services/s3/page.tsx`**
 
 ```tsx
 import BucketsView from "./BucketsView";
@@ -1226,7 +1226,7 @@ export default async function S3Page() {
 }
 ```
 
-- [ ] **Step 8: Create `apps/web/src/app/services/s3/[bucket]/ObjectsView.tsx`**
+- [ ] **Step 8: Create `apps/web/app/services/s3/[bucket]/ObjectsView.tsx`**
 
 ```tsx
 "use client";
@@ -1291,7 +1291,7 @@ export default function ObjectsView({
 }
 ```
 
-- [ ] **Step 9: Create `apps/web/src/app/services/s3/[bucket]/page.tsx`**
+- [ ] **Step 9: Create `apps/web/app/services/s3/[bucket]/page.tsx`**
 
 ```tsx
 import ObjectsView from "./ObjectsView";
@@ -1331,7 +1331,7 @@ Expected: tests PASS, build succeeds.
 - [ ] **Step 11: Commit**
 
 ```bash
-git add apps/web/src/lib/aws/s3.ts apps/web/src/lib/aws/s3.test.ts apps/web/src/app/services/s3
+git add apps/web/lib/aws/s3.ts apps/web/lib/aws/s3.test.ts apps/web/app/services/s3
 git commit -m "Add S3 service: buckets, objects, and preview"
 ```
 
@@ -1340,12 +1340,12 @@ git commit -m "Add S3 service: buckets, objects, and preview"
 ### Task 8: Lambda service (functions → configuration detail)
 
 **Files:**
-- Create: `apps/web/src/lib/aws/lambda.ts`
-- Test: `apps/web/src/lib/aws/lambda.test.ts`
-- Create: `apps/web/src/app/services/lambda/page.tsx`
-- Create: `apps/web/src/app/services/lambda/FunctionsView.tsx`
-- Create: `apps/web/src/app/services/lambda/[name]/page.tsx`
-- Create: `apps/web/src/app/services/lambda/[name]/FunctionDetail.tsx`
+- Create: `apps/web/lib/aws/lambda.ts`
+- Test: `apps/web/lib/aws/lambda.test.ts`
+- Create: `apps/web/app/services/lambda/page.tsx`
+- Create: `apps/web/app/services/lambda/FunctionsView.tsx`
+- Create: `apps/web/app/services/lambda/[name]/page.tsx`
+- Create: `apps/web/app/services/lambda/[name]/FunctionDetail.tsx`
 
 **Interfaces:**
 - Consumes: `clientConfig` (Task 2), `ResourceTable`/`EmptyState` (Task 5).
@@ -1355,7 +1355,7 @@ git commit -m "Add S3 service: buckets, objects, and preview"
 
 - [ ] **Step 1: Write the failing test**
 
-Create `apps/web/src/lib/aws/lambda.test.ts`:
+Create `apps/web/lib/aws/lambda.test.ts`:
 
 ```ts
 import { afterEach, describe, expect, it } from "vitest";
@@ -1390,7 +1390,7 @@ describe("listFunctions", () => {
 Run: `npm run test -w web`
 Expected: FAIL — cannot resolve `@/lib/aws/lambda`.
 
-- [ ] **Step 3: Write `apps/web/src/lib/aws/lambda.ts`**
+- [ ] **Step 3: Write `apps/web/lib/aws/lambda.ts`**
 
 ```ts
 import {
@@ -1456,7 +1456,7 @@ export async function getFunction(name: string): Promise<{
 Run: `npm run test -w web`
 Expected: PASS.
 
-- [ ] **Step 5: Create `apps/web/src/app/services/lambda/FunctionsView.tsx`**
+- [ ] **Step 5: Create `apps/web/app/services/lambda/FunctionsView.tsx`**
 
 ```tsx
 "use client";
@@ -1507,7 +1507,7 @@ export default function FunctionsView({ functions }: { functions: Fn[] }) {
 }
 ```
 
-- [ ] **Step 6: Create `apps/web/src/app/services/lambda/page.tsx`**
+- [ ] **Step 6: Create `apps/web/app/services/lambda/page.tsx`**
 
 ```tsx
 import FunctionsView from "./FunctionsView";
@@ -1521,7 +1521,7 @@ export default async function LambdaPage() {
 }
 ```
 
-- [ ] **Step 7: Create `apps/web/src/app/services/lambda/[name]/FunctionDetail.tsx`**
+- [ ] **Step 7: Create `apps/web/app/services/lambda/[name]/FunctionDetail.tsx`**
 
 ```tsx
 "use client";
@@ -1570,7 +1570,7 @@ export default function FunctionDetail({ detail }: { detail: Detail }) {
 }
 ```
 
-- [ ] **Step 8: Create `apps/web/src/app/services/lambda/[name]/page.tsx`**
+- [ ] **Step 8: Create `apps/web/app/services/lambda/[name]/page.tsx`**
 
 ```tsx
 import FunctionDetail from "./FunctionDetail";
@@ -1597,7 +1597,7 @@ Expected: tests PASS, build succeeds.
 - [ ] **Step 10: Commit**
 
 ```bash
-git add apps/web/src/lib/aws/lambda.ts apps/web/src/lib/aws/lambda.test.ts apps/web/src/app/services/lambda
+git add apps/web/lib/aws/lambda.ts apps/web/lib/aws/lambda.test.ts apps/web/app/services/lambda
 git commit -m "Add Lambda service: functions and configuration detail"
 ```
 
@@ -1606,12 +1606,12 @@ git commit -m "Add Lambda service: functions and configuration detail"
 ### Task 9: DynamoDB service (tables → detail + item scan)
 
 **Files:**
-- Create: `apps/web/src/lib/aws/dynamodb.ts`
-- Test: `apps/web/src/lib/aws/dynamodb.test.ts`
-- Create: `apps/web/src/app/services/dynamodb/page.tsx`
-- Create: `apps/web/src/app/services/dynamodb/TablesView.tsx`
-- Create: `apps/web/src/app/services/dynamodb/[table]/page.tsx`
-- Create: `apps/web/src/app/services/dynamodb/[table]/TableDetail.tsx`
+- Create: `apps/web/lib/aws/dynamodb.ts`
+- Test: `apps/web/lib/aws/dynamodb.test.ts`
+- Create: `apps/web/app/services/dynamodb/page.tsx`
+- Create: `apps/web/app/services/dynamodb/TablesView.tsx`
+- Create: `apps/web/app/services/dynamodb/[table]/page.tsx`
+- Create: `apps/web/app/services/dynamodb/[table]/TableDetail.tsx`
 
 **Interfaces:**
 - Consumes: `clientConfig` (Task 2), `ResourceTable`/`EmptyState` (Task 5).
@@ -1622,7 +1622,7 @@ git commit -m "Add Lambda service: functions and configuration detail"
 
 - [ ] **Step 1: Write the failing test**
 
-Create `apps/web/src/lib/aws/dynamodb.test.ts`:
+Create `apps/web/lib/aws/dynamodb.test.ts`:
 
 ```ts
 import { afterEach, describe, expect, it } from "vitest";
@@ -1665,7 +1665,7 @@ describe("scanItems", () => {
 Run: `npm run test -w web`
 Expected: FAIL — cannot resolve `@/lib/aws/dynamodb`.
 
-- [ ] **Step 3: Write `apps/web/src/lib/aws/dynamodb.ts`**
+- [ ] **Step 3: Write `apps/web/lib/aws/dynamodb.ts`**
 
 ```ts
 import {
@@ -1729,7 +1729,7 @@ export async function scanItems(name: string): Promise<{
 Run: `npm run test -w web`
 Expected: PASS.
 
-- [ ] **Step 5: Create `apps/web/src/app/services/dynamodb/TablesView.tsx`**
+- [ ] **Step 5: Create `apps/web/app/services/dynamodb/TablesView.tsx`**
 
 ```tsx
 "use client";
@@ -1772,7 +1772,7 @@ export default function TablesView({ tables }: { tables: string[] }) {
 }
 ```
 
-- [ ] **Step 6: Create `apps/web/src/app/services/dynamodb/page.tsx`**
+- [ ] **Step 6: Create `apps/web/app/services/dynamodb/page.tsx`**
 
 ```tsx
 import TablesView from "./TablesView";
@@ -1786,7 +1786,7 @@ export default async function DynamoPage() {
 }
 ```
 
-- [ ] **Step 7: Create `apps/web/src/app/services/dynamodb/[table]/TableDetail.tsx`**
+- [ ] **Step 7: Create `apps/web/app/services/dynamodb/[table]/TableDetail.tsx`**
 
 ```tsx
 "use client";
@@ -1850,7 +1850,7 @@ export default function TableDetail({
 }
 ```
 
-- [ ] **Step 8: Create `apps/web/src/app/services/dynamodb/[table]/page.tsx`**
+- [ ] **Step 8: Create `apps/web/app/services/dynamodb/[table]/page.tsx`**
 
 ```tsx
 import TableDetail from "./TableDetail";
@@ -1879,7 +1879,7 @@ Expected: tests PASS, build succeeds.
 - [ ] **Step 10: Commit**
 
 ```bash
-git add apps/web/src/lib/aws/dynamodb.ts apps/web/src/lib/aws/dynamodb.test.ts apps/web/src/app/services/dynamodb
+git add apps/web/lib/aws/dynamodb.ts apps/web/lib/aws/dynamodb.test.ts apps/web/app/services/dynamodb
 git commit -m "Add DynamoDB service: tables, detail, and item scan"
 ```
 
@@ -1888,13 +1888,13 @@ git commit -m "Add DynamoDB service: tables, detail, and item scan"
 ### Task 10: SQS service (queues → detail, peek + purge)
 
 **Files:**
-- Create: `apps/web/src/lib/aws/sqs.ts`
-- Test: `apps/web/src/lib/aws/sqs.test.ts`
-- Create: `apps/web/src/app/services/sqs/actions.ts`
-- Create: `apps/web/src/app/services/sqs/page.tsx`
-- Create: `apps/web/src/app/services/sqs/QueuesView.tsx`
-- Create: `apps/web/src/app/services/sqs/[queue]/page.tsx`
-- Create: `apps/web/src/app/services/sqs/[queue]/QueueDetail.tsx`
+- Create: `apps/web/lib/aws/sqs.ts`
+- Test: `apps/web/lib/aws/sqs.test.ts`
+- Create: `apps/web/app/services/sqs/actions.ts`
+- Create: `apps/web/app/services/sqs/page.tsx`
+- Create: `apps/web/app/services/sqs/QueuesView.tsx`
+- Create: `apps/web/app/services/sqs/[queue]/page.tsx`
+- Create: `apps/web/app/services/sqs/[queue]/QueueDetail.tsx`
 
 **Interfaces:**
 - Consumes: `clientConfig` (Task 2), `ResourceTable`/`EmptyState` (Task 5).
@@ -1906,7 +1906,7 @@ git commit -m "Add DynamoDB service: tables, detail, and item scan"
 
 - [ ] **Step 1: Write the failing test**
 
-Create `apps/web/src/lib/aws/sqs.test.ts`:
+Create `apps/web/lib/aws/sqs.test.ts`:
 
 ```ts
 import { afterEach, describe, expect, it } from "vitest";
@@ -1956,7 +1956,7 @@ describe("peekMessages", () => {
 Run: `npm run test -w web`
 Expected: FAIL — cannot resolve `@/lib/aws/sqs`.
 
-- [ ] **Step 3: Write `apps/web/src/lib/aws/sqs.ts`**
+- [ ] **Step 3: Write `apps/web/lib/aws/sqs.ts`**
 
 ```ts
 import {
@@ -2025,7 +2025,7 @@ export async function purgeQueueByUrl(url: string): Promise<void> {
 Run: `npm run test -w web`
 Expected: PASS.
 
-- [ ] **Step 5: Create `apps/web/src/app/services/sqs/actions.ts`**
+- [ ] **Step 5: Create `apps/web/app/services/sqs/actions.ts`**
 
 ```ts
 "use server";
@@ -2041,7 +2041,7 @@ export async function purgeQueueAction(formData: FormData): Promise<void> {
 }
 ```
 
-- [ ] **Step 6: Create `apps/web/src/app/services/sqs/QueuesView.tsx`**
+- [ ] **Step 6: Create `apps/web/app/services/sqs/QueuesView.tsx`**
 
 ```tsx
 "use client";
@@ -2085,7 +2085,7 @@ export default function QueuesView({ queues }: { queues: Queue[] }) {
 }
 ```
 
-- [ ] **Step 7: Create `apps/web/src/app/services/sqs/page.tsx`**
+- [ ] **Step 7: Create `apps/web/app/services/sqs/page.tsx`**
 
 ```tsx
 import QueuesView from "./QueuesView";
@@ -2099,7 +2099,7 @@ export default async function SqsPage() {
 }
 ```
 
-- [ ] **Step 8: Create `apps/web/src/app/services/sqs/[queue]/QueueDetail.tsx`**
+- [ ] **Step 8: Create `apps/web/app/services/sqs/[queue]/QueueDetail.tsx`**
 
 ```tsx
 "use client";
@@ -2160,7 +2160,7 @@ export default function QueueDetail({
 }
 ```
 
-- [ ] **Step 9: Create `apps/web/src/app/services/sqs/[queue]/page.tsx`**
+- [ ] **Step 9: Create `apps/web/app/services/sqs/[queue]/page.tsx`**
 
 ```tsx
 import QueueDetail from "./QueueDetail";
@@ -2191,7 +2191,7 @@ Expected: tests PASS, build succeeds.
 - [ ] **Step 11: Commit**
 
 ```bash
-git add apps/web/src/lib/aws/sqs.ts apps/web/src/lib/aws/sqs.test.ts apps/web/src/app/services/sqs
+git add apps/web/lib/aws/sqs.ts apps/web/lib/aws/sqs.test.ts apps/web/app/services/sqs
 git commit -m "Add SQS service: queues, peek messages, and purge"
 ```
 
@@ -2200,13 +2200,13 @@ git commit -m "Add SQS service: queues, peek messages, and purge"
 ### Task 11: SNS service (topics → detail, publish)
 
 **Files:**
-- Create: `apps/web/src/lib/aws/sns.ts`
-- Test: `apps/web/src/lib/aws/sns.test.ts`
-- Create: `apps/web/src/app/services/sns/actions.ts`
-- Create: `apps/web/src/app/services/sns/page.tsx`
-- Create: `apps/web/src/app/services/sns/TopicsView.tsx`
-- Create: `apps/web/src/app/services/sns/[topic]/page.tsx`
-- Create: `apps/web/src/app/services/sns/[topic]/TopicDetail.tsx`
+- Create: `apps/web/lib/aws/sns.ts`
+- Test: `apps/web/lib/aws/sns.test.ts`
+- Create: `apps/web/app/services/sns/actions.ts`
+- Create: `apps/web/app/services/sns/page.tsx`
+- Create: `apps/web/app/services/sns/TopicsView.tsx`
+- Create: `apps/web/app/services/sns/[topic]/page.tsx`
+- Create: `apps/web/app/services/sns/[topic]/TopicDetail.tsx`
 
 **Interfaces:**
 - Consumes: `clientConfig` (Task 2), `ResourceTable`/`EmptyState` (Task 5).
@@ -2218,7 +2218,7 @@ git commit -m "Add SQS service: queues, peek messages, and purge"
 
 - [ ] **Step 1: Write the failing test**
 
-Create `apps/web/src/lib/aws/sns.test.ts`:
+Create `apps/web/lib/aws/sns.test.ts`:
 
 ```ts
 import { afterEach, describe, expect, it } from "vitest";
@@ -2260,7 +2260,7 @@ describe("publish", () => {
 Run: `npm run test -w web`
 Expected: FAIL — cannot resolve `@/lib/aws/sns`.
 
-- [ ] **Step 3: Write `apps/web/src/lib/aws/sns.ts`**
+- [ ] **Step 3: Write `apps/web/lib/aws/sns.ts`**
 
 ```ts
 import {
@@ -2315,7 +2315,7 @@ export async function publish(
 Run: `npm run test -w web`
 Expected: PASS.
 
-- [ ] **Step 5: Create `apps/web/src/app/services/sns/actions.ts`**
+- [ ] **Step 5: Create `apps/web/app/services/sns/actions.ts`**
 
 ```ts
 "use server";
@@ -2332,7 +2332,7 @@ export async function publishAction(formData: FormData): Promise<void> {
 }
 ```
 
-- [ ] **Step 6: Create `apps/web/src/app/services/sns/TopicsView.tsx`**
+- [ ] **Step 6: Create `apps/web/app/services/sns/TopicsView.tsx`**
 
 ```tsx
 "use client";
@@ -2375,7 +2375,7 @@ export default function TopicsView({ topics }: { topics: Topic[] }) {
 }
 ```
 
-- [ ] **Step 7: Create `apps/web/src/app/services/sns/page.tsx`**
+- [ ] **Step 7: Create `apps/web/app/services/sns/page.tsx`**
 
 ```tsx
 import TopicsView from "./TopicsView";
@@ -2389,7 +2389,7 @@ export default async function SnsPage() {
 }
 ```
 
-- [ ] **Step 8: Create `apps/web/src/app/services/sns/[topic]/TopicDetail.tsx`**
+- [ ] **Step 8: Create `apps/web/app/services/sns/[topic]/TopicDetail.tsx`**
 
 ```tsx
 "use client";
@@ -2454,7 +2454,7 @@ export default function TopicDetail({
 }
 ```
 
-- [ ] **Step 9: Create `apps/web/src/app/services/sns/[topic]/page.tsx`**
+- [ ] **Step 9: Create `apps/web/app/services/sns/[topic]/page.tsx`**
 
 ```tsx
 import TopicDetail from "./TopicDetail";
@@ -2485,7 +2485,7 @@ Expected: tests PASS, build succeeds.
 - [ ] **Step 11: Commit**
 
 ```bash
-git add apps/web/src/lib/aws/sns.ts apps/web/src/lib/aws/sns.test.ts apps/web/src/app/services/sns
+git add apps/web/lib/aws/sns.ts apps/web/lib/aws/sns.test.ts apps/web/app/services/sns
 git commit -m "Add SNS service: topics, subscriptions, and publish"
 ```
 
