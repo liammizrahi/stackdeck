@@ -1,9 +1,8 @@
 "use client";
 
 import TopNavigation from "@cloudscape-design/components/top-navigation";
-import Input from "@cloudscape-design/components/input";
-import { useState } from "react";
 import { useRouter } from "next/navigation";
+import SearchBar from "./SearchBar";
 import { regionGroups } from "@/lib/aws/regions";
 
 export default function Topbar({
@@ -13,7 +12,6 @@ export default function Topbar({
   endpoint: string;
   region: string;
 }) {
-  const [search, setSearch] = useState("");
   const router = useRouter();
 
   const selectRegion = (code: string) => {
@@ -24,15 +22,7 @@ export default function Topbar({
   return (
     <TopNavigation
       identity={{ href: "/", title: "StackDeck" }}
-      search={
-        <Input
-          type="search"
-          ariaLabel="Search"
-          placeholder="Search resources"
-          value={search}
-          onChange={({ detail }) => setSearch(detail.value)}
-        />
-      }
+      search={<SearchBar />}
       utilities={[
         {
           type: "button",

@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import AppLayoutToolbar from "@cloudscape-design/components/app-layout-toolbar";
 import { usePathname } from "next/navigation";
 import Sidebar from "./Sidebar";
@@ -18,7 +18,11 @@ export default function AppShell({
 }) {
   const pathname = usePathname();
   const isHome = pathname === "/";
-  const [navOpen, setNavOpen] = useState(true);
+  const [navOpen, setNavOpen] = useState(false);
+
+  useEffect(() => {
+    setNavOpen(!isHome);
+  }, [isHome]);
 
   return (
     <>
@@ -28,9 +32,8 @@ export default function AppShell({
       <AppLayoutToolbar
         headerSelector="#top-nav"
         contentType={isHome ? "dashboard" : "table"}
-        navigationHide={isHome}
         navigation={<Sidebar />}
-        navigationOpen={!isHome && navOpen}
+        navigationOpen={navOpen}
         onNavigationChange={(e) => setNavOpen(e.detail.open)}
         breadcrumbs={isHome ? undefined : <Breadcrumbs />}
         toolsHide

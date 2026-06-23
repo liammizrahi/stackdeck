@@ -18,3 +18,17 @@ body {
 [aria-label="Select region"] [class*="awsui_menu-item"] {
   white-space: nowrap;
 }
+
+.sd-search {
+  position: relative;
+}
+
+.sd-search-shortcut {
+  position: absolute;
+  top: 50%;
+  inset-inline-end: 12px;
+  transform: translateY(-50%);
+  pointer-events: none;
+  font-size: 12px;
+  color: #8d99a8;
+}
