@@ -31,6 +31,7 @@ const items: SideNavigationProps.Item[] = [
       { type: "link", text: "SQS", href: "/services/sqs" },
       { type: "link", text: "SNS", href: "/services/sns" },
       { type: "link", text: "API Gateway", href: "/services/apigateway" },
+      { type: "link", text: "EventBridge", href: "/services/eventbridge" },
     ],
   },
   {

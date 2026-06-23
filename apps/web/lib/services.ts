@@ -57,6 +57,13 @@ export const services: ServiceInfo[] = [
     aliases: ["api", "rest", "http", "endpoint"],
   },
   {
+    key: "eventbridge",
+    name: "EventBridge",
+    description: "Event buses and rules",
+    href: "/services/eventbridge",
+    aliases: ["events", "event bus", "rules", "cron", "schedule", "cloudwatch events"],
+  },
+  {
     key: "iam",
     name: "IAM",
     description: "Identity and access management",
