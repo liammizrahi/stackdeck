@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import AppLayout from "@cloudscape-design/components/app-layout";
+import AppLayoutToolbar from "@cloudscape-design/components/app-layout-toolbar";
 import { usePathname } from "next/navigation";
 import Sidebar from "./Sidebar";
 import Topbar from "./Topbar";
@@ -25,7 +25,7 @@ export default function AppShell({
       <div id="top-nav">
         <Topbar endpoint={endpoint} region={region} />
       </div>
-      <AppLayout
+      <AppLayoutToolbar
         headerSelector="#top-nav"
         contentType={isHome ? "dashboard" : "table"}
         navigationHide={isHome}
