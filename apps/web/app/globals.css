@@ -305,6 +305,11 @@ body {
   color: #e9ebed;
 }
 
+.sd-shell-open .sd-shell-strip-toggle,
+.sd-shell-open .sd-shell-strip-icon {
+  color: #539fe5;
+}
+
 .sd-shell-strip-credits {
   display: flex;
   align-items: center;
