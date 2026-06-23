@@ -4,16 +4,22 @@
   "type": "module",
   "private": true,
   "scripts": {
-    "dev": "next dev --port 3000",
+    "dev": "next dev --port 4577",
     "build": "next build",
     "start": "next start",
     "lint": "eslint --max-warnings 0",
     "check-types": "next typegen && tsc --noEmit"
   },
   "dependencies": {
+    "@heroui/react": "^3.2.1",
+    "@heroui/styles": "^3.2.1",
+    "@tailwindcss/postcss": "^4.3.1",
     "next": "16.2.0",
+    "postcss": "^8.5.15",
     "react": "^19.2.0",
-    "react-dom": "^19.2.0"
+    "react-dom": "^19.2.0",
+    "tailwind-variants": "^3.2.2",
+    "tailwindcss": "^4.3.1"
   },
   "devDependencies": {
     "@repo/eslint-config": "*",
