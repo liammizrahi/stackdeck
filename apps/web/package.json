@@ -12,11 +12,16 @@
     "test": "vitest run"
   },
   "dependencies": {
+    "@aws-sdk/client-apigatewayv2": "^3.1075.0",
+    "@aws-sdk/client-cloudwatch-logs": "^3.1075.0",
     "@aws-sdk/client-dynamodb": "^3.1075.0",
+    "@aws-sdk/client-iam": "^3.1075.0",
     "@aws-sdk/client-lambda": "^3.1075.0",
+    "@aws-sdk/client-rds": "^3.1075.0",
     "@aws-sdk/client-s3": "^3.1075.0",
     "@aws-sdk/client-sns": "^3.1075.0",
     "@aws-sdk/client-sqs": "^3.1075.0",
+    "@aws-sdk/client-ssm": "^3.1075.0",
     "@aws-sdk/client-sts": "^3.1075.0",
     "@aws-sdk/util-dynamodb": "^3.996.5",
     "@cloudscape-design/board-components": "^3.0.194",
