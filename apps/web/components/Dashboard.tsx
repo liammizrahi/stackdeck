@@ -7,7 +7,6 @@ import type { BoardProps } from "@cloudscape-design/board-components";
 import Box from "@cloudscape-design/components/box";
 import Button from "@cloudscape-design/components/button";
 import ButtonDropdown from "@cloudscape-design/components/button-dropdown";
-import ColumnLayout from "@cloudscape-design/components/column-layout";
 import ContentLayout from "@cloudscape-design/components/content-layout";
 import Header from "@cloudscape-design/components/header";
 import KeyValuePairs from "@cloudscape-design/components/key-value-pairs";
@@ -85,24 +84,39 @@ export default function Dashboard({ health }: { health: Health }) {
     router.push(href);
   };
 
-  const serviceList = (list: ServiceInfo[]) => (
-    <ColumnLayout columns={2} borders="horizontal">
-      {list.map((service) => (
-        <div key={service.key} className="sd-service-row">
-          <ServiceIcon service={service.key} size={28} />
-          <Link
-            href={service.href}
-            onFollow={(event) => {
-              event.preventDefault();
-              go(service.href, service.key);
-            }}
-          >
-            {service.name}
-          </Link>
-        </div>
-      ))}
-    </ColumnLayout>
+  const serviceRow = (service: ServiceInfo, withDivider: boolean) => (
+    <div
+      key={service.key}
+      className={`sd-service-row${withDivider ? " sd-divider" : ""}`}
+    >
+      <ServiceIcon service={service.key} size={28} />
+      <Link
+        href={service.href}
+        onFollow={(event) => {
+          event.preventDefault();
+          go(service.href, service.key);
+        }}
+      >
+        {service.name}
+      </Link>
+    </div>
   );
+
+  const serviceList = (list: ServiceInfo[]) => {
+    const half = Math.ceil(list.length / 2);
+    const columns = [list.slice(0, half), list.slice(half)];
+    return (
+      <div className="sd-service-grid">
+        {columns.map((column, columnIndex) => (
+          <div className="sd-service-col" key={columnIndex}>
+            {column.map((service, rowIndex) =>
+              serviceRow(service, rowIndex < column.length - 1),
+            )}
+          </div>
+        ))}
+      </div>
+    );
+  };
 
   const renderContent = (id: string) => {
     switch (id) {
@@ -111,21 +125,7 @@ export default function Dashboard({ health }: { health: Health }) {
           .map((key) => services.find((s) => s.key === key))
           .filter((s): s is ServiceInfo => Boolean(s));
         const list = recentServices.length > 0 ? recentServices : services;
-        return (
-          <SpaceBetween size="m">
-            {serviceList(list)}
-            <div className="sd-card-footer">
-              <Link
-                onFollow={(event) => {
-                  event.preventDefault();
-                  window.dispatchEvent(new Event("stackdeck:open-nav"));
-                }}
-              >
-                View all services
-              </Link>
-            </div>
-          </SpaceBetween>
-        );
+        return serviceList(list);
       }
       case "services":
         return serviceList(services);
@@ -193,6 +193,20 @@ export default function Dashboard({ health }: { health: Health }) {
     }
   };
 
+  const renderFooter = (id: string) =>
+    id === "recently-visited" ? (
+      <Box textAlign="center">
+        <Link
+          onFollow={(event) => {
+            event.preventDefault();
+            window.dispatchEvent(new Event("stackdeck:open-nav"));
+          }}
+        >
+          View all services
+        </Link>
+      </Box>
+    ) : undefined;
+
   return (
     <ContentLayout
       header={
@@ -218,6 +232,7 @@ export default function Dashboard({ health }: { health: Health }) {
           <BoardItem
             i18nStrings={boardItemI18nStrings}
             header={<Header info={infoLink}>{item.data.title}</Header>}
+            footer={renderFooter(item.id)}
             settings={
               <ButtonDropdown
                 items={[{ id: "remove", text: "Remove from dashboard" }]}

@@ -25,14 +25,26 @@ body {
   width: auto;
 }
 
+.sd-service-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  column-gap: 40px;
+}
+
+.sd-service-col {
+  display: flex;
+  flex-direction: column;
+}
+
 .sd-service-row {
   display: flex;
   align-items: center;
   gap: 12px;
+  padding: 10px 0;
 }
 
-.sd-card-footer {
-  text-align: center;
+.sd-service-row.sd-divider {
+  border-bottom: 1px solid #eaeded;
 }
 
 .sd-search {
