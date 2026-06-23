@@ -19,14 +19,12 @@ const amazonEmber = localFont({
 
 export const metadata: Metadata = {
   title: "StackDeck",
-  description: "StackDeck",
+  description: "Local AWS console for LocalStack/MiniStack",
 };
 
 export default function RootLayout({
   children,
-}: Readonly<{
-  children: React.ReactNode;
-}>) {
+}: Readonly<{ children: React.ReactNode }>) {
   return (
     <html lang="en" className={amazonEmber.variable} suppressHydrationWarning>
       <body>{children}</body>

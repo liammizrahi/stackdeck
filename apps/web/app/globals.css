@@ -1,6 +1,7 @@
-@import "tailwindcss";
-@import "@heroui/styles";
+@import "@cloudscape-design/global-styles/index.css";
 
-:root {
-  --font-sans: var(--font-amazon-ember), ui-sans-serif, system-ui, sans-serif;
+html,
+body {
+  margin: 0;
+  padding: 0;
 }
