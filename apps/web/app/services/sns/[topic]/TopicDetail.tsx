@@ -14,7 +14,7 @@ import KeyValuePairs from "@cloudscape-design/components/key-value-pairs";
 import SpaceBetween from "@cloudscape-design/components/space-between";
 import Table from "@cloudscape-design/components/table";
 import Tabs from "@cloudscape-design/components/tabs";
-import JsonEditor from "@/components/JsonEditor";
+import CodeEditor from "@/components/CodeEditor";
 import { columnGroups } from "@/lib/kv";
 import type { SnsSubscription } from "@/lib/aws/sns";
 import { publishAction } from "../actions";
@@ -163,7 +163,7 @@ export default function TopicDetail({
                       description="Enter a JSON or plain-text message body."
                     >
                       {mounted ? (
-                        <JsonEditor value={message} onChange={setMessage} />
+                        <CodeEditor value={message} onChange={setMessage} />
                       ) : null}
                     </FormField>
                     <Box float="right">

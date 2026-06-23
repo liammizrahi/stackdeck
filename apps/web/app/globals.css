@@ -22,7 +22,7 @@ body {
 #top-nav {
   position: sticky;
   top: 0;
-  z-index: 1000;
+  z-index: 1001;
 }
 
 #top-nav [class*="awsui_logo"] {
@@ -77,6 +77,45 @@ body {
   word-break: break-word;
   font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
   font-size: 12px;
+}
+
+.sd-code-editor {
+  border: 1px solid #c6c6cd;
+  border-radius: 8px;
+  background: #fbfbfd;
+  overflow: auto;
+  max-height: 420px;
+}
+
+.sd-code-editor textarea {
+  outline: none;
+}
+
+.sd-code-editor .token.keyword {
+  color: #7b3ff2;
+}
+
+.sd-code-editor .token.string {
+  color: #0a7d3e;
+}
+
+.sd-code-editor .token.number,
+.sd-code-editor .token.boolean {
+  color: #b35900;
+}
+
+.sd-code-editor .token.comment {
+  color: #8d99a8;
+  font-style: italic;
+}
+
+.sd-code-editor .token.operator,
+.sd-code-editor .token.punctuation {
+  color: #5f6b7a;
+}
+
+.sd-code-editor .token.property {
+  color: #0972d3;
 }
 
 .sd-search {

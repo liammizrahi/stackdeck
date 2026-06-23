@@ -30,15 +30,17 @@
     "@cloudscape-design/components": "^3.0.1315",
     "@cloudscape-design/global-styles": "^1.0.61",
     "@smithy/node-http-handler": "^4.8.2",
-    "ace-builds": "^1.44.0",
     "next": "16.2.0",
+    "prismjs": "^1.30.0",
     "react": "^19.2.0",
-    "react-dom": "^19.2.0"
+    "react-dom": "^19.2.0",
+    "react-simple-code-editor": "^0.14.1"
   },
   "devDependencies": {
     "@repo/eslint-config": "*",
     "@repo/typescript-config": "*",
     "@types/node": "^22.15.3",
+    "@types/prismjs": "^1.26.6",
     "@types/react": "19.2.2",
     "@types/react-dom": "19.2.2",
     "aws-sdk-client-mock": "^4.1.0",
