@@ -22,6 +22,13 @@ export const services: ServiceInfo[] = [
     aliases: ["serverless", "function", "faas", "run code"],
   },
   {
+    key: "ec2",
+    name: "EC2",
+    description: "Virtual servers in the cloud",
+    href: "/services/ec2",
+    aliases: ["compute", "instance", "vm", "virtual machine", "server", "elastic compute cloud"],
+  },
+  {
     key: "dynamodb",
     name: "DynamoDB",
     description: "Managed NoSQL database",
@@ -34,6 +41,13 @@ export const services: ServiceInfo[] = [
     description: "Managed relational databases",
     href: "/services/rds",
     aliases: ["sql", "relational", "postgres", "mysql", "database", "relational database service"],
+  },
+  {
+    key: "elasticache",
+    name: "ElastiCache",
+    description: "In-memory caching",
+    href: "/services/elasticache",
+    aliases: ["cache", "redis", "memcached", "in-memory", "valkey"],
   },
   {
     key: "sqs",
@@ -90,5 +104,26 @@ export const services: ServiceInfo[] = [
     description: "Logs and metrics",
     href: "/services/cloudwatch",
     aliases: ["logs", "metrics", "monitoring", "alarms"],
+  },
+  {
+    key: "appconfig",
+    name: "AppConfig",
+    description: "Feature flags and configuration",
+    href: "/services/appconfig",
+    aliases: ["config", "feature flags", "application configuration", "deployment"],
+  },
+  {
+    key: "cloudfront",
+    name: "CloudFront",
+    description: "Content delivery network",
+    href: "/services/cloudfront",
+    aliases: ["cdn", "distribution", "edge", "content delivery"],
+  },
+  {
+    key: "athena",
+    name: "Athena",
+    description: "Query data with SQL",
+    href: "/services/athena",
+    aliases: ["query", "sql", "analytics", "presto", "data lake"],
   },
 ];

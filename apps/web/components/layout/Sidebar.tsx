@@ -9,7 +9,10 @@ const items: SideNavigationProps.Item[] = [
   {
     type: "section",
     text: "Compute",
-    items: [{ type: "link", text: "Lambda", href: "/services/lambda" }],
+    items: [
+      { type: "link", text: "EC2", href: "/services/ec2" },
+      { type: "link", text: "Lambda", href: "/services/lambda" },
+    ],
   },
   {
     type: "section",
@@ -22,7 +25,20 @@ const items: SideNavigationProps.Item[] = [
     items: [
       { type: "link", text: "DynamoDB", href: "/services/dynamodb" },
       { type: "link", text: "RDS", href: "/services/rds" },
+      { type: "link", text: "ElastiCache", href: "/services/elasticache" },
     ],
+  },
+  {
+    type: "section",
+    text: "Networking & Content Delivery",
+    items: [
+      { type: "link", text: "CloudFront", href: "/services/cloudfront" },
+    ],
+  },
+  {
+    type: "section",
+    text: "Analytics",
+    items: [{ type: "link", text: "Athena", href: "/services/athena" }],
   },
   {
     type: "section",
@@ -47,6 +63,7 @@ const items: SideNavigationProps.Item[] = [
     text: "Management & Governance",
     items: [
       { type: "link", text: "Parameter Store", href: "/services/ssm" },
+      { type: "link", text: "AppConfig", href: "/services/appconfig" },
       { type: "link", text: "CloudWatch", href: "/services/cloudwatch" },
     ],
   },
