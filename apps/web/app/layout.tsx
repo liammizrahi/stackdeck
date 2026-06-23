@@ -1,5 +1,7 @@
 import type { Metadata } from "next";
 import localFont from "next/font/local";
+import AppShell from "@/components/layout/AppShell";
+import { getAwsSettings } from "@/lib/aws/config";
 import "./globals.css";
 
 const amazonEmber = localFont({
@@ -25,9 +27,14 @@ export const metadata: Metadata = {
 export default function RootLayout({
   children,
 }: Readonly<{ children: React.ReactNode }>) {
+  const { endpoint, region } = getAwsSettings();
   return (
     <html lang="en" className={amazonEmber.variable} suppressHydrationWarning>
-      <body>{children}</body>
+      <body>
+        <AppShell endpoint={endpoint} region={region}>
+          {children}
+        </AppShell>
+      </body>
     </html>
   );
 }
