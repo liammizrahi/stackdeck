@@ -19,6 +19,12 @@ body {
   white-space: nowrap;
 }
 
+#top-nav [class*="awsui_logo"] {
+  max-height: 38px;
+  height: 38px;
+  width: auto;
+}
+
 .sd-search {
   position: relative;
 }

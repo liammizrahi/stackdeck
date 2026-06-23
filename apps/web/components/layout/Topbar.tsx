@@ -21,7 +21,10 @@ export default function Topbar({
 
   return (
     <TopNavigation
-      identity={{ href: "/", title: "StackDeck" }}
+      identity={{
+        href: "/",
+        logo: { src: "/stackdeck-logo.svg", alt: "StackDeck" },
+      }}
       search={<SearchBar />}
       utilities={[
         {
