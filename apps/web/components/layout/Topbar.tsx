@@ -20,6 +20,7 @@ export default function Topbar({
   accountId: string;
 }) {
   const router = useRouter();
+  const accountLabel = accountName.split(" ")[0] || accountName;
 
   const selectRegion = async (code: string) => {
     await saveSettingsAction({ region: code });
@@ -43,6 +44,13 @@ export default function Topbar({
           externalIconAriaLabel: "(opens in new tab)",
           ariaLabel: "GitHub repository",
           title: "GitHub repository",
+        },
+        {
+          type: "button",
+          iconName: "command-prompt",
+          ariaLabel: "Open CloudShell",
+          title: "Open CloudShell",
+          onClick: () => window.dispatchEvent(new Event("stackdeck:open-cloudshell")),
         },
         {
           type: "button",
@@ -76,7 +84,7 @@ export default function Topbar({
         },
         {
           type: "menu-dropdown",
-          text: accountName,
+          text: accountLabel,
           description: endpoint,
           iconName: "user-profile",
           ariaLabel: "Account",

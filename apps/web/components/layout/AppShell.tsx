@@ -6,6 +6,7 @@ import { usePathname } from "next/navigation";
 import Sidebar from "./Sidebar";
 import Topbar from "./Topbar";
 import Breadcrumbs from "./Breadcrumbs";
+import CloudShell from "@/components/cloudshell/CloudShell";
 
 export default function AppShell({
   endpoint,
@@ -31,9 +32,9 @@ export default function AppShell({
   }, [isHome]);
 
   useEffect(() => {
-    const open = () => setNavOpen(true);
-    window.addEventListener("stackdeck:open-nav", open);
-    return () => window.removeEventListener("stackdeck:open-nav", open);
+    const openNav = () => setNavOpen(true);
+    window.addEventListener("stackdeck:open-nav", openNav);
+    return () => window.removeEventListener("stackdeck:open-nav", openNav);
   }, []);
 
   return (
@@ -55,8 +56,9 @@ export default function AppShell({
         onNavigationChange={(e) => setNavOpen(e.detail.open)}
         breadcrumbs={isHome ? undefined : <Breadcrumbs />}
         toolsHide
-        content={children}
+        content={<div className="sd-shell-content">{children}</div>}
       />
+      <CloudShell region={region} />
     </>
   );
 }
