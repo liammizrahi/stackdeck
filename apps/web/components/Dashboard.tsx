@@ -4,7 +4,6 @@ import { useEffect, useState } from "react";
 import Board from "@cloudscape-design/board-components/board";
 import BoardItem from "@cloudscape-design/board-components/board-item";
 import type { BoardProps } from "@cloudscape-design/board-components";
-import BarChart from "@cloudscape-design/components/bar-chart";
 import Box from "@cloudscape-design/components/box";
 import Button from "@cloudscape-design/components/button";
 import ButtonDropdown from "@cloudscape-design/components/button-dropdown";
@@ -12,12 +11,10 @@ import ContentLayout from "@cloudscape-design/components/content-layout";
 import Header from "@cloudscape-design/components/header";
 import KeyValuePairs from "@cloudscape-design/components/key-value-pairs";
 import Link from "@cloudscape-design/components/link";
-import PieChart from "@cloudscape-design/components/pie-chart";
 import SpaceBetween from "@cloudscape-design/components/space-between";
 import StatusIndicator from "@cloudscape-design/components/status-indicator";
 import { useRouter } from "next/navigation";
 import ServiceIcon from "@/components/ServiceIcon";
-import type { ResourceOverview } from "@/lib/aws/overview";
 import { services, type ServiceInfo } from "@/lib/services";
 import { addRecent, getRecent } from "@/lib/recent";
 import {
@@ -35,8 +32,6 @@ interface Health {
 
 const defaultItems: BoardProps.Item<WidgetData>[] = [
   { id: "recently-visited", rowSpan: 4, columnSpan: 2, data: { title: "Recently visited" } },
-  { id: "resource-inventory", rowSpan: 4, columnSpan: 2, data: { title: "Resources by service" } },
-  { id: "lambda-runtimes", rowSpan: 4, columnSpan: 2, data: { title: "Lambda runtimes" } },
   { id: "welcome", rowSpan: 2, columnSpan: 2, data: { title: "Welcome to StackDeck" } },
   { id: "services", rowSpan: 3, columnSpan: 2, data: { title: "Services" } },
   { id: "connection", rowSpan: 2, columnSpan: 2, data: { title: "Connection" } },
@@ -51,13 +46,7 @@ const infoLink = (
   </Link>
 );
 
-export default function Dashboard({
-  health,
-  overview,
-}: {
-  health: Health;
-  overview: ResourceOverview;
-}) {
+export default function Dashboard({ health }: { health: Health }) {
   const router = useRouter();
   const [items, setItems] = useState<BoardProps.Item<WidgetData>[]>(defaultItems);
   const [recent, setRecent] = useState<string[]>([]);
@@ -140,65 +129,6 @@ export default function Dashboard({
       }
       case "services":
         return serviceList(services);
-      case "resource-inventory":
-        return (
-          <BarChart
-            series={[
-              {
-                title: "Resources",
-                type: "bar",
-                data: overview.services.map((s) => ({ x: s.name, y: s.count })),
-              },
-            ]}
-            xDomain={overview.services.map((s) => s.name)}
-            xScaleType="categorical"
-            horizontalBars
-            hideFilter
-            hideLegend
-            ariaLabel="Resources by service"
-            height={245}
-            xTitle="Service"
-            yTitle="Count"
-            empty={
-              <Box textAlign="center" color="inherit" padding="l">
-                <b>No resources</b>
-                <Box variant="p" color="inherit">
-                  Nothing provisioned on this endpoint yet.
-                </Box>
-              </Box>
-            }
-          />
-        );
-      case "lambda-runtimes":
-        return (
-          <PieChart
-            data={overview.lambdaRuntimes.map((r) => ({
-              title: r.runtime,
-              value: r.count,
-            }))}
-            ariaLabel="Lambda runtimes"
-            size="medium"
-            hideFilter
-            detailPopoverContent={(datum, sum) => [
-              { key: "Functions", value: String(datum.value) },
-              {
-                key: "Percentage",
-                value: `${((datum.value / sum) * 100).toFixed(0)}%`,
-              },
-            ]}
-            i18nStrings={{
-              detailsValue: "Functions",
-              detailsPercentage: "Percentage",
-              chartAriaRoleDescription: "pie chart",
-              segmentAriaRoleDescription: "segment",
-            }}
-            empty={
-              <Box textAlign="center" color="inherit" padding="l">
-                <b>No functions</b>
-              </Box>
-            }
-          />
-        );
       case "connection":
         return (
           <SpaceBetween size="m">
