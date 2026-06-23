@@ -89,7 +89,7 @@ export default function Dashboard({ health }: { health: Health }) {
       key={service.key}
       className={`sd-service-row${withDivider ? " sd-divider" : ""}`}
     >
-      <ServiceIcon service={service.key} size={28} />
+      <ServiceIcon service={service.key} size={25} />
       <Link
         href={service.href}
         onFollow={(event) => {
