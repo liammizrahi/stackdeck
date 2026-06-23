@@ -5,6 +5,8 @@ import Board from "@cloudscape-design/board-components/board";
 import BoardItem from "@cloudscape-design/board-components/board-item";
 import type { BoardProps } from "@cloudscape-design/board-components";
 import Box from "@cloudscape-design/components/box";
+import Button from "@cloudscape-design/components/button";
+import ButtonDropdown from "@cloudscape-design/components/button-dropdown";
 import ColumnLayout from "@cloudscape-design/components/column-layout";
 import ContentLayout from "@cloudscape-design/components/content-layout";
 import Header from "@cloudscape-design/components/header";
@@ -14,7 +16,8 @@ import SpaceBetween from "@cloudscape-design/components/space-between";
 import StatusIndicator from "@cloudscape-design/components/status-indicator";
 import { useRouter } from "next/navigation";
 import ServiceIcon from "@/components/ServiceIcon";
-import { services } from "@/lib/services";
+import { services, type ServiceInfo } from "@/lib/services";
+import { addRecent, getRecent } from "@/lib/recent";
 import {
   boardI18nStrings,
   boardItemI18nStrings,
@@ -29,59 +32,103 @@ interface Health {
 }
 
 const defaultItems: BoardProps.Item<WidgetData>[] = [
+  { id: "recently-visited", rowSpan: 4, columnSpan: 2, data: { title: "Recently visited" } },
+  { id: "connection", rowSpan: 2, columnSpan: 2, data: { title: "Connection" } },
   { id: "services", rowSpan: 3, columnSpan: 2, data: { title: "Services" } },
-  { id: "connection", rowSpan: 3, columnSpan: 2, data: { title: "Connection" } },
   { id: "welcome", rowSpan: 2, columnSpan: 2, data: { title: "Welcome to StackDeck" } },
   { id: "getting-started", rowSpan: 2, columnSpan: 2, data: { title: "Getting started" } },
 ];
 
 const storageKey = "stackdeck_board";
 
+const infoLink = (
+  <Link variant="info" onFollow={(event) => event.preventDefault()}>
+    Info
+  </Link>
+);
+
 export default function Dashboard({ health }: { health: Health }) {
   const router = useRouter();
   const [items, setItems] = useState<BoardProps.Item<WidgetData>[]>(defaultItems);
+  const [recent, setRecent] = useState<string[]>([]);
 
   useEffect(() => {
+    setRecent(getRecent());
     const saved = localStorage.getItem(storageKey);
     if (saved) {
       try {
-        setItems(JSON.parse(saved) as BoardProps.Item<WidgetData>[]);
+        const parsed = JSON.parse(saved) as BoardProps.Item<WidgetData>[];
+        const ids = new Set(parsed.map((i) => i.id));
+        const missing = defaultItems.filter((d) => !ids.has(d.id));
+        setItems([...parsed, ...missing]);
       } catch {
         setItems(defaultItems);
       }
     }
   }, []);
 
-  const handleChange = (next: readonly BoardProps.Item<WidgetData>[]) => {
+  const persist = (next: readonly BoardProps.Item<WidgetData>[]) => {
     const copy = [...next];
     setItems(copy);
     localStorage.setItem(storageKey, JSON.stringify(copy));
   };
 
-  const go = (href: string) => router.push(href);
+  const removeItem = (id: string) => persist(items.filter((i) => i.id !== id));
+
+  const resetLayout = () => {
+    localStorage.removeItem(storageKey);
+    setItems(defaultItems);
+  };
+
+  const go = (href: string, key?: string) => {
+    if (key) addRecent(key);
+    router.push(href);
+  };
+
+  const serviceList = (list: ServiceInfo[]) => (
+    <ColumnLayout columns={2} borders="horizontal">
+      {list.map((service) => (
+        <div key={service.key} className="sd-service-row">
+          <ServiceIcon service={service.key} size={28} />
+          <Link
+            href={service.href}
+            onFollow={(event) => {
+              event.preventDefault();
+              go(service.href, service.key);
+            }}
+          >
+            {service.name}
+          </Link>
+        </div>
+      ))}
+    </ColumnLayout>
+  );
 
   const renderContent = (id: string) => {
     switch (id) {
-      case "services":
+      case "recently-visited": {
+        const recentServices = recent
+          .map((key) => services.find((s) => s.key === key))
+          .filter((s): s is ServiceInfo => Boolean(s));
+        const list = recentServices.length > 0 ? recentServices : services;
         return (
-          <ColumnLayout columns={2}>
-            {services.map((service) => (
+          <SpaceBetween size="m">
+            {serviceList(list)}
+            <div className="sd-card-footer">
               <Link
-                key={service.key}
-                href={service.href}
                 onFollow={(event) => {
                   event.preventDefault();
-                  go(service.href);
+                  window.dispatchEvent(new Event("stackdeck:open-nav"));
                 }}
               >
-                <SpaceBetween direction="horizontal" size="xs" alignItems="center">
-                  <ServiceIcon service={service.key} size={24} />
-                  <span>{service.name}</span>
-                </SpaceBetween>
+                View all services
               </Link>
-            ))}
-          </ColumnLayout>
+            </div>
+          </SpaceBetween>
         );
+      }
+      case "services":
+        return serviceList(services);
       case "connection":
         return (
           <SpaceBetween size="m">
@@ -116,7 +163,7 @@ export default function Dashboard({ health }: { health: Health }) {
               href="/services/s3"
               onFollow={(event) => {
                 event.preventDefault();
-                go("/services/s3");
+                go("/services/s3", "s3");
               }}
             >
               Browse S3 buckets
@@ -125,7 +172,7 @@ export default function Dashboard({ health }: { health: Health }) {
               href="/services/lambda"
               onFollow={(event) => {
                 event.preventDefault();
-                go("/services/lambda");
+                go("/services/lambda", "lambda");
               }}
             >
               Inspect Lambda functions
@@ -134,7 +181,7 @@ export default function Dashboard({ health }: { health: Health }) {
               href="/services/dynamodb"
               onFollow={(event) => {
                 event.preventDefault();
-                go("/services/dynamodb");
+                go("/services/dynamodb", "dynamodb");
               }}
             >
               Query DynamoDB tables
@@ -147,29 +194,37 @@ export default function Dashboard({ health }: { health: Health }) {
   };
 
   return (
-    <ContentLayout header={<Header variant="h1">Console Home</Header>}>
+    <ContentLayout
+      header={
+        <Header
+          variant="h1"
+          info={infoLink}
+          actions={<Button onClick={resetLayout}>Reset to default layout</Button>}
+        >
+          Console Home
+        </Header>
+      }
+    >
       <Board<WidgetData>
         items={items}
-        onItemsChange={(event) => handleChange(event.detail.items)}
+        onItemsChange={(event) => persist(event.detail.items)}
         i18nStrings={boardI18nStrings}
         empty={
           <Box textAlign="center" color="inherit" padding="l">
-            No widgets
+            No widgets. Use “Reset to default layout” to restore them.
           </Box>
         }
         renderItem={(item) => (
           <BoardItem
             i18nStrings={boardItemI18nStrings}
-            header={
-              <Header
-                info={
-                  <Link variant="info" onFollow={(event) => event.preventDefault()}>
-                    Info
-                  </Link>
-                }
-              >
-                {item.data.title}
-              </Header>
+            header={<Header info={infoLink}>{item.data.title}</Header>}
+            settings={
+              <ButtonDropdown
+                items={[{ id: "remove", text: "Remove from dashboard" }]}
+                ariaLabel="Widget settings"
+                variant="icon"
+                onItemClick={() => removeItem(item.id)}
+              />
             }
           >
             {renderContent(item.id)}

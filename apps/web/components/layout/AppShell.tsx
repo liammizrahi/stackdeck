@@ -24,6 +24,12 @@ export default function AppShell({
     setNavOpen(!isHome);
   }, [isHome]);
 
+  useEffect(() => {
+    const open = () => setNavOpen(true);
+    window.addEventListener("stackdeck:open-nav", open);
+    return () => window.removeEventListener("stackdeck:open-nav", open);
+  }, []);
+
   return (
     <>
       <div id="top-nav">

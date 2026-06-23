@@ -25,6 +25,16 @@ body {
   width: auto;
 }
 
+.sd-service-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.sd-card-footer {
+  text-align: center;
+}
+
 .sd-search {
   position: relative;
 }
