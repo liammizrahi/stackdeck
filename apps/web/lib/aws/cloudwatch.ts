@@ -98,6 +98,20 @@ export async function searchGroup(
   }
 }
 
+export async function searchAllGroups(
+  pattern: string,
+  startTime?: number,
+): Promise<LogEvent[]> {
+  const groups = await listLogGroups();
+  const results = await Promise.all(
+    groups.map((g) => searchGroup(g.name, pattern, startTime)),
+  );
+  return results
+    .flat()
+    .sort((a, b) => a.epoch - b.epoch)
+    .slice(-500);
+}
+
 export async function getStreamEvents(
   group: string,
   stream: string,

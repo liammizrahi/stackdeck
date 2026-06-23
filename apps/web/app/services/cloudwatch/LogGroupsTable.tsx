@@ -128,6 +128,9 @@ export default function LogGroupsTable({ logGroups }: { logGroups: LogGroup[] })
           counter={`(${logGroups.length})`}
           actions={
             <SpaceBetween direction="horizontal" size="xs">
+              <Button onClick={() => router.push("/services/cloudwatch/search")}>
+                Search all log groups
+              </Button>
               <Button iconName="refresh" ariaLabel="Refresh" onClick={refresh} />
             </SpaceBetween>
           }

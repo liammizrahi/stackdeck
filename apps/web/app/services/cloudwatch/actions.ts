@@ -3,6 +3,7 @@
 import {
   type LogEvent,
   getStreamEvents,
+  searchAllGroups,
   searchGroup,
 } from "@/lib/aws/cloudwatch";
 
@@ -12,6 +13,13 @@ export async function searchGroupAction(
   startTime?: number,
 ): Promise<LogEvent[]> {
   return searchGroup(group, pattern, startTime);
+}
+
+export async function searchAllGroupsAction(
+  pattern: string,
+  startTime?: number,
+): Promise<LogEvent[]> {
+  return searchAllGroups(pattern, startTime);
 }
 
 export async function streamEventsAction(
