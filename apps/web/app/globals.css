@@ -19,10 +19,21 @@ body {
   white-space: nowrap;
 }
 
+#top-nav {
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+}
+
 #top-nav [class*="awsui_logo"] {
   max-height: 38px;
   height: 38px;
   width: auto;
+}
+
+/* Widen the top navigation search beyond Cloudscape's default 340px cap. */
+#top-nav [class*="awsui_search_"] {
+  max-inline-size: 480px;
 }
 
 .sd-service-grid {
