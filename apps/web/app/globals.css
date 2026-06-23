@@ -31,7 +31,6 @@ body {
   width: auto;
 }
 
-/* Widen the top navigation search beyond Cloudscape's default 340px cap. */
 #top-nav [class*="awsui_search_"] {
   max-inline-size: 480px;
 }
@@ -92,4 +91,124 @@ body {
   pointer-events: none;
   font-size: 12px;
   color: #8d99a8;
+}
+
+.sd-search-panel {
+  position: fixed;
+  z-index: 1100;
+  font-family: var(
+    --font-family-base-gmnpzl,
+    "Amazon Ember",
+    "Helvetica Neue",
+    Roboto,
+    Arial,
+    sans-serif
+  );
+  background: #0f1b2a;
+  border: 1px solid #2a3b4d;
+  border-radius: 8px;
+  box-shadow: 0 12px 36px rgba(0, 7, 22, 0.55);
+  max-height: 72vh;
+  overflow-y: auto;
+}
+
+.sd-search-head {
+  padding: 16px 20px 8px;
+  font-size: 14px;
+  color: #b6bec9;
+}
+
+.sd-search-head strong {
+  color: #ffffff;
+  font-weight: 700;
+}
+
+.sd-search-body {
+  display: flex;
+  gap: 8px;
+  padding: 8px 12px 16px;
+}
+
+.sd-search-rail {
+  flex: 0 0 200px;
+  padding: 8px;
+}
+
+.sd-search-rail-item {
+  display: block;
+  padding: 8px 12px;
+  font-size: 14px;
+  color: #b6bec9;
+}
+
+.sd-search-rail-active {
+  color: #ec7211;
+  font-weight: 700;
+  border-inline-start: 3px solid #ec7211;
+}
+
+.sd-search-rail-count {
+  font-weight: 400;
+}
+
+.sd-search-results {
+  flex: 1;
+  min-width: 0;
+}
+
+.sd-search-section-title {
+  font-size: 18px;
+  font-weight: 700;
+  color: #ffffff;
+  padding: 4px 8px 10px;
+}
+
+.sd-search-results ul {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.sd-search-card {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  width: 100%;
+  padding: 12px 14px;
+  border: 1px solid transparent;
+  border-radius: 8px;
+  background: #14202f;
+  text-align: start;
+  cursor: pointer;
+  font-family: inherit;
+}
+
+.sd-search-card:hover,
+.sd-search-card-active {
+  background: #1b2a3c;
+  border-color: #4a6178;
+}
+
+.sd-search-card-text {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+
+.sd-search-card-name {
+  font-size: 16px;
+  font-weight: 700;
+  color: #539fe5;
+}
+
+.sd-search-card-desc {
+  font-size: 13px;
+  color: #b6bec9;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
