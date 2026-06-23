@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import localFont from "next/font/local";
+import { cookies } from "next/headers";
 import AppShell from "@/components/layout/AppShell";
 import { getAwsSettings } from "@/lib/aws/config";
 import "./globals.css";
@@ -24,10 +25,13 @@ export const metadata: Metadata = {
   description: "Local AWS console for LocalStack/MiniStack",
 };
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: Readonly<{ children: React.ReactNode }>) {
-  const { endpoint, region } = getAwsSettings();
+  const settings = getAwsSettings();
+  const cookieStore = await cookies();
+  const region = cookieStore.get("stackdeck_region")?.value ?? settings.region;
+  const endpoint = settings.endpoint;
   return (
     <html lang="en" className={amazonEmber.variable} suppressHydrationWarning>
       <body>

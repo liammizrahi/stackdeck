@@ -3,6 +3,8 @@
 import TopNavigation from "@cloudscape-design/components/top-navigation";
 import Input from "@cloudscape-design/components/input";
 import { useState } from "react";
+import { useRouter } from "next/navigation";
+import { regionGroups } from "@/lib/aws/regions";
 
 export default function Topbar({
   endpoint,
@@ -12,6 +14,13 @@ export default function Topbar({
   region: string;
 }) {
   const [search, setSearch] = useState("");
+  const router = useRouter();
+
+  const selectRegion = (code: string) => {
+    document.cookie = `stackdeck_region=${code}; path=/; max-age=31536000`;
+    router.refresh();
+  };
+
   return (
     <TopNavigation
       identity={{ href: "/", title: "StackDeck" }}
@@ -34,9 +43,19 @@ export default function Topbar({
         {
           type: "menu-dropdown",
           text: region,
-          ariaLabel: "Region",
+          ariaLabel: "Select region",
           title: "Region",
-          items: [{ id: region, text: region }],
+          onItemClick: ({ detail }) => selectRegion(detail.id),
+          items: regionGroups.map((group) => ({
+            id: group.label,
+            text: group.label,
+            items: group.regions.map((r) => ({
+              id: r.code,
+              text: r.name,
+              labelTag: r.code,
+              disabled: r.code === region,
+            })),
+          })),
         },
         {
           type: "menu-dropdown",
