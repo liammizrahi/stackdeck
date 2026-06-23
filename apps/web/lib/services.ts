@@ -64,6 +64,13 @@ export const services: ServiceInfo[] = [
     aliases: ["identity", "permissions", "roles", "users", "policy"],
   },
   {
+    key: "cognito",
+    name: "Cognito",
+    description: "User authentication and identity",
+    href: "/services/cognito",
+    aliases: ["auth", "authentication", "user pool", "login", "identity", "sign in"],
+  },
+  {
     key: "ssm",
     name: "Parameter Store",
     description: "Configuration and secrets",

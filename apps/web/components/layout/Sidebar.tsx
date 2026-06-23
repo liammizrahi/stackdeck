@@ -36,7 +36,10 @@ const items: SideNavigationProps.Item[] = [
   {
     type: "section",
     text: "Security, Identity & Compliance",
-    items: [{ type: "link", text: "IAM", href: "/services/iam" }],
+    items: [
+      { type: "link", text: "IAM", href: "/services/iam" },
+      { type: "link", text: "Cognito", href: "/services/cognito" },
+    ],
   },
   {
     type: "section",
