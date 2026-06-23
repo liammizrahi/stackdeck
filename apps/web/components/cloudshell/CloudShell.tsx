@@ -61,6 +61,7 @@ export default function CloudShell({ region }: { region: string }) {
   const [confirmClose, setConfirmClose] = useState(false);
   const [sessions, setSessions] = useState<Session[]>(() => [blankSession(0)]);
   const [activeId, setActiveId] = useState(0);
+  const [height, setHeight] = useState<number | null>(null);
   const idRef = useRef(1);
   const termRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
@@ -82,6 +83,24 @@ export default function CloudShell({ region }: { region: string }) {
   useEffect(() => {
     if (open) inputRef.current?.focus();
   }, [open, activeId]);
+
+  const startResize = (event: React.MouseEvent<HTMLDivElement>) => {
+    event.preventDefault();
+    const panel = event.currentTarget.parentElement;
+    if (!panel) return;
+    const startY = event.clientY;
+    const startHeight = panel.getBoundingClientRect().height;
+    const onMove = (move: MouseEvent) => {
+      const nextHeight = startHeight + (startY - move.clientY);
+      setHeight(Math.min(Math.max(nextHeight, 160), window.innerHeight - 120));
+    };
+    const onUp = () => {
+      window.removeEventListener("mousemove", onMove);
+      window.removeEventListener("mouseup", onUp);
+    };
+    window.addEventListener("mousemove", onMove);
+    window.addEventListener("mouseup", onUp);
+  };
 
   const updateSession = (id: number, patch: Partial<Session>) =>
     setSessions((prev) => prev.map((s) => (s.id === id ? { ...s, ...patch } : s)));
@@ -176,16 +195,25 @@ export default function CloudShell({ region }: { region: string }) {
   return (
     <div className={`sd-shell${open ? " sd-shell-open" : ""}`}>
       {open && (
-        <div className="sd-shell-panel">
-          <div className="sd-shell-titlebar">
-            <span className="sd-shell-title">CloudShell</span>
+        <div className="sd-shell-panel" style={height ? { height: `${height}px` } : undefined}>
+          <div
+            className="sd-shell-tray"
+            role="separator"
+            aria-label="Resize CloudShell"
+            onMouseDown={startResize}
+          >
+            <span className="sd-shell-grip" aria-hidden="true" />
             <button
               className="sd-shell-x"
               aria-label="Close CloudShell"
+              onMouseDown={(event) => event.stopPropagation()}
               onClick={() => setConfirmClose(true)}
             >
               ✕
             </button>
+          </div>
+          <div className="sd-shell-titlebar">
+            <span className="sd-shell-title">CloudShell</span>
           </div>
           <div className="sd-shell-tabs">
             {sessions.map((s) => (

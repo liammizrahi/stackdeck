@@ -335,16 +335,43 @@ body {
   display: flex;
   flex-direction: column;
   height: 42vh;
-  min-height: 220px;
+  min-height: 160px;
   background: #0d1722;
   border-top: 1px solid #24364a;
+}
+
+.sd-shell-tray {
+  position: relative;
+  height: 26px;
+  flex: 0 0 auto;
+  background: #0b1420;
+  border-bottom: 1px solid #24364a;
+  cursor: ns-resize;
+}
+
+.sd-shell-grip {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  width: 24px;
+  height: 0;
+  border-top: 4px double #6a7a8c;
+  pointer-events: none;
+}
+
+.sd-shell-tray .sd-shell-x {
+  position: absolute;
+  right: 8px;
+  top: 50%;
+  transform: translateY(-50%);
 }
 
 .sd-shell-titlebar {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 14px 8px 14px 16px;
+  padding: 12px 12px 12px 12px;
   background: #0f1b2a;
 }
 
@@ -420,10 +447,10 @@ body {
   background: transparent;
   border: none;
   color: #b6bec9;
-  font-size: 13px;
+  font-size: 18px;
   line-height: 1;
   cursor: pointer;
-  padding: 6px 8px;
+  padding: 6px 10px;
   border-radius: 4px;
 }
 
