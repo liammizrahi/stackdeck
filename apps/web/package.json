@@ -20,6 +20,7 @@
     "@aws-sdk/client-sts": "^3.1075.0",
     "@aws-sdk/util-dynamodb": "^3.996.5",
     "@cloudscape-design/board-components": "^3.0.194",
+    "@cloudscape-design/collection-hooks": "^1.0.99",
     "@cloudscape-design/component-toolkit": "^1.0.0-beta.167",
     "@cloudscape-design/components": "^3.0.1315",
     "@cloudscape-design/global-styles": "^1.0.61",

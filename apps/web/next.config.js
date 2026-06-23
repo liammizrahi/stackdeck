@@ -10,6 +10,7 @@ const nextConfig = {
   transpilePackages: [
     "@cloudscape-design/components",
     "@cloudscape-design/board-components",
+    "@cloudscape-design/collection-hooks",
     "@cloudscape-design/global-styles",
     "@cloudscape-design/component-toolkit",
   ],

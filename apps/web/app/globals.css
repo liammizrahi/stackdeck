@@ -20,8 +20,8 @@ body {
 }
 
 #top-nav [class*="awsui_logo"] {
-  max-height: 38px;
-  height: 38px;
+  max-height: 45px;
+  height: 45px;
   width: auto;
 }
 
@@ -45,6 +45,16 @@ body {
 
 .sd-service-row.sd-divider {
   border-bottom: 1px solid #eaeded;
+}
+
+.sd-preview {
+  margin: 0;
+  max-height: 60vh;
+  overflow: auto;
+  white-space: pre-wrap;
+  word-break: break-word;
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size: 12px;
 }
 
 .sd-search {
