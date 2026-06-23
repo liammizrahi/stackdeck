@@ -1,55 +1,47 @@
 "use client";
 
-import { useTransition } from "react";
+import { useEffect, useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
 import { useCollection } from "@cloudscape-design/collection-hooks";
-import Badge from "@cloudscape-design/components/badge";
+import Alert from "@cloudscape-design/components/alert";
 import Box from "@cloudscape-design/components/box";
 import Button from "@cloudscape-design/components/button";
-import CopyToClipboard from "@cloudscape-design/components/copy-to-clipboard";
+import Cards from "@cloudscape-design/components/cards";
 import Header from "@cloudscape-design/components/header";
 import Link from "@cloudscape-design/components/link";
+import Modal from "@cloudscape-design/components/modal";
 import Pagination from "@cloudscape-design/components/pagination";
 import SpaceBetween from "@cloudscape-design/components/space-between";
-import StatusIndicator from "@cloudscape-design/components/status-indicator";
-import Table from "@cloudscape-design/components/table";
 import TextFilter from "@cloudscape-design/components/text-filter";
 import type { DbInstance } from "@/lib/aws/rds";
+import { deleteDbInstancesAction } from "./actions";
 
-function instanceStatus(
-  status: string,
-): "success" | "error" | "warning" | "pending" | "stopped" | "in-progress" {
-  if (status === "available") return "success";
-  if (status === "failed" || status === "incompatible-restore") return "error";
-  if (status === "stopped" || status === "stopping") return "stopped";
-  if (
-    status === "creating" ||
-    status === "modifying" ||
-    status === "starting" ||
-    status === "rebooting"
-  )
-    return "in-progress";
-  return "pending";
-}
-
-function endpointLabel(instance: DbInstance): string {
-  if (!instance.endpointAddress) return "—";
-  if (instance.endpointPort) {
-    return `${instance.endpointAddress}:${instance.endpointPort}`;
-  }
-  return instance.endpointAddress;
-}
-
-export default function InstancesTable({ instances }: { instances: DbInstance[] }) {
+export default function InstancesTable({
+  instances,
+}: {
+  instances: DbInstance[];
+}) {
   const router = useRouter();
   const [isPending, startTransition] = useTransition();
+  const [selected, setSelected] = useState<DbInstance[]>([]);
+  const [deleteOpen, setDeleteOpen] = useState(false);
+  const [deleteError, setDeleteError] = useState<string | null>(null);
+  const [mounted, setMounted] = useState(false);
+  useEffect(() => setMounted(true), []);
+
+  const detailHref = (id: string) => `/services/rds/${encodeURIComponent(id)}`;
 
   const { items, collectionProps, filterProps, paginationProps, filteredItemsCount } =
     useCollection(instances, {
       filtering: {
         empty: (
           <Box textAlign="center" color="inherit" padding="l">
-            <b>No DB instances</b>
+            <SpaceBetween size="m">
+              <b>No DB instances</b>
+              <Button onClick={() => router.push("/services/rds/create")}>
+                Create database
+              </Button>
+            </SpaceBetween>
           </Box>
         ),
         noMatch: (
@@ -58,117 +50,147 @@ export default function InstancesTable({ instances }: { instances: DbInstance[] 
           </Box>
         ),
       },
-      pagination: { pageSize: 20 },
-      sorting: {},
+      pagination: { pageSize: 12 },
     });
 
   const refresh = () => startTransition(() => router.refresh());
 
+  const submitDelete = () => {
+    setDeleteError(null);
+    startTransition(async () => {
+      const result = await deleteDbInstancesAction(
+        selected.map((i) => i.identifier),
+      );
+      if (result.ok) {
+        setDeleteOpen(false);
+        setSelected([]);
+        router.refresh();
+      } else {
+        setDeleteError(result.error ?? "Failed to delete database");
+      }
+    });
+  };
+
   return (
-    <Table<DbInstance>
-      {...collectionProps}
-      variant="full-page"
-      stickyHeader
-      loading={isPending}
-      loadingText="Loading DB instances"
-      items={items}
-      trackBy="identifier"
-      columnDefinitions={[
-        {
-          id: "identifier",
-          header: "DB identifier",
-          sortingField: "identifier",
-          isRowHeader: true,
-          cell: (instance) => (
+    <>
+      <Cards<DbInstance>
+        {...collectionProps}
+        items={items}
+        loading={isPending}
+        loadingText="Loading DB instances"
+        trackBy="identifier"
+        selectionType="multi"
+        selectedItems={selected}
+        onSelectionChange={({ detail }) => setSelected(detail.selectedItems)}
+        cardsPerRow={[{ cards: 1 }, { minWidth: 420, cards: 3 }]}
+        cardDefinition={{
+          header: (instance) => (
             <Link
-              href={`/services/rds/${encodeURIComponent(instance.identifier)}`}
+              fontSize="heading-m"
+              href={detailHref(instance.identifier)}
               onFollow={(event) => {
                 event.preventDefault();
-                router.push(
-                  `/services/rds/${encodeURIComponent(instance.identifier)}`,
-                );
+                router.push(detailHref(instance.identifier));
               }}
             >
               {instance.identifier}
             </Link>
           ),
-        },
-        {
-          id: "arn",
-          header: "ARN",
-          cell: (instance) => (
-            <CopyToClipboard
-              variant="inline"
-              textToCopy={instance.arn}
-              copySuccessText="ARN copied"
-              copyErrorText="Failed to copy ARN"
-            />
-          ),
-        },
-        {
-          id: "engine",
-          header: "Engine",
-          sortingField: "engine",
-          cell: (instance) => instance.engine,
-        },
-        {
-          id: "status",
-          header: "Status",
-          sortingField: "status",
-          cell: (instance) => (
-            <StatusIndicator type={instanceStatus(instance.status)}>
-              {instance.status}
-            </StatusIndicator>
-          ),
-        },
-        {
-          id: "instanceClass",
-          header: "Class",
-          sortingField: "instanceClass",
-          cell: (instance) => instance.instanceClass,
-        },
-        {
-          id: "tags",
-          header: "Tags",
-          cell: (instance) =>
-            instance.tags.length === 0 ? (
-              "—"
-            ) : (
-              <SpaceBetween direction="horizontal" size="xxs">
-                {instance.tags.map((t) => (
-                  <Badge key={t.key}>
-                    {t.key}: {t.value}
-                  </Badge>
-                ))}
+          sections: [
+            {
+              id: "engine",
+              header: "Engine",
+              content: (instance) => instance.engine || "—",
+            },
+            {
+              id: "version",
+              header: "Version",
+              content: (instance) => instance.engineVersion || "—",
+            },
+          ],
+        }}
+        header={
+          <Header
+            counter={
+              selected.length
+                ? `(${selected.length}/${instances.length})`
+                : `(${instances.length})`
+            }
+            actions={
+              <SpaceBetween direction="horizontal" size="xs">
+                <Button iconName="refresh" ariaLabel="Refresh" onClick={refresh} />
+                <Button
+                  disabled={selected.length !== 1}
+                  onClick={() =>
+                    selected[0] &&
+                    router.push(detailHref(selected[0].identifier))
+                  }
+                >
+                  View details
+                </Button>
+                <Button
+                  disabled={selected.length === 0}
+                  onClick={() => {
+                    setDeleteError(null);
+                    setDeleteOpen(true);
+                  }}
+                >
+                  Delete
+                </Button>
+                <Button
+                  variant="primary"
+                  onClick={() => router.push("/services/rds/create")}
+                >
+                  Create database
+                </Button>
               </SpaceBetween>
-            ),
-        },
-        {
-          id: "endpoint",
-          header: "Endpoint",
-          cell: endpointLabel,
-        },
-      ]}
-      header={
-        <Header
-          counter={`(${instances.length})`}
-          actions={
-            <SpaceBetween direction="horizontal" size="xs">
-              <Button iconName="refresh" ariaLabel="Refresh" onClick={refresh} />
-            </SpaceBetween>
+            }
+          >
+            Databases
+          </Header>
+        }
+        filter={
+          <TextFilter
+            {...filterProps}
+            filteringPlaceholder="Find databases"
+            countText={`${filteredItemsCount} matches`}
+          />
+        }
+        pagination={<Pagination {...paginationProps} />}
+      />
+
+      {mounted && (
+        <Modal
+          visible={deleteOpen}
+          onDismiss={() => setDeleteOpen(false)}
+          header="Delete databases"
+          footer={
+            <Box float="right">
+              <SpaceBetween direction="horizontal" size="xs">
+                <Button variant="link" onClick={() => setDeleteOpen(false)}>
+                  Cancel
+                </Button>
+                <Button variant="primary" loading={isPending} onClick={submitDelete}>
+                  Delete
+                </Button>
+              </SpaceBetween>
+            </Box>
           }
         >
-          DB Instances
-        </Header>
-      }
-      filter={
-        <TextFilter
-          {...filterProps}
-          filteringPlaceholder="Find DB instances"
-          countText={`${filteredItemsCount} matches`}
-        />
-      }
-      pagination={<Pagination {...paginationProps} />}
-    />
+          <SpaceBetween size="m">
+            {deleteError && (
+              <Alert type="error" header="Could not delete database">
+                {deleteError}
+              </Alert>
+            )}
+            <Box variant="span">
+              Permanently delete {selected.length} database
+              {selected.length === 1 ? "" : "s"}? This removes the instance and its
+              data.
+            </Box>
+          </SpaceBetween>
+        </Modal>
+      )}
+    </>
   );
 }

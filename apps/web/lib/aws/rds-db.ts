@@ -207,6 +207,145 @@ export async function runQuery(
   }
 }
 
+export interface DbColumn {
+  name: string;
+  dataType: string;
+  nullable: boolean;
+}
+
+function ident(name: string): string {
+  return `"${name.replace(/"/g, '""')}"`;
+}
+
+function literal(value: string): string {
+  return value === "" ? "NULL" : `'${value.replace(/'/g, "''")}'`;
+}
+
+function sqlString(value: string): string {
+  return value.replace(/'/g, "''");
+}
+
+export async function getColumns(
+  identifier: string,
+  schema: string,
+  table: string,
+): Promise<DbColumn[]> {
+  const sql =
+    "SELECT column_name, data_type, is_nullable FROM information_schema.columns " +
+    `WHERE table_schema = '${sqlString(schema)}' AND table_name = '${sqlString(table)}' ` +
+    "ORDER BY ordinal_position";
+  const result = await runQuery(identifier, sql);
+  if (result.error) return [];
+  const ci = result.columns.indexOf("column_name");
+  const ti = result.columns.indexOf("data_type");
+  const ni = result.columns.indexOf("is_nullable");
+  return result.rows.map((r) => ({
+    name: r[ci] ?? "",
+    dataType: r[ti] ?? "",
+    nullable: (r[ni] ?? "") === "YES",
+  }));
+}
+
+export async function getPrimaryKey(
+  identifier: string,
+  schema: string,
+  table: string,
+): Promise<string[]> {
+  const rel = `${ident(schema)}.${ident(table)}`;
+  const sql =
+    "SELECT a.attname FROM pg_index i " +
+    "JOIN pg_attribute a ON a.attrelid = i.indrelid AND a.attnum = ANY(i.indkey) " +
+    `WHERE i.indrelid = '${sqlString(rel)}'::regclass AND i.indisprimary`;
+  const result = await runQuery(identifier, sql);
+  if (result.error) return [];
+  return result.rows.map((r) => r[0] ?? "");
+}
+
+export async function getRows(
+  identifier: string,
+  schema: string,
+  table: string,
+  limit = 200,
+): Promise<QueryResult> {
+  return runQuery(
+    identifier,
+    `SELECT * FROM ${ident(schema)}.${ident(table)} LIMIT ${limit}`,
+  );
+}
+
+export async function insertRow(
+  identifier: string,
+  schema: string,
+  table: string,
+  values: Record<string, string>,
+): Promise<QueryResult> {
+  const cols = Object.keys(values).filter((c) => values[c] !== "");
+  if (cols.length === 0) {
+    return { columns: [], rows: [], rowCount: 0, error: "No values provided." };
+  }
+  const sql =
+    `INSERT INTO ${ident(schema)}.${ident(table)} ` +
+    `(${cols.map(ident).join(", ")}) VALUES ` +
+    `(${cols.map((c) => literal(values[c] ?? "")).join(", ")})`;
+  return runQuery(identifier, sql);
+}
+
+export async function updateRow(
+  identifier: string,
+  schema: string,
+  table: string,
+  key: Record<string, string>,
+  values: Record<string, string>,
+): Promise<QueryResult> {
+  const setCols = Object.keys(values);
+  const whereCols = Object.keys(key);
+  if (setCols.length === 0) {
+    return { columns: [], rows: [], rowCount: 0, error: "No changes to apply." };
+  }
+  if (whereCols.length === 0) {
+    return {
+      columns: [],
+      rows: [],
+      rowCount: 0,
+      error: "Table has no primary key to identify the row.",
+    };
+  }
+  const set = setCols
+    .map((c) => `${ident(c)} = ${literal(values[c] ?? "")}`)
+    .join(", ");
+  const where = whereCols
+    .map((c) => `${ident(c)} = ${literal(key[c] ?? "")}`)
+    .join(" AND ");
+  return runQuery(
+    identifier,
+    `UPDATE ${ident(schema)}.${ident(table)} SET ${set} WHERE ${where}`,
+  );
+}
+
+export async function deleteRow(
+  identifier: string,
+  schema: string,
+  table: string,
+  key: Record<string, string>,
+): Promise<QueryResult> {
+  const whereCols = Object.keys(key);
+  if (whereCols.length === 0) {
+    return {
+      columns: [],
+      rows: [],
+      rowCount: 0,
+      error: "Table has no primary key to identify the row.",
+    };
+  }
+  const where = whereCols
+    .map((c) => `${ident(c)} = ${literal(key[c] ?? "")}`)
+    .join(" AND ");
+  return runQuery(
+    identifier,
+    `DELETE FROM ${ident(schema)}.${ident(table)} WHERE ${where}`,
+  );
+}
+
 export async function listTables(identifier: string): Promise<DbTable[]> {
   const sql =
     "SELECT n.nspname AS schema, c.relname AS name, " +

@@ -145,11 +145,10 @@ export default function InstanceDetail({
     });
   };
 
-  const viewTable = (table: DbTable) => {
-    const query = `SELECT * FROM "${table.schema}"."${table.name}" LIMIT 100;`;
-    setActiveTabId("query");
-    run(query);
-  };
+  const rowsHref = (table: DbTable) =>
+    `/services/rds/${encodeURIComponent(identifier)}/${encodeURIComponent(
+      `${table.schema}.${table.name}`,
+    )}`;
 
   if (error || !instance) {
     return (
@@ -263,10 +262,10 @@ export default function InstanceDetail({
                       isRowHeader: true,
                       cell: (t) => (
                         <Link
-                          href="#"
+                          href={rowsHref(t)}
                           onFollow={(event) => {
                             event.preventDefault();
-                            viewTable(t);
+                            router.push(rowsHref(t));
                           }}
                         >
                           {t.schema}.{t.name}

@@ -1,8 +1,21 @@
 import {
+  CreateDBInstanceCommand,
+  DeleteDBInstanceCommand,
   DescribeDBInstancesCommand,
   RDSClient,
 } from "@aws-sdk/client-rds";
 import { clientConfig } from "@/lib/aws/config";
+
+export interface CreateDbInstanceInput {
+  identifier: string;
+  engine: string;
+  engineVersion: string;
+  instanceClass: string;
+  allocatedStorage: number;
+  masterUsername: string;
+  masterPassword: string;
+  dbName: string;
+}
 
 export interface DbInstance {
   identifier: string;
@@ -77,6 +90,33 @@ export async function listDbInstances(): Promise<DbInstance[]> {
   } while (marker);
 
   return instances.sort((a, b) => a.identifier.localeCompare(b.identifier));
+}
+
+export async function createDbInstance(
+  input: CreateDbInstanceInput,
+): Promise<void> {
+  await rdsClient().send(
+    new CreateDBInstanceCommand({
+      DBInstanceIdentifier: input.identifier,
+      Engine: input.engine,
+      EngineVersion: input.engineVersion || undefined,
+      DBInstanceClass: input.instanceClass,
+      AllocatedStorage: input.allocatedStorage,
+      MasterUsername: input.masterUsername,
+      MasterUserPassword: input.masterPassword,
+      DBName: input.dbName || undefined,
+    }),
+  );
+}
+
+export async function deleteDbInstance(identifier: string): Promise<void> {
+  await rdsClient().send(
+    new DeleteDBInstanceCommand({
+      DBInstanceIdentifier: identifier,
+      SkipFinalSnapshot: true,
+      DeleteAutomatedBackups: true,
+    }),
+  );
 }
 
 export async function getDbInstance(
