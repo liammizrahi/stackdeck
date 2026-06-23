@@ -12,7 +12,7 @@ import Header from "@cloudscape-design/components/header";
 import KeyValuePairs from "@cloudscape-design/components/key-value-pairs";
 import SpaceBetween from "@cloudscape-design/components/space-between";
 import Table from "@cloudscape-design/components/table";
-import Textarea from "@cloudscape-design/components/textarea";
+import JsonEditor from "@/components/JsonEditor";
 import type { SnsSubscription } from "@/lib/aws/sns";
 import { publishAction } from "../actions";
 
@@ -91,13 +91,13 @@ export default function TopicDetail({
                 </Alert>
               )
             )}
-            <FormField label="Message">
-              <Textarea
-                value={message}
-                onChange={({ detail }) => setMessage(detail.value)}
-                placeholder="Enter message body"
-                rows={6}
-              />
+            <FormField
+              label="Message"
+              description="Enter a JSON or plain-text message body."
+            >
+              {mounted ? (
+                <JsonEditor value={message} onChange={setMessage} />
+              ) : null}
             </FormField>
             <Box float="right">
               <Button
