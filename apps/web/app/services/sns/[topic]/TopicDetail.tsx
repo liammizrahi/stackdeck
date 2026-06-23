@@ -15,6 +15,7 @@ import SpaceBetween from "@cloudscape-design/components/space-between";
 import Table from "@cloudscape-design/components/table";
 import Tabs from "@cloudscape-design/components/tabs";
 import JsonEditor from "@/components/JsonEditor";
+import { columnGroups } from "@/lib/kv";
 import type { SnsSubscription } from "@/lib/aws/sns";
 import { publishAction } from "../actions";
 
@@ -79,7 +80,7 @@ export default function TopicDetail({
         <Container header={<Header variant="h2">Details</Header>}>
           <KeyValuePairs
             columns={3}
-            items={[
+            items={columnGroups([
               { label: "Name", value: name },
               {
                 label: "ARN",
@@ -92,7 +93,7 @@ export default function TopicDetail({
                   />
                 ),
               },
-            ]}
+            ], 3)}
           />
         </Container>
 

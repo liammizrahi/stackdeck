@@ -13,6 +13,7 @@ import SpaceBetween from "@cloudscape-design/components/space-between";
 import Table from "@cloudscape-design/components/table";
 import Tabs from "@cloudscape-design/components/tabs";
 import type { BucketTag, S3Object } from "@/lib/aws/s3";
+import { columnGroups } from "@/lib/kv";
 import ObjectsTable from "./ObjectsTable";
 
 function formatDate(value: string | null) {
@@ -65,7 +66,7 @@ export default function BucketDetail({
         <Container header={<Header variant="h2">Details</Header>}>
           <KeyValuePairs
             columns={3}
-            items={[
+            items={columnGroups([
               {
                 label: "ARN",
                 value: (
@@ -79,7 +80,7 @@ export default function BucketDetail({
               },
               { label: "AWS Region", value: region },
               { label: "Creation date", value: formatDate(creationDate) },
-            ]}
+            ], 3)}
           />
         </Container>
 
@@ -105,7 +106,7 @@ export default function BucketDetail({
                   <Container header={<Header variant="h2">Properties</Header>}>
                     <KeyValuePairs
                       columns={3}
-                      items={[
+                      items={columnGroups([
                         {
                           label: "ARN",
                           value: (
@@ -119,7 +120,7 @@ export default function BucketDetail({
                         },
                         { label: "AWS Region", value: region },
                         { label: "Creation date", value: formatDate(creationDate) },
-                      ]}
+                      ], 3)}
                     />
                   </Container>
 

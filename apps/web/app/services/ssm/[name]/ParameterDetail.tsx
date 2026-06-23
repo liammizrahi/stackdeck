@@ -14,6 +14,7 @@ import SpaceBetween from "@cloudscape-design/components/space-between";
 import Table from "@cloudscape-design/components/table";
 import Tabs from "@cloudscape-design/components/tabs";
 import type { ParameterTag } from "@/lib/aws/ssm";
+import { columnGroups } from "@/lib/kv";
 
 function formatDate(value: string | null) {
   return value ? new Date(value).toLocaleString() : "—";
@@ -68,7 +69,7 @@ export default function ParameterDetail({
         <Container header={<Header variant="h2">Details</Header>}>
           <KeyValuePairs
             columns={3}
-            items={[
+            items={columnGroups([
               { label: "Name", value: name },
               { label: "Type", value: type || "—" },
               { label: "Version", value: String(version) },
@@ -86,7 +87,7 @@ export default function ParameterDetail({
                 ),
               },
               { label: "Last modified", value: formatDate(lastModifiedDate) },
-            ]}
+            ], 3)}
           />
         </Container>
 

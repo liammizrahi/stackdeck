@@ -14,6 +14,7 @@ import SpaceBetween from "@cloudscape-design/components/space-between";
 import StatusIndicator from "@cloudscape-design/components/status-indicator";
 import Table from "@cloudscape-design/components/table";
 import Tabs from "@cloudscape-design/components/tabs";
+import { columnGroups } from "@/lib/kv";
 import type { DbInstance } from "@/lib/aws/rds";
 
 function instanceStatus(
@@ -95,7 +96,7 @@ export default function InstanceDetail({
         <Container header={<Header variant="h2">Details</Header>}>
           <KeyValuePairs
             columns={3}
-            items={[
+            items={columnGroups([
               { label: "Engine", value: instance.engine },
               { label: "Engine version", value: nullableString(instance.engineVersion) },
               {
@@ -136,7 +137,7 @@ export default function InstanceDetail({
                   "—"
                 ),
               },
-            ]}
+            ], 3)}
           />
         </Container>
 

@@ -14,6 +14,7 @@ import SpaceBetween from "@cloudscape-design/components/space-between";
 import Table from "@cloudscape-design/components/table";
 import Tabs from "@cloudscape-design/components/tabs";
 import type { LambdaFunctionDetail, LambdaFunctionTag } from "@/lib/aws/lambda";
+import { columnGroups } from "@/lib/kv";
 import { formatBytes } from "@/lib/utils";
 
 function formatDate(value: string) {
@@ -69,7 +70,7 @@ export default function FunctionDetail({
         <Container header={<Header variant="h2">Details</Header>}>
           <KeyValuePairs
             columns={3}
-            items={[
+            items={columnGroups([
               { label: "Runtime", value: fn.runtime || "—" },
               { label: "Handler", value: fn.handler || "—" },
               { label: "Memory (MB)", value: `${fn.memory} MB` },
@@ -88,7 +89,7 @@ export default function FunctionDetail({
                   />
                 ),
               },
-            ]}
+            ], 3)}
           />
         </Container>
 

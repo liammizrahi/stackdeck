@@ -18,6 +18,7 @@ import Table from "@cloudscape-design/components/table";
 import Tabs from "@cloudscape-design/components/tabs";
 import TextFilter from "@cloudscape-design/components/text-filter";
 import type { SqsMessage, SqsQueue, SqsQueueTag } from "@/lib/aws/sqs";
+import { columnGroups } from "@/lib/kv";
 import { purgeQueueAction } from "../actions";
 
 export default function QueueDetail({
@@ -177,7 +178,7 @@ export default function QueueDetail({
         <Container header={<Header variant="h2">Details</Header>}>
           <KeyValuePairs
             columns={3}
-            items={[
+            items={columnGroups([
               { label: "Name", value: queue.name },
               {
                 label: "ARN",
@@ -194,7 +195,7 @@ export default function QueueDetail({
               { label: "In flight", value: queue.inflight },
               { label: "Delayed", value: queue.delayed },
               { label: "Visibility timeout (s)", value: queue.visibilityTimeout },
-            ]}
+            ], 3)}
           />
         </Container>
 

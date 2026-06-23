@@ -17,6 +17,7 @@ import Table from "@cloudscape-design/components/table";
 import Tabs from "@cloudscape-design/components/tabs";
 import TextFilter from "@cloudscape-design/components/text-filter";
 import type { TableDetail as TableDetailType, ScanResult, DynamoTableTag } from "@/lib/aws/dynamodb";
+import { columnGroups } from "@/lib/kv";
 import { formatBytes } from "@/lib/utils";
 
 function renderCell(value: unknown): string {
@@ -158,7 +159,7 @@ export default function TableDetail({
         <Container header={<Header variant="h2">Details</Header>}>
           <KeyValuePairs
             columns={3}
-            items={[
+            items={columnGroups([
               { label: "Status", value: detail.status },
               { label: "Item count", value: detail.itemCount.toLocaleString() },
               { label: "Size", value: formatBytes(detail.sizeBytes) },
@@ -180,7 +181,7 @@ export default function TableDetail({
                   />
                 ),
               },
-            ]}
+            ], 3)}
           />
         </Container>
 
