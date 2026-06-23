@@ -264,26 +264,28 @@ export default function CloudShell({ region }: { region: string }) {
         </div>
       </div>
 
-      <Modal
-        visible={confirmClose}
-        onDismiss={() => setConfirmClose(false)}
-        header="Close CloudShell?"
-        footer={
-          <Box float="right">
-            <SpaceBetween direction="horizontal" size="xs">
-              <Button variant="link" onClick={() => setConfirmClose(false)}>
-                Cancel
-              </Button>
-              <Button variant="primary" onClick={confirmCloseSession}>
-                Close session
-              </Button>
-            </SpaceBetween>
-          </Box>
-        }
-      >
-        Closing CloudShell ends your shell session. Your command history and any
-        running command will be lost.
-      </Modal>
+      {confirmClose && (
+        <Modal
+          visible
+          onDismiss={() => setConfirmClose(false)}
+          header="Close CloudShell?"
+          footer={
+            <Box float="right">
+              <SpaceBetween direction="horizontal" size="xs">
+                <Button variant="link" onClick={() => setConfirmClose(false)}>
+                  Cancel
+                </Button>
+                <Button variant="primary" onClick={confirmCloseSession}>
+                  Close session
+                </Button>
+              </SpaceBetween>
+            </Box>
+          }
+        >
+          Closing CloudShell ends your shell session. Your command history and any
+          running command will be lost.
+        </Modal>
+      )}
     </div>
   );
 }
