@@ -46,38 +46,71 @@ Local AWS emulators are fantastic for development, but you usually poke at them 
 - **S3 browser** — navigate prefixes, preview objects, copy ARNs.
 - **Create wizards & forms** — resource creation uses Cloudscape wizards/forms instead of bare modals.
 
+> [!NOTE]
+> The RDS **SQL editor** and **row editing** run queries by exec'ing into the local
+> database container, so they need access to the host Docker socket. They work out of
+> the box when running from source; in Docker, mount `/var/run/docker.sock` into the
+> StackDeck container and use an image that includes the Docker CLI.
+
 ## 🚀 Quick start
 
-### Prerequisites
+StackDeck ships as a Docker image. Run the bundled stack, drop it into your own
+`docker-compose.yml`, or run it straight from source. AWS settings are optional —
+everything defaults to a local emulator on `http://localhost:4566`.
 
-- **Node.js ≥ 18** and **npm**
-- A running **MiniStack** or **LocalStack** on `http://localhost:4566`
-- **Docker** — required by your emulator (and by StackDeck's RDS SQL features, which exec into the local database container)
+### Option A — Docker Compose (recommended)
 
-### 1. Start a local AWS emulator
+Brings up StackDeck **and** a MiniStack emulator together:
 
 ```bash
-# MiniStack (recommended)
-docker run --rm -p 4566:4566 -v /var/run/docker.sock:/var/run/docker.sock ministackorg/ministack
-
-# …or LocalStack
-docker run --rm -p 4566:4566 localstack/localstack
+git clone https://github.com/liammizrahi/stackdeck.git
+cd stackdeck
+docker compose up
 ```
 
-### 2. Run StackDeck
+Open **[http://localhost:4577](http://localhost:4577)**. 🎉
+
+### Option B — Add StackDeck to your existing Compose
+
+Already running MiniStack or LocalStack? Drop in the StackDeck service and point
+it at your emulator:
+
+```yaml
+services:
+  stackdeck:
+    image: stackdeck            # or: build: .
+    ports:
+      - "4577:4577"
+    environment:
+      AWS_ENDPOINT_URL: http://ministack:4566   # your emulator's service name
+    depends_on:
+      - ministack
+```
+
+### Option C — Docker run (emulator on your host)
+
+```bash
+docker build -t stackdeck .
+docker run --rm -p 4577:4577 \
+  --add-host=host.docker.internal:host-gateway \
+  -e AWS_ENDPOINT_URL=http://host.docker.internal:4566 \
+  stackdeck
+```
+
+### Option D — From source (Node ≥ 18)
 
 ```bash
 git clone https://github.com/liammizrahi/stackdeck.git
 cd stackdeck
 npm install
-npm run dev
+npm run dev   # http://localhost:4577
 ```
-
-Open **[http://localhost:4577](http://localhost:4577)**. 🎉
 
 ## ⚙️ Configuration
 
-StackDeck reads standard AWS environment variables. Create `apps/web/.env.local` to override the defaults:
+All AWS settings are **optional** — StackDeck defaults to a local emulator on
+`http://localhost:4566` with throwaway credentials. Override any of them via
+environment variables:
 
 | Variable | Default | Description |
 | --- | --- | --- |
@@ -86,11 +119,14 @@ StackDeck reads standard AWS environment variables. Create `apps/web/.env.local`
 | `AWS_ACCESS_KEY_ID` | `test` | Dummy credentials for the emulator |
 | `AWS_SECRET_ACCESS_KEY` | `test` | Dummy credentials for the emulator |
 
-```dotenv
-# apps/web/.env.local
-AWS_ENDPOINT_URL=http://localhost:4566
-AWS_REGION=us-east-1
-```
+> [!IMPORTANT]
+> **Networking inside Docker:** `localhost` points at the StackDeck container
+> itself, not your host. When running in a container, set `AWS_ENDPOINT_URL` to
+> either your emulator's **Compose service name** (e.g. `http://ministack:4566`)
+> or **`http://host.docker.internal:4566`** to reach an emulator on your host
+> (add `--add-host=host.docker.internal:host-gateway` on Linux).
+
+Running from source? You can also put these in `apps/web/.env.local`.
 
 ## 🧱 Tech stack
 

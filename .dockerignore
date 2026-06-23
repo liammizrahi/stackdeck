@@ -1,0 +1,11 @@
+**/node_modules
+**/.next
+**/.turbo
+**/dist
+.git
+.github
+.idea
+.vscode
+**/.env*
+**/*.log
+.playwright-mcp

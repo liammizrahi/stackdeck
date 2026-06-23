@@ -1,0 +1,20 @@
+services:
+  ministack:
+    image: ministackorg/ministack
+    ports:
+      - "4566:4566"
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+
+  stackdeck:
+    build: .
+    image: stackdeck
+    ports:
+      - "4577:4577"
+    environment:
+      AWS_ENDPOINT_URL: http://ministack:4566
+      AWS_REGION: us-east-1
+      AWS_ACCESS_KEY_ID: test
+      AWS_SECRET_ACCESS_KEY: test
+    depends_on:
+      - ministack
