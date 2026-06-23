@@ -32,19 +32,7 @@ StackDeck is published as a Docker image — pull it and point it at any LocalSt
 or MiniStack endpoint. No checkout, no build step. AWS settings are optional and
 default to a local emulator on `http://localhost:4566`.
 
-### Run with `docker run`
-
-```bash
-docker run --rm -p 4577:4577 \
-  --add-host=host.docker.internal:host-gateway \
-  -e AWS_ENDPOINT_URL=http://host.docker.internal:4566 \
-  ghcr.io/liammizrahi/stackdeck
-```
-
-Open **[http://localhost:4577](http://localhost:4577)**. 🎉
-(`host.docker.internal` lets the container reach an emulator running on your host.)
-
-### Add to your `docker-compose.yml`
+### Add to your `docker-compose.yml` (recommended)
 
 Drop the service in next to your emulator and point it at the right endpoint:
 
@@ -60,7 +48,18 @@ services:
       - ministack
 ```
 
-Then `docker compose up` and open **http://localhost:4577**.
+Then `docker compose up` and open **[http://localhost:4577](http://localhost:4577)**. 🎉
+
+### Run with `docker run`
+
+```bash
+docker run --rm -p 4577:4577 \
+  --add-host=host.docker.internal:host-gateway \
+  -e AWS_ENDPOINT_URL=http://host.docker.internal:4566 \
+  ghcr.io/liammizrahi/stackdeck
+```
+
+(`host.docker.internal` lets the container reach an emulator running on your host.)
 
 ## ⚙️ Configuration
 
