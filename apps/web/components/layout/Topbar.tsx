@@ -4,18 +4,21 @@ import TopNavigation from "@cloudscape-design/components/top-navigation";
 import { useRouter } from "next/navigation";
 import SearchBar from "./SearchBar";
 import { regionGroups } from "@/lib/aws/regions";
+import { saveSettingsAction } from "@/app/settings/actions";
 
 export default function Topbar({
   endpoint,
   region,
+  accessKeyId,
 }: {
   endpoint: string;
   region: string;
+  accessKeyId: string;
 }) {
   const router = useRouter();
 
-  const selectRegion = (code: string) => {
-    document.cookie = `stackdeck_region=${code}; path=/; max-age=31536000`;
+  const selectRegion = async (code: string) => {
+    await saveSettingsAction({ region: code });
     router.refresh();
   };
 
@@ -61,24 +64,25 @@ export default function Topbar({
           })),
         },
         {
-          type: "menu-dropdown",
+          type: "button",
           iconName: "settings",
           ariaLabel: "Settings",
           title: "Settings",
-          items: [
-            { id: "endpoint", text: `Endpoint: ${endpoint}` },
-            { id: "region", text: `Region: ${region}` },
-          ],
+          onClick: () => router.push("/settings"),
         },
         {
           type: "menu-dropdown",
-          text: "test",
+          text: accessKeyId,
           description: endpoint,
           iconName: "user-profile",
           ariaLabel: "Account",
+          onItemClick: ({ detail }) => {
+            if (detail.id === "settings") router.push("/settings");
+          },
           items: [
-            { id: "access-key", text: "Access key: test" },
+            { id: "access-key", text: `Access key: ${accessKeyId}` },
             { id: "endpoint", text: endpoint },
+            { id: "settings", text: "Connection settings" },
           ],
         },
       ]}

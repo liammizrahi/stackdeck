@@ -10,10 +10,12 @@ import Breadcrumbs from "./Breadcrumbs";
 export default function AppShell({
   endpoint,
   region,
+  accessKeyId,
   children,
 }: {
   endpoint: string;
   region: string;
+  accessKeyId: string;
   children: React.ReactNode;
 }) {
   const pathname = usePathname();
@@ -33,7 +35,7 @@ export default function AppShell({
   return (
     <>
       <div id="top-nav">
-        <Topbar endpoint={endpoint} region={region} />
+        <Topbar endpoint={endpoint} region={region} accessKeyId={accessKeyId} />
       </div>
       <AppLayoutToolbar
         headerSelector="#top-nav"
