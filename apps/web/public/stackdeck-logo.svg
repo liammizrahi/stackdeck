@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 280 176" role="img" aria-label="StackDeck">
+  <title>StackDeck</title>
+  <g fill="none" stroke="#ED8E33" stroke-width="9.5" stroke-linecap="round" stroke-linejoin="round">
+    <!-- left curly brace { -->
+    <path d="M70 48 C58 48 55 52 55 64 C55 76 52 84 44 88 C52 92 55 100 55 112 C55 124 58 128 70 128" />
+    <!-- right curly brace } -->
+    <path d="M210 48 C222 48 225 52 225 64 C225 76 228 84 236 88 C228 92 225 100 225 112 C225 124 222 128 210 128" />
+    <!-- smile -->
+    <path d="M80 100 C118 150 162 150 200 100" />
+  </g>
+</svg>
