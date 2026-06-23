@@ -1,159 +1,145 @@
-# Turborepo starter
+<div align="center">
 
-This Turborepo starter is maintained by the Turborepo core team.
+<img src=".github/assets/logo.svg" alt="StackDeck" width="300" />
 
-## Using this example
+### The AWS Management Console for your local cloud
 
-Run the following command:
+**StackDeck** is a self-hosted, open-source web console for [**MiniStack**](https://ministack.org) and [**LocalStack**](https://localstack.cloud) — browse and manage your local AWS resources through a faithful recreation of the real AWS Console.
 
-```sh
-npx create-turbo@latest
+[![License: MIT](https://img.shields.io/badge/License-MIT-ED8E33.svg)](LICENSE)
+[![Next.js](https://img.shields.io/badge/Next.js-16-000000?logo=next.js)](https://nextjs.org)
+[![Cloudscape](https://img.shields.io/badge/Cloudscape-Design%20System-232F3E)](https://cloudscape.design)
+[![TypeScript](https://img.shields.io/badge/TypeScript-strict-3178C6?logo=typescript&logoColor=white)](https://www.typescriptlang.org)
+[![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](#-contributing)
+
+</div>
+
+---
+
+## ✨ Why StackDeck?
+
+Local AWS emulators are fantastic for development, but you usually poke at them through the CLI or `curl`. StackDeck gives you the **real console experience** on top of your local endpoint:
+
+- 🎯 **Looks like the real thing** — built on [Cloudscape](https://cloudscape.design), AWS's own open-source console design system, down to the Amazon Ember typeface and gradient service icons.
+- 🔌 **Zero config** — points at `http://localhost:4566` out of the box. One env var to repoint it anywhere.
+- 🗂️ **17 services and counting** — tables, detail tabs, ARNs, tags, property filters, and region switching, all wired to the live AWS SDK.
+- 🧪 **Actually interactive** — run SQL against RDS, tail CloudWatch logs, browse S3 objects, publish to SNS, and create resources through proper wizards — not just read-only views.
+- 🐳 **Self-hosted & open source** — runs anywhere Node runs; no account, no telemetry, no cost.
+
+## 🧩 Services
+
+| Category | Services |
+| --- | --- |
+| **Compute** | EC2 · Lambda |
+| **Storage** | S3 |
+| **Database** | DynamoDB · RDS · ElastiCache |
+| **Networking & Content Delivery** | CloudFront |
+| **Analytics** | Athena |
+| **Application Integration** | SQS · SNS · API Gateway · EventBridge |
+| **Security, Identity & Compliance** | IAM · Cognito |
+| **Management & Governance** | Parameter Store · AppConfig · CloudWatch |
+
+### Highlights
+
+- **RDS explorer** — browse tables, run ad-hoc SQL in a syntax-highlighted editor, add / edit / delete rows, and spin up new instances through a multi-step wizard.
+- **CloudWatch Logs** — stream-by-stream viewer with live tailing, time-range filters, and JSON expansion.
+- **S3 browser** — navigate prefixes, preview objects, copy ARNs.
+- **Create wizards & forms** — resource creation uses Cloudscape wizards/forms instead of bare modals.
+
+## 🚀 Quick start
+
+### Prerequisites
+
+- **Node.js ≥ 18** and **npm**
+- A running **MiniStack** or **LocalStack** on `http://localhost:4566`
+- **Docker** — required by your emulator (and by StackDeck's RDS SQL features, which exec into the local database container)
+
+### 1. Start a local AWS emulator
+
+```bash
+# MiniStack (recommended)
+docker run --rm -p 4566:4566 -v /var/run/docker.sock:/var/run/docker.sock ministackorg/ministack
+
+# …or LocalStack
+docker run --rm -p 4566:4566 localstack/localstack
 ```
 
-## What's inside?
+### 2. Run StackDeck
 
-This Turborepo includes the following packages/apps:
-
-### Apps and Packages
-
-- `docs`: a [Next.js](https://nextjs.org/) app
-- `web`: another [Next.js](https://nextjs.org/) app
-- `@repo/ui`: a stub React component library shared by both `web` and `docs` applications
-- `@repo/eslint-config`: `eslint` configurations (includes `eslint-config-next` and `eslint-config-prettier`)
-- `@repo/typescript-config`: `tsconfig.json`s used throughout the monorepo
-
-Each package/app is 100% [TypeScript](https://www.typescriptlang.org/).
-
-### Utilities
-
-This Turborepo has some additional tools already setup for you:
-
-- [TypeScript](https://www.typescriptlang.org/) for static type checking
-- [ESLint](https://eslint.org/) for code linting
-- [Prettier](https://prettier.io) for code formatting
-
-### Build
-
-To build all apps and packages, run the following command:
-
-With [global `turbo`](https://turborepo.dev/docs/getting-started/installation#global-installation) installed (recommended):
-
-```sh
-cd my-turborepo
-turbo build
+```bash
+git clone https://github.com/liammizrahi/stackdeck.git
+cd stackdeck
+npm install
+npm run dev
 ```
 
-Without global `turbo`, use your package manager:
+Open **[http://localhost:4577](http://localhost:4577)**. 🎉
 
-```sh
-cd my-turborepo
-npx turbo build
-npm dlx turbo build
-npm exec turbo build
+## ⚙️ Configuration
+
+StackDeck reads standard AWS environment variables. Create `apps/web/.env.local` to override the defaults:
+
+| Variable | Default | Description |
+| --- | --- | --- |
+| `AWS_ENDPOINT_URL` | `http://localhost:4566` | Local AWS endpoint (MiniStack / LocalStack) |
+| `AWS_REGION` | `us-east-1` | Region used for all clients |
+| `AWS_ACCESS_KEY_ID` | `test` | Dummy credentials for the emulator |
+| `AWS_SECRET_ACCESS_KEY` | `test` | Dummy credentials for the emulator |
+
+```dotenv
+# apps/web/.env.local
+AWS_ENDPOINT_URL=http://localhost:4566
+AWS_REGION=us-east-1
 ```
 
-You can build a specific package by using a [filter](https://turborepo.dev/docs/crafting-your-repository/running-tasks#using-filters):
+## 🧱 Tech stack
 
-With [global `turbo`](https://turborepo.dev/docs/getting-started/installation#global-installation) installed:
+- **[Next.js 16](https://nextjs.org)** (App Router, React Server Components, Server Actions) + **React 19**
+- **[Cloudscape Design System](https://cloudscape.design)** — AWS's open-source console components
+- **[AWS SDK for JavaScript v3](https://docs.aws.amazon.com/sdk-for-javascript/v3/developer-guide/welcome.html)**
+- **TypeScript** (strict) · **[Turborepo](https://turborepo.com)** monorepo · **Vitest** · **ESLint** · **Prettier**
 
-```sh
-turbo build --filter=docs
+## 📂 Project structure
+
+```
+stackdeck/
+├─ apps/
+│  └─ web/                    # Next.js console (workspace: "web")
+│     ├─ app/services/        # one route group per AWS service
+│     ├─ components/          # layout (top bar, sidebar) + shared UI
+│     ├─ lib/aws/             # AWS SDK v3 data layer — one file per service
+│     └─ public/aws-icons/    # gradient service icons
+├─ turbo.json
+└─ package.json               # npm workspaces + Turborepo
 ```
 
-Without global `turbo`:
+Each service follows the same shape: a `lib/aws/<service>.ts` data layer and an `app/services/<service>/` route with a list page and detail pages. Adding a service is mostly a copy-paste-and-wire affair.
 
-```sh
-npx turbo build --filter=docs
-npm exec turbo build --filter=docs
-npm exec turbo build --filter=docs
-```
+## 🛠️ Development
 
-### Develop
+| Command | Description |
+| --- | --- |
+| `npm run dev` | Start the dev server on port **4577** |
+| `npm run build` | Production build |
+| `npm run lint` | ESLint (zero-warning policy) |
+| `npm run check-types` | TypeScript type-check |
+| `npm run test -w web` | Run Vitest unit tests |
+| `npm run format` | Prettier across the repo |
 
-To develop all apps and packages, run the following command:
+## 🗺️ Roadmap
 
-With [global `turbo`](https://turborepo.dev/docs/getting-started/installation#global-installation) installed (recommended):
+- More services (Step Functions, Secrets Manager, Kinesis, …)
+- Deeper write operations and resource editing
+- Packaged Docker image for one-command self-hosting
 
-```sh
-cd my-turborepo
-turbo dev
-```
+## 🤝 Contributing
 
-Without global `turbo`, use your package manager:
+Contributions are welcome! New services follow a clear, repeatable pattern (see [Project structure](#-project-structure)). Open an issue to discuss larger changes, then send a PR — please run `npm run check-types && npm run lint && npm run build` before submitting.
 
-```sh
-cd my-turborepo
-npx turbo dev
-npm exec turbo dev
-npm exec turbo dev
-```
+## 📄 License
 
-You can develop a specific package by using a [filter](https://turborepo.dev/docs/crafting-your-repository/running-tasks#using-filters):
+[MIT](LICENSE) © Liam Mizrahi
 
-With [global `turbo`](https://turborepo.dev/docs/getting-started/installation#global-installation) installed:
-
-```sh
-turbo dev --filter=web
-```
-
-Without global `turbo`:
-
-```sh
-npx turbo dev --filter=web
-npm exec turbo dev --filter=web
-npm exec turbo dev --filter=web
-```
-
-### Remote Caching
-
-> [!TIP]
-> Vercel Remote Cache is free for all plans. Get started today at [vercel.com](https://vercel.com/signup?utm_source=remote-cache-sdk&utm_campaign=free_remote_cache).
-
-Turborepo can use a technique known as [Remote Caching](https://turborepo.dev/docs/core-concepts/remote-caching) to share cache artifacts across machines, enabling you to share build caches with your team and CI/CD pipelines.
-
-By default, Turborepo will cache locally. To enable Remote Caching you will need an account with Vercel. If you don't have an account you can [create one](https://vercel.com/signup?utm_source=turborepo-examples), then enter the following commands:
-
-With [global `turbo`](https://turborepo.dev/docs/getting-started/installation#global-installation) installed (recommended):
-
-```sh
-cd my-turborepo
-turbo login
-```
-
-Without global `turbo`, use your package manager:
-
-```sh
-cd my-turborepo
-npx turbo login
-npm exec turbo login
-npm exec turbo login
-```
-
-This will authenticate the Turborepo CLI with your [Vercel account](https://vercel.com/docs/concepts/personal-accounts/overview).
-
-Next, you can link your Turborepo to your Remote Cache by running the following command from the root of your Turborepo:
-
-With [global `turbo`](https://turborepo.dev/docs/getting-started/installation#global-installation) installed:
-
-```sh
-turbo link
-```
-
-Without global `turbo`:
-
-```sh
-npx turbo link
-npm exec turbo link
-npm exec turbo link
-```
-
-## Useful Links
-
-Learn more about the power of Turborepo:
-
-- [Tasks](https://turborepo.dev/docs/crafting-your-repository/running-tasks)
-- [Caching](https://turborepo.dev/docs/crafting-your-repository/caching)
-- [Remote Caching](https://turborepo.dev/docs/core-concepts/remote-caching)
-- [Filtering](https://turborepo.dev/docs/crafting-your-repository/running-tasks#using-filters)
-- [Configuration Options](https://turborepo.dev/docs/reference/configuration)
-- [CLI Usage](https://turborepo.dev/docs/reference/command-line-reference)
+<div align="center">
+<sub>StackDeck is not affiliated with Amazon Web Services. "AWS" and related marks are trademarks of Amazon.com, Inc. or its affiliates.</sub>
+</div>
