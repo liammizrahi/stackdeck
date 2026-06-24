@@ -6,6 +6,8 @@
 
 **StackDeck** is a self-hosted, open-source web console for [**MiniStack**](https://ministack.org) and [**LocalStack**](https://localstack.cloud) — browse and manage your local AWS resources through a faithful recreation of the real AWS Console.
 
+[![Latest release](https://img.shields.io/github/v/release/liammizrahi/stackdeck?label=latest&color=ED8E33)](https://github.com/liammizrahi/stackdeck/pkgs/container/stackdeck)
+[![GitHub stars](https://img.shields.io/github/stars/liammizrahi/stackdeck?color=ED8E33)](https://github.com/liammizrahi/stackdeck/stargazers)
 [![License: MIT](https://img.shields.io/badge/License-MIT-ED8E33.svg)](LICENSE)
 [![Next.js](https://img.shields.io/badge/Next.js-16-000000?logo=next.js)](https://nextjs.org)
 [![Cloudscape](https://img.shields.io/badge/Cloudscape-Design%20System-232F3E)](https://cloudscape.design)
