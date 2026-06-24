@@ -165,7 +165,17 @@ npm run dev        # http://localhost:4577
 | `npm run test -w web` | Vitest unit tests |
 | `npm run format` | Prettier across the repo |
 
+## 👥 Contributors
+
+Thanks to everyone who has contributed to StackDeck!
+
+<a href="https://github.com/liammizrahi/stackdeck/graphs/contributors">
+  <img src="https://contrib.rocks/image?repo=liammizrahi/stackdeck" alt="Contributors" />
+</a>
+
 ## 📄 License
+
+![License](https://www.shieldcn.dev/github/license/liammizrahi/stackdeck.svg?variant=ghost&size=xs)
 
 [MIT](LICENSE) © Liam Mizrahi
 
