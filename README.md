@@ -15,7 +15,7 @@
 ![Open issues](https://www.shieldcn.dev/github/open-issues/liammizrahi/stackdeck.svg?variant=default&size=xs)
 
 ![AWS](https://shieldcn.dev/badge/AWS-FF9900.svg?variant=branded&size=xs&mode=light&logo=ri:FaAws)
-![Container](https://www.shieldcn.dev/badge/Container-latest-2496ED.svg?logo=docker&variant=branded&size=xs&mode=light)
+![Docker](https://shieldcn.dev/badge/liammizrahi/stackdeck-latest-2496ED.svg?variant=branded&size=xs&mode=light&logo=docker)
 ![Next.js](https://www.shieldcn.dev/badge/dynamic/json.svg?url=https%3A%2F%2Fraw.githubusercontent.com%2Fliammizrahi%2Fstackdeck%2Fmain%2Fapps%2Fweb%2Fpackage.json&query=%24.dependencies.next&label=Next.js&logo=nextdotjs&color=000000&variant=branded&size=xs&mode=light)
 ![Turborepo](https://www.shieldcn.dev/badge/dynamic/json.svg?url=https%3A%2F%2Fraw.githubusercontent.com%2Fliammizrahi%2Fstackdeck%2Fmain%2Fpackage.json&query=%24.devDependencies.turbo&label=Turborepo&logo=turborepo&color=EF4444&variant=branded&size=xs&mode=light)
 ![TypeScript](https://www.shieldcn.dev/badge/dynamic/json.svg?url=https%3A%2F%2Fraw.githubusercontent.com%2Fliammizrahi%2Fstackdeck%2Fmain%2Fpackage.json&query=%24.devDependencies.typescript&label=TypeScript&logo=typescript&color=3178C6&variant=branded&size=xs&mode=light)
