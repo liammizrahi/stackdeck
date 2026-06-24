@@ -8,11 +8,11 @@
 
 ![Project Overview](https://shieldcn.dev/group/github/stars/liammizrahi/stackdeck+github/forks/liammizrahi/stackdeck+github/contributors/liammizrahi/stackdeck+github/license/liammizrahi/stackdeck.svg?variant=secondary&size=xs)
 
-![Release](https://www.shieldcn.dev/github/release/liammizrahi/stackdeck.svg?size=xs&variant=default)
-![CI](https://www.shieldcn.dev/github/ci/liammizrahi/stackdeck.svg?variant=secondary&size=xs)
-![Last commit](https://www.shieldcn.dev/github/last-commit/liammizrahi/stackdeck.svg?variant=secondary&size=xs)
-![Open PRs](https://www.shieldcn.dev/github/open-prs/liammizrahi/stackdeck.svg?variant=secondary&size=xs)
-![Open issues](https://www.shieldcn.dev/github/open-issues/liammizrahi/stackdeck.svg?variant=secondary&size=xs)
+![Release](https://www.shieldcn.dev/github/release/liammizrahi/stackdeck.svg?size=xs&variant=secondary)
+![CI](https://www.shieldcn.dev/github/ci/liammizrahi/stackdeck.svg?variant=default&size=xs)
+![Last commit](https://www.shieldcn.dev/github/last-commit/liammizrahi/stackdeck.svg?variant=default&size=xs)
+![Open PRs](https://www.shieldcn.dev/github/open-prs/liammizrahi/stackdeck.svg?variant=default&size=xs)
+![Open issues](https://www.shieldcn.dev/github/open-issues/liammizrahi/stackdeck.svg?variant=default&size=xs)
 
 ![AWS](https://shieldcn.dev/badge/AWS-FF9900.svg?variant=branded&size=xs&mode=light&logo=ri:FaAws)
 ![Container](https://www.shieldcn.dev/badge/Container-latest-2496ED.svg?logo=docker&variant=branded&size=xs&mode=light)
