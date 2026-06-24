@@ -168,7 +168,7 @@ npm run dev        # http://localhost:4577
 ## 🤍 Contributors
 
 <a href="https://github.com/liammizrahi/stackdeck/graphs/contributors">
-  <img src="https://contrib.rocks/image?repo=liammizrahi/stackdeck" alt="Contributors" width="120" />
+  <img src="https://contrib.rocks/image?repo=liammizrahi/stackdeck" />
 </a>
 
 ## 📄 License
