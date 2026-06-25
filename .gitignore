@@ -42,3 +42,6 @@ yarn-error.log*
 
 # Playwright MCP artifacts
 .playwright-mcp/
+
+# Superpowers docs (local only)
+docs/superpowers/
