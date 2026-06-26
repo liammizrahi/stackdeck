@@ -34,17 +34,30 @@ Local AWS emulators are fantastic for development, but you usually poke at them 
 - 🧪 **Actually interactive** — create and manage resources through proper forms and wizards, not just read-only views.
 - 🐳 **Self-hosted & open source** — a single Docker container; no account, no telemetry, no cost.
 
+## Contents
+
+- [Why StackDeck?](#-why-stackdeck)
+- [How it looks](#-how-it-looks)
+- [Quick start](#-quick-start)
+- [Configuration](#-configuration)
+- [Services](#-services)
+- [Tech stack](#-tech-stack)
+- [Roadmap](#-roadmap)
+- [Contributing](#-contributing)
+- [Contributors](#-contributors)
+- [License](#-license)
+
 ## 📸 How it looks
 
 <div align="center">
 
-**Console home** — a movable-widget dashboard with live connection status and quick links to every service.
+**Console Home**
 
 <img src="docs/assets/console-home-demo.png" alt="StackDeck console home" width="900" />
 
-**Service detail · global search · built-in CloudShell** — inspect resources, jump anywhere with `[Option+S]`, and run commands without leaving the console.
+**Resource Management**
 
-<img src="docs/assets/console-demo.png" alt="StackDeck service detail with global search and CloudShell" width="900" />
+<img src="docs/assets/console-demo.png" alt="StackDeck resource management" width="900" />
 
 </div>
 
