@@ -28,11 +28,11 @@
 
 Local AWS emulators are fantastic for development, but you usually poke at them through the CLI or `curl`. StackDeck gives you the **real console experience** on top of your local endpoint:
 
-- 🎯 **Looks like the real thing** — built on [Cloudscape](https://cloudscape.design), AWS's own open-source console design system, down to the Amazon Ember typeface and gradient service icons.
-- 🔌 **Zero config** — points at `http://localhost:4566` out of the box. One env var to repoint it anywhere.
+- 🎯 **Looks like the real thing** — a faithful recreation of the AWS Management Console.
+- 🔌 **Zero config** — defaults to `http://localhost:4566`; one env var to point it elsewhere.
 - 🗂️ **17 services and counting** — tables, detail tabs, ARNs, tags, property filters, and region switching, all wired to the live AWS SDK.
-- 🧪 **Actually interactive** — run SQL against RDS, tail CloudWatch logs, browse S3 objects, publish to SNS, and create resources through proper wizards — not just read-only views.
-- 🐳 **Self-hosted & open source** — runs anywhere Node runs; no account, no telemetry, no cost.
+- 🧪 **Actually interactive** — not read-only: run SQL against RDS, tail CloudWatch logs, and create resources through proper wizards.
+- 🐳 **Self-hosted & open source** — a single Docker container; no account, no telemetry, no cost.
 
 ## 🚀 Quick start
 
