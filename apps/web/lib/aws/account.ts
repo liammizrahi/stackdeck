@@ -38,10 +38,6 @@ function accountClient() {
   return new AccountClient(clientConfig());
 }
 
-function isoOrNull(date: Date | undefined): string | null {
-  return date ? date.toISOString() : null;
-}
-
 async function accountApi(action: string): Promise<Record<string, unknown>> {
   const { endpoint, region, accessKeyId, secretAccessKey } = getAwsSettings();
   const url = new URL(`${endpoint.replace(/\/+$/, "")}/${action}`);
