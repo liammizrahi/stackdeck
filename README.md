@@ -49,17 +49,32 @@ Local AWS emulators are fantastic for development, but you usually poke at them 
 
 ## 📸 How it looks
 
-<div align="center">
-
-<img src="docs/assets/console-home-demo.png" alt="StackDeck console home" width="900" />
-
+<table>
+<tr>
+<td width="50%" align="center">
+<img src="docs/assets/console-home-demo.png" alt="StackDeck console home" width="100%" />
+<br/>
 <sub><i>Console Home</i></sub>
-
-<img src="docs/assets/console-demo.png" alt="StackDeck resource management" width="900" />
-
+</td>
+<td width="50%" align="center">
+<img src="docs/assets/console-demo.png" alt="StackDeck resource management" width="100%" />
+<br/>
 <sub><i>Resource Management</i></sub>
-
-</div>
+</td>
+</tr>
+<tr>
+<td width="50%" align="center">
+<img src="docs/assets/console-s3-demo.png" alt="StackDeck S3 browser" width="100%" />
+<br/>
+<sub><i>S3 Browser</i></sub>
+</td>
+<td width="50%" align="center">
+<img src="docs/assets/console-rds-demo.png" alt="StackDeck RDS explorer" width="100%" />
+<br/>
+<sub><i>RDS Explorer</i></sub>
+</td>
+</tr>
+</table>
 
 ## 🚀 Quick start
 
