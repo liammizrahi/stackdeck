@@ -31,7 +31,7 @@ Local AWS emulators are fantastic for development, but you usually poke at them 
 - 🎯 **Looks like the real thing** — a faithful recreation of the AWS Management Console.
 - 🔌 **Zero config** — defaults to `http://localhost:4566`; one env var to point it elsewhere.
 - 🗂️ **17 services and counting** — tables, detail tabs, ARNs, tags, property filters, and region switching, all wired to the live AWS SDK.
-- 🧪 **Actually interactive** — not read-only: run SQL against RDS, tail CloudWatch logs, and create resources through proper wizards.
+- 🧪 **Actually interactive** — create and manage resources through proper forms and wizards, not just read-only views.
 - 🐳 **Self-hosted & open source** — a single Docker container; no account, no telemetry, no cost.
 
 ## 🚀 Quick start
@@ -51,9 +51,9 @@ services:
     ports:
       - "4577:4577"
     environment:
-      AWS_ENDPOINT_URL: http://ministack:4566   # your emulator's service name
+      AWS_ENDPOINT_URL: http://localhost:4566   # point at your emulator
     depends_on:
-      - ministack
+      - ministack   # optional — omit if you use LocalStack or an external emulator
 ```
 
 Then `docker compose up` and open **[http://localhost:4577](http://localhost:4577)**. 🎉
