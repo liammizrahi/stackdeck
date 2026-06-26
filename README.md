@@ -30,34 +30,34 @@ Local AWS emulators are fantastic for development, but you usually poke at them 
 
 - 🎯 **Looks like the real thing** — a faithful recreation of the AWS Management Console.
 - 🔌 **Zero config** — defaults to `http://localhost:4566`; one env var to point it elsewhere.
-- 🗂️ **17 services and counting** — tables, detail tabs, ARNs, tags, property filters, and region switching, all wired to the live AWS SDK.
+- 🗂️ **17 services and counting** — compute, storage, databases, messaging, security, and more, all wired to the live AWS SDK.
 - 🧪 **Actually interactive** — create and manage resources through proper forms and wizards, not just read-only views.
 - 🐳 **Self-hosted & open source** — a single Docker container; no account, no telemetry, no cost.
 
-## Contents
+## 📑 Table of Contents
 
-- [Why StackDeck?](#-why-stackdeck)
-- [How it looks](#-how-it-looks)
-- [Quick start](#-quick-start)
-- [Configuration](#-configuration)
-- [Services](#-services)
-- [Tech stack](#-tech-stack)
-- [Roadmap](#-roadmap)
-- [Contributing](#-contributing)
-- [Contributors](#-contributors)
-- [License](#-license)
+- [✨ Why StackDeck?](#-why-stackdeck)
+- [📸 How it looks](#-how-it-looks)
+- [🚀 Quick start](#-quick-start)
+- [⚙️ Configuration](#-configuration)
+- [🧩 Services](#-services)
+- [🧱 Tech stack](#-tech-stack)
+- [🗺️ Roadmap](#-roadmap)
+- [🤝 Contributing](#-contributing)
+- [🤍 Contributors](#-contributors)
+- [📄 License](#-license)
 
 ## 📸 How it looks
 
 <div align="center">
 
-**Console Home**
-
 <img src="docs/assets/console-home-demo.png" alt="StackDeck console home" width="900" />
 
-**Resource Management**
+<sub><i>Console Home</i></sub>
 
 <img src="docs/assets/console-demo.png" alt="StackDeck resource management" width="900" />
+
+<sub><i>Resource Management</i></sub>
 
 </div>
 
