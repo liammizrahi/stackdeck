@@ -26,8 +26,6 @@ body {
   width: auto;
 }
 
-/* ---- Product detail page layout (adapted from the Cloudscape demo) ---- */
-
 .product-page-content-grid {
   display: grid;
   grid-template-columns: 3fr 1fr;
