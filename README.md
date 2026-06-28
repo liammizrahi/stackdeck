@@ -4,7 +4,9 @@
 
 ### The AWS Management Console for your local cloud
 
-**StackDeck** is a self-hosted, open-source web console for [**MiniStack**](https://ministack.org) and [**LocalStack**](https://localstack.cloud) — browse and manage your local AWS resources through a faithful recreation of the real AWS Console.
+**StackDeck** is a self-hosted, open-source web console for [**MiniStack**](https://ministack.org), [**LocalStack**](https://localstack.cloud), and [**Floci**](https://floci.io) — browse and manage your local AWS resources through a faithful recreation of the real AWS Console.
+
+📖 **[Read the documentation →](https://liammizrahi.github.io/stackdeck/)**
 
 ![Project Overview](https://shieldcn.dev/group/github/stars/liammizrahi/stackdeck+github/forks/liammizrahi/stackdeck+github/contributors/liammizrahi/stackdeck+github/license/liammizrahi/stackdeck.svg?variant=secondary&size=xs)
 
@@ -19,6 +21,7 @@
 ![TypeScript](https://www.shieldcn.dev/badge/dynamic/json.svg?url=https%3A%2F%2Fraw.githubusercontent.com%2Fliammizrahi%2Fstackdeck%2Fmain%2Fpackage.json&query=%24.devDependencies.typescript&label=TypeScript&logo=typescript&color=3178C6&variant=branded&size=xs&mode=light)
 ![AWS](https://shieldcn.dev/badge/AWS-FF9900.svg?variant=branded&size=xs&mode=light&logo=ri:FaAws)
 ![Docker](https://shieldcn.dev/badge/liammizrahi/stackdeck-latest-2496ED.svg?variant=branded&size=xs&mode=light&logo=docker)
+[![Docs](https://shieldcn.dev/badge/Docs-Online-7B3FF2.svg?variant=branded&size=xs&mode=light&logo=readthedocs)](https://liammizrahi.github.io/stackdeck/)
 
 </div>
 
@@ -43,7 +46,9 @@ Local AWS emulators are fantastic for development, but you usually poke at them 
 - [🧩 Services](#-services)
 - [🧱 Tech stack](#-tech-stack)
 - [🗺️ Roadmap](#-roadmap)
+- [🔗 Related projects](#-related-projects)
 - [🤝 Contributing](#-contributing)
+- [⭐ Star history](#-star-history)
 - [🤍 Contributors](#-contributors)
 - [📄 License](#-license)
 
@@ -172,6 +177,15 @@ Running from source? You can also put these in `apps/web/.env.local`.
 - Deeper write operations and resource editing
 - Multi-arch published images and versioned releases
 
+## 🔗 Related projects
+
+StackDeck sits on top of a local AWS emulator — point it at whichever you prefer:
+
+- **[MiniStack](https://ministack.org)** — local AWS cloud emulator (default endpoint `http://localhost:4566`).
+- **[LocalStack](https://localstack.cloud)** — fully featured local AWS cloud stack.
+- **[Floci](https://floci.io)** — fast, free, open-source AWS emulator and drop-in LocalStack alternative on port `4566`.
+- **[Cloudscape Design System](https://cloudscape.design)** — the open-source components that power StackDeck's console look and feel.
+
 ## 🤝 Contributing
 
 Contributions are very welcome — new services, bug fixes, and polish alike.
@@ -206,6 +220,10 @@ npm run dev        # http://localhost:4577
 | `npm run check-types` | TypeScript type-check |
 | `npm run test -w web` | Vitest unit tests |
 | `npm run format` | Prettier across the repo |
+
+## ⭐ Star history
+
+![chart](https://shieldcn.dev/chart/github/stars/liammizrahi/stackdeck.svg?mode=light&theme=orange&font=geist&logo=false&title=StackDeck&yScale=log)
 
 ## 🤍 Contributors
 

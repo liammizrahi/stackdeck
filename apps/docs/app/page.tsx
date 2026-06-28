@@ -16,6 +16,8 @@ import TextContent from "@cloudscape-design/components/text-content";
 import HeroHeader from "@/components/HeroHeader";
 import OnThisPage from "@/components/OnThisPage";
 import UserFeedback from "@/components/UserFeedback";
+import { servicesByCategory } from "@/lib/services";
+import { withBase } from "@/lib/base-path";
 
 const REPO_URL = "https://github.com/liammizrahi/stackdeck";
 
@@ -115,10 +117,26 @@ function QuickStart() {
 
         <div>
           <Box variant="h3" margin={{ bottom: "xs" }}>
-            Run with Docker
+            Add to your <code>docker-compose.yml</code> (recommended)
+          </Box>
+          <pre className="code-block">
+            <code>{`services:
+  stackdeck:
+    image: ghcr.io/liammizrahi/stackdeck:latest
+    ports:
+      - "4577:4577"
+    environment:
+      AWS_ENDPOINT_URL: http://localhost:4566   # point at your emulator`}</code>
+          </pre>
+        </div>
+
+        <div>
+          <Box variant="h3" margin={{ bottom: "xs" }}>
+            Run with <code>docker run</code>
           </Box>
           <pre className="code-block">
             <code>{`docker run --rm -p 4577:4577 \\
+  --add-host=host.docker.internal:host-gateway \\
   -e AWS_ENDPOINT_URL=http://host.docker.internal:4566 \\
   ghcr.io/liammizrahi/stackdeck:latest`}</code>
           </pre>
@@ -183,38 +201,28 @@ function Services() {
         <Box variant="p">
           StackDeck wires up the live AWS SDK across compute, storage,
           databases, messaging, and security — with more services landing
-          regularly.
+          regularly. Open any service for details on what you can do.
         </Box>
         <TextContent>
           <ul>
-            <li>
-              <strong>Compute</strong> — EC2, Lambda
-            </li>
-            <li>
-              <strong>Storage</strong> — S3
-            </li>
-            <li>
-              <strong>Database</strong> — DynamoDB, RDS, ElastiCache
-            </li>
-            <li>
-              <strong>Networking &amp; content delivery</strong> — CloudFront
-            </li>
-            <li>
-              <strong>Analytics</strong> — Athena
-            </li>
-            <li>
-              <strong>Application integration</strong> — SQS, SNS, API Gateway,
-              EventBridge
-            </li>
-            <li>
-              <strong>Security, identity &amp; compliance</strong> — IAM, Cognito
-            </li>
-            <li>
-              <strong>Management &amp; governance</strong> — Parameter Store,
-              AppConfig, CloudWatch
-            </li>
+            {servicesByCategory().map((group) => (
+              <li key={group.category}>
+                <strong>{group.category}</strong> —{" "}
+                {group.items.map((service, index) => (
+                  <span key={service.slug}>
+                    {index > 0 && ", "}
+                    <Link href={withBase(`/services/${service.slug}/`)}>
+                      {service.abbr}
+                    </Link>
+                  </span>
+                ))}
+              </li>
+            ))}
           </ul>
         </TextContent>
+        <Button href={withBase("/services/")} iconAlign="right" iconName="arrow-right">
+          Browse all services
+        </Button>
       </SpaceBetween>
     </section>
   );
@@ -347,6 +355,13 @@ function Related() {
           category="Local AWS cloud emulator"
           description="A fully functional local AWS cloud stack. Point StackDeck at your LocalStack endpoint to manage resources visually."
           href="https://localstack.cloud"
+        />
+        <ProjectCard
+          title="Floci"
+          category="Local AWS cloud emulator"
+          description="A fast, free, open-source AWS emulator and drop-in LocalStack alternative on port 4566. StackDeck connects to it the same way — just point it at your Floci endpoint."
+          href="https://floci.io"
+          isNew={true}
         />
         <ProjectCard
           title="Cloudscape Design System"

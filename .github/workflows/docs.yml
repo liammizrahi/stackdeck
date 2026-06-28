@@ -39,7 +39,6 @@ jobs:
       - name: Build docs site
         run: npm run build --workspace=docs
         env:
-          # Served from https://<owner>.github.io/stackdeck
           NEXT_PUBLIC_BASE_PATH: /stackdeck
 
       - name: Upload artifact

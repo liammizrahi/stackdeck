@@ -20,6 +20,11 @@ export default function DocsTopNav() {
         },
         {
           type: "button",
+          text: "Services",
+          href: withBase("/services/"),
+        },
+        {
+          type: "button",
           text: "MiniStack",
           external: true,
           href: "https://ministack.org/docs/",
