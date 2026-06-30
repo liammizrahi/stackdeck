@@ -1,12 +1,14 @@
-export type ServiceCategory =
-  | "Compute"
-  | "Storage"
-  | "Database"
-  | "Networking & Content Delivery"
-  | "Analytics"
-  | "Application Integration"
-  | "Security, Identity & Compliance"
-  | "Management & Governance";
+export enum ServiceCategory {
+  Compute = "Compute",
+  Containers = "Containers",
+  Storage = "Storage",
+  Database = "Database",
+  NetworkingContentDelivery = "Networking & Content Delivery",
+  Analytics = "Analytics",
+  ApplicationIntegration = "Application Integration",
+  SecurityIdentityCompliance = "Security, Identity & Compliance",
+  ManagementGovernance = "Management & Governance",
+}
 
 export interface Service {
   slug: string;
@@ -25,7 +27,7 @@ export const services: Service[] = [
     name: "Amazon EC2",
     abbr: "EC2",
     icon: "ec2",
-    category: "Compute",
+    category: ServiceCategory.Compute,
     summary: "Browse the virtual machines running in your local cloud.",
     features: [
       "List instances with state, type, Availability Zone, and IP addresses.",
@@ -39,7 +41,7 @@ export const services: Service[] = [
     name: "AWS Lambda",
     abbr: "Lambda",
     icon: "lambda",
-    category: "Compute",
+    category: ServiceCategory.Compute,
     summary: "Inspect the functions deployed to your emulator.",
     features: [
       "List functions with runtime, handler, and last-modified details.",
@@ -52,7 +54,7 @@ export const services: Service[] = [
     name: "Amazon S3",
     abbr: "S3",
     icon: "s3",
-    category: "Storage",
+    category: ServiceCategory.Storage,
     summary: "A familiar object browser for your local buckets.",
     features: [
       "Navigate buckets and prefixes like folders.",
@@ -66,7 +68,7 @@ export const services: Service[] = [
     name: "Amazon DynamoDB",
     abbr: "DynamoDB",
     icon: "dynamodb",
-    category: "Database",
+    category: ServiceCategory.Database,
     summary: "Explore tables, keys, and items.",
     features: [
       "List tables with their key schema and indexes.",
@@ -79,7 +81,7 @@ export const services: Service[] = [
     name: "Amazon RDS",
     abbr: "RDS",
     icon: "rds",
-    category: "Database",
+    category: ServiceCategory.Database,
     summary: "A full database explorer, not just a resource list.",
     features: [
       "Browse DB instances with engine, status, and endpoint details.",
@@ -94,7 +96,7 @@ export const services: Service[] = [
     name: "Amazon ElastiCache",
     abbr: "ElastiCache",
     icon: "elasticache",
-    category: "Database",
+    category: ServiceCategory.Database,
     summary: "Inspect your in-memory cache clusters.",
     features: [
       "List clusters with engine and status.",
@@ -107,7 +109,7 @@ export const services: Service[] = [
     name: "Amazon CloudFront",
     abbr: "CloudFront",
     icon: "cloudfront",
-    category: "Networking & Content Delivery",
+    category: ServiceCategory.NetworkingContentDelivery,
     summary: "Review the content distributions in your stack.",
     features: [
       "List distributions with their status and domain names.",
@@ -120,7 +122,7 @@ export const services: Service[] = [
     name: "Amazon Athena",
     abbr: "Athena",
     icon: "athena",
-    category: "Analytics",
+    category: ServiceCategory.Analytics,
     summary: "Query your local data lake.",
     features: [
       "Explore the Athena query environment wired to your emulator.",
@@ -132,7 +134,7 @@ export const services: Service[] = [
     name: "Amazon SQS",
     abbr: "SQS",
     icon: "sqs",
-    category: "Application Integration",
+    category: ServiceCategory.ApplicationIntegration,
     summary: "Manage queues and messages.",
     features: [
       "List queues with their attributes.",
@@ -145,7 +147,7 @@ export const services: Service[] = [
     name: "Amazon SNS",
     abbr: "SNS",
     icon: "sns",
-    category: "Application Integration",
+    category: ServiceCategory.ApplicationIntegration,
     summary: "Inspect topics and publish messages.",
     features: [
       "List topics and their subscriptions.",
@@ -158,7 +160,7 @@ export const services: Service[] = [
     name: "Amazon API Gateway",
     abbr: "API Gateway",
     icon: "apigateway",
-    category: "Application Integration",
+    category: ServiceCategory.ApplicationIntegration,
     summary: "Browse the APIs exposed by your stack.",
     features: [
       "List HTTP and REST APIs.",
@@ -171,7 +173,7 @@ export const services: Service[] = [
     name: "Amazon EventBridge",
     abbr: "EventBridge",
     icon: "eventbridge",
-    category: "Application Integration",
+    category: ServiceCategory.ApplicationIntegration,
     summary: "Inspect event buses and rules.",
     features: [
       "Browse event buses.",
@@ -184,7 +186,7 @@ export const services: Service[] = [
     name: "AWS IAM",
     abbr: "IAM",
     icon: "iam",
-    category: "Security, Identity & Compliance",
+    category: ServiceCategory.SecurityIdentityCompliance,
     summary: "Review identities and permissions.",
     features: [
       "Browse users, roles, and policies.",
@@ -197,7 +199,7 @@ export const services: Service[] = [
     name: "Amazon Cognito",
     abbr: "Cognito",
     icon: "cognito",
-    category: "Security, Identity & Compliance",
+    category: ServiceCategory.SecurityIdentityCompliance,
     summary: "Manage user pools and their users.",
     features: [
       "List user pools and inspect their configuration.",
@@ -210,7 +212,7 @@ export const services: Service[] = [
     name: "AWS Parameter Store",
     abbr: "Parameter Store",
     icon: "ssm",
-    category: "Management & Governance",
+    category: ServiceCategory.ManagementGovernance,
     summary: "Browse Systems Manager parameters.",
     features: [
       "List parameters with their type and last-modified details.",
@@ -224,7 +226,7 @@ export const services: Service[] = [
     name: "AWS AppConfig",
     abbr: "AppConfig",
     icon: "appconfig",
-    category: "Management & Governance",
+    category: ServiceCategory.ManagementGovernance,
     summary: "Explore applications and configuration profiles.",
     features: [
       "Browse applications and environments.",
@@ -238,7 +240,7 @@ export const services: Service[] = [
     name: "Amazon CloudWatch",
     abbr: "CloudWatch",
     icon: "cloudwatch",
-    category: "Management & Governance",
+    category: ServiceCategory.ManagementGovernance,
     summary: "A full-featured logs explorer.",
     features: [
       "Browse log groups and streams.",
@@ -248,17 +250,135 @@ export const services: Service[] = [
     ],
     awsDocsUrl: "https://docs.aws.amazon.com/cloudwatch/",
   },
+  {
+    slug: "ecs",
+    name: "Amazon ECS",
+    abbr: "ECS",
+    icon: "ecs",
+    category: ServiceCategory.Containers,
+    summary: "Inspect your container clusters and services.",
+    features: [
+      "List clusters with running and pending task counts.",
+      "Open a cluster to review its services, launch types, and task definitions.",
+    ],
+    awsDocsUrl: "https://docs.aws.amazon.com/ecs/",
+  },
+  {
+    slug: "ecr",
+    name: "Amazon ECR",
+    abbr: "ECR",
+    icon: "ecr",
+    category: ServiceCategory.Containers,
+    summary: "Browse your container image registry.",
+    features: [
+      "List repositories with their URI and tag mutability.",
+      "Open a repository to inspect image tags, digests, sizes, and push times.",
+    ],
+    awsDocsUrl: "https://docs.aws.amazon.com/ecr/",
+  },
+  {
+    slug: "route53",
+    name: "Amazon Route 53",
+    abbr: "Route 53",
+    icon: "route53",
+    category: ServiceCategory.NetworkingContentDelivery,
+    summary: "Manage DNS hosted zones and records.",
+    features: [
+      "List hosted zones with their record counts and visibility.",
+      "Open a zone to browse its resource record sets.",
+    ],
+    awsDocsUrl: "https://docs.aws.amazon.com/route53/",
+  },
+  {
+    slug: "kinesis",
+    name: "Amazon Kinesis",
+    abbr: "Kinesis",
+    icon: "kinesis",
+    category: ServiceCategory.Analytics,
+    summary: "Inspect your real-time data streams.",
+    features: [
+      "List data streams with status, shard count, and retention.",
+      "Open a stream to review its shards and hash key ranges.",
+    ],
+    awsDocsUrl: "https://docs.aws.amazon.com/kinesis/",
+  },
+  {
+    slug: "stepfunctions",
+    name: "AWS Step Functions",
+    abbr: "Step Functions",
+    icon: "stepfunctions",
+    category: ServiceCategory.ApplicationIntegration,
+    summary: "Browse state machines and their executions.",
+    features: [
+      "List state machines with their type and creation date.",
+      "Open a state machine to view its definition and recent executions.",
+    ],
+    awsDocsUrl: "https://docs.aws.amazon.com/step-functions/",
+  },
+  {
+    slug: "ses",
+    name: "Amazon SES",
+    abbr: "SES",
+    icon: "ses",
+    category: ServiceCategory.ApplicationIntegration,
+    summary: "Review email identities and sending status.",
+    features: [
+      "List email identities with their verification and sending status.",
+      "Open an identity to inspect DKIM, MAIL FROM, and tags.",
+    ],
+    awsDocsUrl: "https://docs.aws.amazon.com/ses/",
+  },
+  {
+    slug: "secretsmanager",
+    name: "AWS Secrets Manager",
+    abbr: "Secrets Manager",
+    icon: "secretsmanager",
+    category: ServiceCategory.SecurityIdentityCompliance,
+    summary: "Store and retrieve your secrets.",
+    features: [
+      "List secrets with their description and last-changed details.",
+      "Reveal a secret value and inspect its metadata and tags.",
+    ],
+    awsDocsUrl: "https://docs.aws.amazon.com/secretsmanager/",
+  },
+  {
+    slug: "kms",
+    name: "AWS KMS",
+    abbr: "KMS",
+    icon: "kms",
+    category: ServiceCategory.SecurityIdentityCompliance,
+    summary: "Browse your encryption keys and aliases.",
+    features: [
+      "List keys with their aliases, status, and usage.",
+      "Open a key to inspect its full metadata.",
+    ],
+    awsDocsUrl: "https://docs.aws.amazon.com/kms/",
+  },
+  {
+    slug: "cloudformation",
+    name: "AWS CloudFormation",
+    abbr: "CloudFormation",
+    icon: "cloudformation",
+    category: ServiceCategory.ManagementGovernance,
+    summary: "Inspect your infrastructure-as-code stacks.",
+    features: [
+      "List stacks with their status and creation time.",
+      "Open a stack to browse its resources, outputs, parameters, and events.",
+    ],
+    awsDocsUrl: "https://docs.aws.amazon.com/cloudformation/",
+  },
 ];
 
 export const categoryOrder: ServiceCategory[] = [
-  "Compute",
-  "Storage",
-  "Database",
-  "Networking & Content Delivery",
-  "Analytics",
-  "Application Integration",
-  "Security, Identity & Compliance",
-  "Management & Governance",
+  ServiceCategory.Compute,
+  ServiceCategory.Containers,
+  ServiceCategory.Storage,
+  ServiceCategory.Database,
+  ServiceCategory.NetworkingContentDelivery,
+  ServiceCategory.Analytics,
+  ServiceCategory.ApplicationIntegration,
+  ServiceCategory.SecurityIdentityCompliance,
+  ServiceCategory.ManagementGovernance,
 ];
 
 export function getService(slug: string): Service | undefined {

@@ -33,7 +33,7 @@ Local AWS emulators are fantastic for development, but you usually poke at them 
 
 - 🎯 **Looks like the real thing** — a faithful recreation of the AWS Management Console.
 - 🔌 **Zero config** — defaults to `http://localhost:4566`; one env var to point it elsewhere.
-- 🗂️ **17 services and counting** — compute, storage, databases, messaging, security, and more, all wired to the live AWS SDK.
+- 🗂️ **26 services and counting** — compute, containers, storage, databases, messaging, security, and more, all wired to the live AWS SDK.
 - 🧪 **Actually interactive** — create and manage resources through proper forms and wizards, not just read-only views.
 - 🐳 **Self-hosted & open source** — a single Docker container; no account, no telemetry, no cost.
 
@@ -143,13 +143,14 @@ Running from source? You can also put these in `apps/web/.env.local`.
 | Category | Services |
 | --- | --- |
 | **Compute** | EC2 · Lambda |
+| **Containers** | ECS · ECR |
 | **Storage** | S3 |
 | **Database** | DynamoDB · RDS · ElastiCache |
-| **Networking & Content Delivery** | CloudFront |
-| **Analytics** | Athena |
-| **Application Integration** | SQS · SNS · API Gateway · EventBridge |
-| **Security, Identity & Compliance** | IAM · Cognito |
-| **Management & Governance** | Parameter Store · AppConfig · CloudWatch |
+| **Networking & Content Delivery** | CloudFront · Route 53 |
+| **Analytics** | Athena · Kinesis |
+| **Application Integration** | SQS · SNS · API Gateway · EventBridge · Step Functions · SES |
+| **Security, Identity & Compliance** | IAM · Cognito · Secrets Manager · KMS |
+| **Management & Governance** | CloudFormation · Parameter Store · AppConfig · CloudWatch |
 
 ### Highlights
 
