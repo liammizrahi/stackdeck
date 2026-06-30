@@ -1,5 +1,6 @@
 export type ServiceCategory =
   | "Compute"
+  | "Containers"
   | "Storage"
   | "Database"
   | "Networking & Content Delivery"
@@ -248,10 +249,128 @@ export const services: Service[] = [
     ],
     awsDocsUrl: "https://docs.aws.amazon.com/cloudwatch/",
   },
+  {
+    slug: "ecs",
+    name: "Amazon ECS",
+    abbr: "ECS",
+    icon: "ecs",
+    category: "Containers",
+    summary: "Inspect your container clusters and services.",
+    features: [
+      "List clusters with running and pending task counts.",
+      "Open a cluster to review its services, launch types, and task definitions.",
+    ],
+    awsDocsUrl: "https://docs.aws.amazon.com/ecs/",
+  },
+  {
+    slug: "ecr",
+    name: "Amazon ECR",
+    abbr: "ECR",
+    icon: "ecr",
+    category: "Containers",
+    summary: "Browse your container image registry.",
+    features: [
+      "List repositories with their URI and tag mutability.",
+      "Open a repository to inspect image tags, digests, sizes, and push times.",
+    ],
+    awsDocsUrl: "https://docs.aws.amazon.com/ecr/",
+  },
+  {
+    slug: "route53",
+    name: "Amazon Route 53",
+    abbr: "Route 53",
+    icon: "route53",
+    category: "Networking & Content Delivery",
+    summary: "Manage DNS hosted zones and records.",
+    features: [
+      "List hosted zones with their record counts and visibility.",
+      "Open a zone to browse its resource record sets.",
+    ],
+    awsDocsUrl: "https://docs.aws.amazon.com/route53/",
+  },
+  {
+    slug: "kinesis",
+    name: "Amazon Kinesis",
+    abbr: "Kinesis",
+    icon: "kinesis",
+    category: "Analytics",
+    summary: "Inspect your real-time data streams.",
+    features: [
+      "List data streams with status, shard count, and retention.",
+      "Open a stream to review its shards and hash key ranges.",
+    ],
+    awsDocsUrl: "https://docs.aws.amazon.com/kinesis/",
+  },
+  {
+    slug: "stepfunctions",
+    name: "AWS Step Functions",
+    abbr: "Step Functions",
+    icon: "stepfunctions",
+    category: "Application Integration",
+    summary: "Browse state machines and their executions.",
+    features: [
+      "List state machines with their type and creation date.",
+      "Open a state machine to view its definition and recent executions.",
+    ],
+    awsDocsUrl: "https://docs.aws.amazon.com/step-functions/",
+  },
+  {
+    slug: "ses",
+    name: "Amazon SES",
+    abbr: "SES",
+    icon: "ses",
+    category: "Application Integration",
+    summary: "Review email identities and sending status.",
+    features: [
+      "List email identities with their verification and sending status.",
+      "Open an identity to inspect DKIM, MAIL FROM, and tags.",
+    ],
+    awsDocsUrl: "https://docs.aws.amazon.com/ses/",
+  },
+  {
+    slug: "secretsmanager",
+    name: "AWS Secrets Manager",
+    abbr: "Secrets Manager",
+    icon: "secretsmanager",
+    category: "Security, Identity & Compliance",
+    summary: "Store and retrieve your secrets.",
+    features: [
+      "List secrets with their description and last-changed details.",
+      "Reveal a secret value and inspect its metadata and tags.",
+    ],
+    awsDocsUrl: "https://docs.aws.amazon.com/secretsmanager/",
+  },
+  {
+    slug: "kms",
+    name: "AWS KMS",
+    abbr: "KMS",
+    icon: "kms",
+    category: "Security, Identity & Compliance",
+    summary: "Browse your encryption keys and aliases.",
+    features: [
+      "List keys with their aliases, status, and usage.",
+      "Open a key to inspect its full metadata.",
+    ],
+    awsDocsUrl: "https://docs.aws.amazon.com/kms/",
+  },
+  {
+    slug: "cloudformation",
+    name: "AWS CloudFormation",
+    abbr: "CloudFormation",
+    icon: "cloudformation",
+    category: "Management & Governance",
+    summary: "Inspect your infrastructure-as-code stacks.",
+    features: [
+      "List stacks with their status and creation time.",
+      "Open a stack to browse its resources, outputs, parameters, and events.",
+    ],
+    awsDocsUrl: "https://docs.aws.amazon.com/cloudformation/",
+  },
 ];
 
 export const categoryOrder: ServiceCategory[] = [
   "Compute",
+  "Containers",
   "Storage",
   "Database",
   "Networking & Content Delivery",

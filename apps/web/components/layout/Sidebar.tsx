@@ -16,6 +16,14 @@ const items: SideNavigationProps.Item[] = [
   },
   {
     type: "section",
+    text: "Containers",
+    items: [
+      { type: "link", text: "ECS", href: "/services/ecs" },
+      { type: "link", text: "ECR", href: "/services/ecr" },
+    ],
+  },
+  {
+    type: "section",
     text: "Storage",
     items: [{ type: "link", text: "S3", href: "/services/s3" }],
   },
@@ -33,12 +41,16 @@ const items: SideNavigationProps.Item[] = [
     text: "Networking & Content Delivery",
     items: [
       { type: "link", text: "CloudFront", href: "/services/cloudfront" },
+      { type: "link", text: "Route 53", href: "/services/route53" },
     ],
   },
   {
     type: "section",
     text: "Analytics",
-    items: [{ type: "link", text: "Athena", href: "/services/athena" }],
+    items: [
+      { type: "link", text: "Athena", href: "/services/athena" },
+      { type: "link", text: "Kinesis", href: "/services/kinesis" },
+    ],
   },
   {
     type: "section",
@@ -48,6 +60,8 @@ const items: SideNavigationProps.Item[] = [
       { type: "link", text: "SNS", href: "/services/sns" },
       { type: "link", text: "API Gateway", href: "/services/apigateway" },
       { type: "link", text: "EventBridge", href: "/services/eventbridge" },
+      { type: "link", text: "Step Functions", href: "/services/stepfunctions" },
+      { type: "link", text: "SES", href: "/services/ses" },
     ],
   },
   {
@@ -56,12 +70,15 @@ const items: SideNavigationProps.Item[] = [
     items: [
       { type: "link", text: "IAM", href: "/services/iam" },
       { type: "link", text: "Cognito", href: "/services/cognito" },
+      { type: "link", text: "Secrets Manager", href: "/services/secretsmanager" },
+      { type: "link", text: "KMS", href: "/services/kms" },
     ],
   },
   {
     type: "section",
     text: "Management & Governance",
     items: [
+      { type: "link", text: "CloudFormation", href: "/services/cloudformation" },
       { type: "link", text: "Parameter Store", href: "/services/ssm" },
       { type: "link", text: "AppConfig", href: "/services/appconfig" },
       { type: "link", text: "CloudWatch", href: "/services/cloudwatch" },
