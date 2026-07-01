@@ -33,7 +33,7 @@ Local AWS emulators are fantastic for development, but you usually poke at them 
 
 - 🎯 **Looks like the real thing** — a faithful recreation of the AWS Management Console.
 - 🔌 **Zero config** — defaults to `http://localhost:4566`; one env var to point it elsewhere.
-- 🗂️ **26 services and counting** — compute, containers, storage, databases, messaging, security, and more, all wired to the live AWS SDK.
+- 🗂️ **29 services and counting** — compute, containers, storage, networking, databases, messaging, security, and more, all wired to the live AWS SDK.
 - 🧪 **Actually interactive** — create and manage resources through proper forms and wizards, not just read-only views.
 - 🐳 **Self-hosted & open source** — a single Docker container; no account, no telemetry, no cost.
 
@@ -146,10 +146,10 @@ Running from source? You can also put these in `apps/web/.env.local`.
 | **Containers** | ECS · ECR |
 | **Storage** | S3 |
 | **Database** | DynamoDB · RDS · ElastiCache |
-| **Networking & Content Delivery** | CloudFront · Route 53 |
+| **Networking & Content Delivery** | VPC · Load Balancers · CloudFront · Route 53 |
 | **Analytics** | Athena · Kinesis |
 | **Application Integration** | SQS · SNS · API Gateway · EventBridge · Step Functions · SES |
-| **Security, Identity & Compliance** | IAM · Cognito · Secrets Manager · KMS |
+| **Security, Identity & Compliance** | IAM · Cognito · Secrets Manager · KMS · Certificate Manager |
 | **Management & Governance** | CloudFormation · Parameter Store · AppConfig · CloudWatch |
 
 ### Highlights

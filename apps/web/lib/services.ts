@@ -189,4 +189,25 @@ export const services: ServiceInfo[] = [
     href: "/services/cloudformation",
     aliases: ["stack", "iac", "template", "cfn", "infrastructure as code", "provisioning"],
   },
+  {
+    key: "vpc",
+    name: "VPC",
+    description: "Virtual networks and subnets",
+    href: "/services/vpc",
+    aliases: ["network", "subnet", "security group", "route table", "cidr", "virtual private cloud", "networking"],
+  },
+  {
+    key: "elbv2",
+    name: "Load Balancers",
+    description: "Application and network load balancers",
+    href: "/services/elbv2",
+    aliases: ["elb", "alb", "nlb", "load balancer", "elastic load balancing", "listener", "target group"],
+  },
+  {
+    key: "acm",
+    name: "Certificate Manager",
+    description: "TLS/SSL certificates",
+    href: "/services/acm",
+    aliases: ["acm", "certificate", "tls", "ssl", "https", "cert"],
+  },
 ];

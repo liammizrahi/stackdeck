@@ -367,6 +367,45 @@ export const services: Service[] = [
     ],
     awsDocsUrl: "https://docs.aws.amazon.com/cloudformation/",
   },
+  {
+    slug: "vpc",
+    name: "Amazon VPC",
+    abbr: "VPC",
+    icon: "vpc",
+    category: ServiceCategory.NetworkingContentDelivery,
+    summary: "Explore your virtual networks.",
+    features: [
+      "List VPCs with their CIDR block, state, and default flag.",
+      "Open a VPC to browse its subnets, security groups, and route tables.",
+    ],
+    awsDocsUrl: "https://docs.aws.amazon.com/vpc/",
+  },
+  {
+    slug: "elbv2",
+    name: "Elastic Load Balancing",
+    abbr: "Load Balancers",
+    icon: "elbv2",
+    category: ServiceCategory.NetworkingContentDelivery,
+    summary: "Review your application and network load balancers.",
+    features: [
+      "List load balancers with their type, scheme, and state.",
+      "Open a load balancer to inspect its listeners and target groups.",
+    ],
+    awsDocsUrl: "https://docs.aws.amazon.com/elasticloadbalancing/",
+  },
+  {
+    slug: "acm",
+    name: "AWS Certificate Manager",
+    abbr: "ACM",
+    icon: "acm",
+    category: ServiceCategory.SecurityIdentityCompliance,
+    summary: "Browse your TLS/SSL certificates.",
+    features: [
+      "List certificates with their domain, status, and expiry.",
+      "Open a certificate to inspect its details and subject alternative names.",
+    ],
+    awsDocsUrl: "https://docs.aws.amazon.com/acm/",
+  },
 ];
 
 export const categoryOrder: ServiceCategory[] = [

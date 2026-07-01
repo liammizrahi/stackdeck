@@ -13,6 +13,7 @@
   },
   "dependencies": {
     "@aws-sdk/client-account": "^3.1075.0",
+    "@aws-sdk/client-acm": "^3.1075.0",
     "@aws-sdk/client-apigatewayv2": "^3.1075.0",
     "@aws-sdk/client-appconfig": "^3.1075.0",
     "@aws-sdk/client-athena": "^3.1075.0",
@@ -24,6 +25,7 @@
     "@aws-sdk/client-ec2": "^3.1075.0",
     "@aws-sdk/client-ecr": "^3.1075.0",
     "@aws-sdk/client-ecs": "^3.1075.0",
+    "@aws-sdk/client-elastic-load-balancing-v2": "^3.1075.0",
     "@aws-sdk/client-elasticache": "^3.1075.0",
     "@aws-sdk/client-eventbridge": "^3.1075.0",
     "@aws-sdk/client-iam": "^3.1075.0",

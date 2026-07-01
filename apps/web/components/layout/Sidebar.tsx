@@ -40,6 +40,8 @@ const items: SideNavigationProps.Item[] = [
     type: "section",
     text: "Networking & Content Delivery",
     items: [
+      { type: "link", text: "VPC", href: "/services/vpc" },
+      { type: "link", text: "Load Balancers", href: "/services/elbv2" },
       { type: "link", text: "CloudFront", href: "/services/cloudfront" },
       { type: "link", text: "Route 53", href: "/services/route53" },
     ],
@@ -72,6 +74,7 @@ const items: SideNavigationProps.Item[] = [
       { type: "link", text: "Cognito", href: "/services/cognito" },
       { type: "link", text: "Secrets Manager", href: "/services/secretsmanager" },
       { type: "link", text: "KMS", href: "/services/kms" },
+      { type: "link", text: "Certificate Manager", href: "/services/acm" },
     ],
   },
   {
