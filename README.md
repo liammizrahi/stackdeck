@@ -144,13 +144,13 @@ Running from source? You can also put these in `apps/web/.env.local`.
 | --- | --- |
 | **Compute** | EC2 · Lambda |
 | **Containers** | ECS · ECR |
-| **Storage** | S3 |
+| **Storage** | S3 · EFS |
 | **Database** | DynamoDB · RDS · ElastiCache |
 | **Networking & Content Delivery** | VPC · Load Balancers · CloudFront · Route 53 |
-| **Analytics** | Athena · Kinesis |
-| **Application Integration** | SQS · SNS · API Gateway · EventBridge · Step Functions · SES |
+| **Analytics** | Athena · Kinesis · Data Firehose · Glue · OpenSearch |
+| **Application Integration** | SQS · SNS · API Gateway · EventBridge · EventBridge Scheduler · Step Functions · AppSync · SES |
 | **Security, Identity & Compliance** | IAM · Cognito · Secrets Manager · KMS · Certificate Manager |
-| **Management & Governance** | CloudFormation · Parameter Store · AppConfig · CloudWatch |
+| **Management & Governance** | CloudFormation · CloudTrail · CloudWatch · Parameter Store · AppConfig · Backup · Organizations |
 
 ### Highlights
 
